@@ -1,4 +1,3 @@
-import { profile } from "console";
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
@@ -45,7 +44,8 @@ const userSchema = new mongoose.Schema({
         }
     ] ,
     EngineeringDomain:{
-        type:String
+        type:String,
+        enum:["CSE","ISE", "ECE", "MECH", "CST", "EEE"]
     },
     University:{
         type:String
