@@ -2,9 +2,11 @@ import mongoose from "mongoose";
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 const userSchema = new mongoose.Schema({
-    name:{
+    username:{
         type:String,
         required:true,
+        unique:true,
+        lowercase:true,
     },
     email:{
         type:String,

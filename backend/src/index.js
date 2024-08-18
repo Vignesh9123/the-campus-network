@@ -5,7 +5,6 @@ import { app } from "./app.js";
 dotenv.config({
     path: "./.env"
 })
-const app = express();
 
 connectDB()
 .then(
