@@ -35,23 +35,36 @@ const registerUser = asyncHandler(async (req, res) => {
   } // redirect to login
   
   // check for profile pic and upload to cloudinary
-  console.log("req.files: ",req.files);
-  const pfpfLocalPath = req.files?.profilePicture[0]?.path
-  if(!pfpfLocalPath){
-    throw new ApiError(400, "Profile picture is required");
+  // console.log("req.files: ",req.files?.profilePicture[0]?.path);
+  let pfpLocalPath;
+  let profilePicture; 
+  if(req.files && Array.isArray(req.files.profilePicture) && req.files.profilePicture.length > 0){
+    pfpLocalPath = req.files.profilePicture[0].path;
   }
-  const profilePicture = await uploadOnCloudinary(pfpfLocalPath);
+  // console.log("pfpfLocalPath: ", pfpfLocalPath);
+  if(!pfpLocalPath){
+    // // set default profile picture
+    // console.log("default profile picture");
+    // const defaultProfilePicture = {
+    //   name: "default-profile-picture",
+    //   url: process.env.DEFAULT_USER_IMAGE_URL
+    // }
+  }
+  else{
+  profilePicture = await uploadOnCloudinary(pfpLocalPath);
   if(!profilePicture){
     throw new ApiError(400, "Profile picture upload failed");
   }
-  console.log("profilePicture: ", profilePicture);
+}
+const profilePictureURL = pfpLocalPath ? profilePicture.url : process.env.DEFAULT_USER_IMAGE_URL;
+
   // create user object - create entry in db
   
   const user = await User.create({
     username,
     email,
     password,
-    profilePicture: profilePicture.url
+    profilePicture: profilePictureURL,
   })
   // remove password and refresh token field from response
   // check for user creation
