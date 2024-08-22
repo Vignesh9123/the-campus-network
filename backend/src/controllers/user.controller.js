@@ -104,7 +104,6 @@ const loginUser = asyncHandler(async (req, res) =>{
   //send cookie
 
   const {email, username, password} = req.body
-  console.log(email);
 
   if (!username && !email) {
       throw new ApiError(400, "username or email is required")
@@ -270,9 +269,111 @@ const updateProfilePicture = asyncHandler(async(req, res)=>{
     },
     {new: true}
   ).select("-password");
+  //TODO: Delete old profilePicture
   return res
   .status(200)
   .json(new ApiResponse(200, user, "Profile picture updated successfully"));
 })
 
-export { registerUser, loginUser, logoutUser, refreshAccessToken, changeCurrentPassword, getCurrentUser, updateAccountDetails, updateProfilePicture };
+const getUserProfile = asyncHandler(async(req, res)=>{
+  const {username} = req.params;
+  if(!username?.trim()){
+    throw new ApiError(400, "Username is required");
+  }
+  const followers = await User.aggregate([
+    {
+      $match: {
+        username
+      }
+    },
+    {
+      $lookup: {
+        from: "followers",
+        localField: "_id",
+        foreignField: "user",
+        as: "followers"
+      }
+    },
+    {
+      $project: {
+        followers: 1,
+        _id: 0
+      }
+    }
+  ]);
+  const following = await User.aggregate([
+    {
+      $match: {
+        username
+      }
+    },
+    {
+      $lookup: {
+        from: "followers",
+        localField: "_id",
+        foreignField: "follower",
+        as: "following"
+      }
+    },
+    {
+      $project: {
+        following: 1,
+        _id: 0
+      }
+    }
+  ]);
+  const posts = await User.aggregate([
+    {
+      $match: {
+        username
+      }
+    },
+    {
+      $lookup: {
+        from: "posts",
+        localField: "_id",
+        foreignField: "owner",
+        as: "posts"
+      }
+    },
+    {
+      $project: {
+        posts: 1,
+        _id: 0
+      }
+    }
+  ]);
+  const followersCount = followers[0]?.followers?.length || 0;
+  const followingCount = following[0]?.following?.length || 0;
+  const postsCount = posts[0]?.posts?.length || 0;
+
+  const user = await User.findOne({username}).select("-password -refreshToken -lastLogin -preferences");
+  return res
+  .status(200)
+  .json(new ApiResponse(200, {user, followersCount, followingCount, postsCount}, "User profile fetched successfully"));
+  
+})
+
+const addPersonalDetails = asyncHandler(async(req, res)=>{
+    const { phone, engineeringDomain, college, yearOfGraduation } = req.body
+    if(!phone || !engineeringDomain || !college || !yearOfGraduation){
+        throw new ApiError(400, "Atleast one field is required");
+    }
+    const user = await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            $set: {
+                phone,
+                engineeringDomain,
+                college,
+                yearOfGraduation
+            }
+        },
+        {new: true}
+    ).select("-password");
+    return res
+    .status(200)
+    .json(new ApiResponse(200, user, "Personal details updated successfully"));
+})
+
+export { registerUser, loginUser, logoutUser, refreshAccessToken, changeCurrentPassword, getCurrentUser, updateAccountDetails, updateProfilePicture, getUserProfile, addPersonalDetails };
