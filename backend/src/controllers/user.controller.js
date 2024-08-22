@@ -4,7 +4,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { User } from "../models/user.models.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-
+import { sendEmail } from "../utils/sendMail.js";
 const generateAccesAndRefreshToken = async(userId) => {
   try {
     const user = await User.findById(userId);
@@ -377,4 +377,114 @@ const addPersonalDetails = asyncHandler(async(req, res)=>{
     .json(new ApiResponse(200, user, "Personal details updated successfully"));
 })
 
-export { registerUser, loginUser, logoutUser, refreshAccessToken, changeCurrentPassword, getCurrentUser, updateAccountDetails, updateProfilePicture, getUserProfile, addPersonalDetails };
+
+const followOrUnfollowUser = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+
+  if (!userId) {
+    throw new ApiError(400, 'User ID is required');
+  }
+
+  const currentUser = await User.findById(req.user._id);
+  const userToFollow = await User.findById(userId);
+
+  if (!userToFollow) {
+    throw new ApiError(404, 'User not found');
+  }
+
+  if (currentUser.following.includes(userId)) {
+    // Unfollow the user
+    currentUser.following = currentUser.following.filter(
+      (followingId) => followingId.toString() !== userId
+    );
+    userToFollow.followers = userToFollow.followers.filter(
+      (followerId) => followerId.toString() !== req.user._id.toString()
+    );
+  } else {
+    // Follow the user
+    currentUser.following.push(userId);
+    userToFollow.followers.push(req.user._id);
+  }
+
+  await currentUser.save({validateBeforeSave:false});
+  await userToFollow.save({validateBeforeSave:false});
+
+  res.status(200).json(
+    new ApiResponse(200, {
+      following: currentUser.following,
+      followers: userToFollow.followers,
+    }, 'Follow/Unfollow successful')
+  );
+});
+
+
+
+//TODO:Implement forgot password using mail
+
+const forgotPassword = asyncHandler(async(req, res)=>{
+  const {email, username} = req.body;
+  if(!email && !username){
+    throw new ApiError(400, "Email or username is required");
+  }
+  const user = await User.findOne({
+    $or: [{email}, {username}]
+  });
+  if(!user){
+    throw new ApiError(404, "User not found");
+  }
+  const resetToken = await user.generatePasswordResetToken();
+  user.passwordResetToken = resetToken;
+  await user.save({validateBeforeSave: false});
+  const resetPasswordURL = `${req.protocol}://${req.get("host")}/api/v1/users/reset-password/${resetToken}`;
+  const message = `You have requested to reset your password. Please click on the link to reset your password: ${resetPasswordURL}. If you did not request this, please ignore this email.`;
+  await sendEmail({
+    email: user.email,
+    subject: "Reset your password",
+    message
+  });
+  return res
+  .status(200)
+  .json(new ApiResponse(200, {}, "Password reset token sent to your email"));
+})
+const resetPassword = asyncHandler(async(req, res)=>{
+  const {resetToken} = req.params;
+  const {password} = req.body;
+  console.log("reset:",resetToken, password);
+  const user = await User.findOne({
+    passwordResetToken: resetToken,
+  });
+  if(!user){
+    throw new ApiError(400, "Token is invalid or expired");
+  }
+  user.password = password;
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+  await user.save();
+  return res
+  .status(200)
+  .json(new ApiResponse(200, {}, "Password reset successful"));
+})
+
+//TODO:Implement verify email
+//TODO:Resend verification email
+//TODO:Get user feed
+//TODO:Search users
+
+const searchUsers = asyncHandler(async(req, res)=>{
+  const {query} = req.query;
+  if(!query){
+    throw new ApiError(400, "Query is required");
+  }
+  const users = await User.find({
+    $or: [
+      {username: {$regex: query, $options: 'i'}},
+      {email: {$regex: query, $options: 'i'}}
+    ]
+  }).select("username email profilePicture");
+  return res
+  .status(200)
+  .json(new ApiResponse(200, users, "Users fetched successfully"));
+})
+
+
+export { registerUser, loginUser, logoutUser, refreshAccessToken, changeCurrentPassword, getCurrentUser, updateAccountDetails, updateProfilePicture, getUserProfile, addPersonalDetails , followOrUnfollowUser, forgotPassword, resetPassword, searchUsers};

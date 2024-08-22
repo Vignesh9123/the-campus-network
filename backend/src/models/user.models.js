@@ -77,6 +77,12 @@ const userSchema = new mongoose.Schema({
     ],
     refreshToken:{
         type:String
+    },
+    passwordResetToken:{
+        type:String
+    },
+    passwordResetTokenExpiry:{
+        type:Date
     }
   
     
@@ -115,6 +121,18 @@ userSchema.methods.generateRefreshToken = function(){
         process.env.REFRESH_TOKEN_SECRET,
         {
             expiresIn:process.env.REFRESH_TOKEN_EXPIRY
+        }
+    )
+}
+userSchema.methods.generatePasswordResetToken = function(){
+    return jwt.sign(
+        {
+            _id:this._id,
+
+        },
+        process.env.PASSWORD_RESET_TOKEN_SECRET,
+        {
+            expiresIn:process.env.PASSWORD_RESET_TOKEN_EXPIRY
         }
     )
 }
