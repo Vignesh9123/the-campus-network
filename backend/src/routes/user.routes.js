@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { registerUser,loginUser, logoutUser, refreshAccessToken, changeCurrentPassword, getCurrentUser, updateProfilePicture, getUserProfile, addPersonalDetails, followOrUnfollowUser, forgotPassword,resetPassword, searchUsers} from "../controllers/user.controller.js";
+import { registerUser,loginUser, logoutUser, refreshAccessToken, changeCurrentPassword, getCurrentUser, updateProfilePicture, getUserProfile, addPersonalDetails, followOrUnfollowUser, forgotPassword,resetPassword, searchUsers, getUserFeed, getUserFollowers, getUserFollowing, } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { sendEmail } from "../utils/sendMail.js";
@@ -23,5 +23,6 @@ router.route('/follow/:userId').post(verifyJWT, followOrUnfollowUser)
 router.route('/forgot-password').post(forgotPassword)
 router.route('/reset-password/:resetToken').post(resetPassword)
 router.route('/search').get(searchUsers)
+router.route('/feed').get(verifyJWT, getUserFeed)
 
 export default router

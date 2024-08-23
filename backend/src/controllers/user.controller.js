@@ -5,6 +5,7 @@ import { User } from "../models/user.models.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { sendEmail } from "../utils/sendMail.js";
+import { Post } from '../models/post.model.js';
 const generateAccesAndRefreshToken = async(userId) => {
   try {
     const user = await User.findById(userId);
@@ -135,7 +136,7 @@ const loginUser = asyncHandler(async (req, res) =>{
 
   const options = {
       httpOnly: true,
-      // secure: true
+      secure: process.env.NODE_ENV === "production"
   }
 
   return res
@@ -167,7 +168,7 @@ const logoutUser = asyncHandler(async (req, res) => {
   )
   const options = {
     httpOnly: true,
-    secure: true
+    secure:  process.env.NODE_ENV === "production"
   }
   return res
   .status(200)
@@ -193,6 +194,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     const {accessToken, newRefreshToken} = await generateAccesAndRefreshToken(user._id);
     const options = {
       httpOnly: true,
+      secure:process.env.NODE_ENV === "production"
     }
     return res
     .status(200)
@@ -281,79 +283,53 @@ const getUserProfile = asyncHandler(async(req, res)=>{
   if(!username?.trim()){
     throw new ApiError(400, "Username is required");
   }
-  const followers = await User.aggregate([
-    {
-      $match: {
-        username
-      }
-    },
-    {
-      $lookup: {
-        from: "followers",
-        localField: "_id",
-        foreignField: "user",
-        as: "followers"
-      }
-    },
-    {
-      $project: {
-        followers: 1,
-        _id: 0
-      }
-    }
-  ]);
-  const following = await User.aggregate([
-    {
-      $match: {
-        username
-      }
-    },
-    {
-      $lookup: {
-        from: "followers",
-        localField: "_id",
-        foreignField: "follower",
-        as: "following"
-      }
-    },
-    {
-      $project: {
-        following: 1,
-        _id: 0
-      }
-    }
-  ]);
-  const posts = await User.aggregate([
-    {
-      $match: {
-        username
-      }
-    },
-    {
-      $lookup: {
-        from: "posts",
-        localField: "_id",
-        foreignField: "owner",
-        as: "posts"
-      }
-    },
-    {
-      $project: {
-        posts: 1,
-        _id: 0
-      }
-    }
-  ]);
-  const followersCount = followers[0]?.followers?.length || 0;
-  const followingCount = following[0]?.following?.length || 0;
-  const postsCount = posts[0]?.posts?.length || 0;
+  const followers =await User.findOne({username}).select("followers").populate({
+    path: "followers",
+    select: "username email profilePicture"
+  });
 
+  const following =await User.findOne({username}).select("following").populate({
+    path: "following",
+    select: "username email profilePicture"
+  });
+  const followersCount = followers?.followers?.length || 0;
+  const followingCount = following?.following?.length || 0;
   const user = await User.findOne({username}).select("-password -refreshToken -lastLogin -preferences");
   return res
   .status(200)
-  .json(new ApiResponse(200, {user, followersCount, followingCount, postsCount}, "User profile fetched successfully"));
+  .json(new ApiResponse(200, {user, followersCount, followingCount}, "User profile fetched successfully"));
   
 })
+
+const getUserFollowers = asyncHandler(async(req, res)=>{
+  const {username} = req.params;
+  if(!username?.trim()){
+    throw new ApiError(400, "Username is required");
+  }
+  const user = await User.findOne({username}).select("followers").populate({
+    path: "followers",
+    select: "username email profilePicture"
+  });
+  const followers = user?.followers || [];
+  return res
+  .status(200)
+  .json(new ApiResponse(200, followers, "User followers fetched successfully"));
+})
+const getUserFollowing = asyncHandler(async(req, res)=>{
+  const {username} = req.params;
+  if(!username?.trim()){
+    throw new ApiError(400, "Username is required");
+  }
+  const user = await User.findOne({username}).select("following").populate({
+    path: "following",
+    select: "username email profilePicture"
+  });
+  const following = user?.following || [];
+  return res
+  .status(200)
+  .json(new ApiResponse(200, following, "User following fetched successfully"));
+})
+
 
 const addPersonalDetails = asyncHandler(async(req, res)=>{
     const { phone, engineeringDomain, college, yearOfGraduation } = req.body
@@ -417,10 +393,6 @@ const followOrUnfollowUser = asyncHandler(async (req, res) => {
   );
 });
 
-
-
-//TODO:Implement forgot password using mail
-
 const forgotPassword = asyncHandler(async(req, res)=>{
   const {email, username} = req.body;
   if(!email && !username){
@@ -465,10 +437,60 @@ const resetPassword = asyncHandler(async(req, res)=>{
   .json(new ApiResponse(200, {}, "Password reset successful"));
 })
 
-//TODO:Implement verify email
-//TODO:Resend verification email
-//TODO:Get user feed
-//TODO:Search users
+
+const sendVerificationEmail = asyncHandler(async(req, res)=>{
+  const user = await User.findById(req.user?._id);
+  const token = user.generateEmailVerificationToken();
+  const verificationURL = `${req.protocol}://${req.get("host")}/api/v1/users/verify-email/${token}`;
+  const message = `Please click on the link to verify your email: ${verificationURL}`;
+  await sendEmail({
+    email: user.email,
+    subject: "Verify your email",
+    message
+  });
+  return res
+  .status(200)
+  .json(new ApiResponse(200, {}, "Verification email sent successfully"));
+})
+
+const verifyEmail = asyncHandler(async(req, res)=>{
+  const {token} = req.params;
+  const decodedToken = jwt.verify(token, process.env.EMAIL_VERIFICATION_TOKEN_SECRET);
+  const user = await User.findById(decodedToken?._id);
+  if(!user){
+    throw new ApiError(400, "Invalid token");
+  }
+  user.isEmailVerified = true;
+  await user.save({validateBeforeSave: true});
+  return res
+  .status(200)
+  .json(new ApiResponse(200, {}, "Email verified successfully"));
+})
+
+
+const resendVerificationEmail = asyncHandler(async(req, res)=>{
+  const user = await User.findById(req.user?._id);
+  if(user.isEmailVerified){
+    throw new ApiError(400, "Email is already verified");
+  }
+  await sendVerificationEmail(req, res);
+})
+
+
+const getUserFeed = asyncHandler(async(req, res)=>{
+  const user = await User.findById(req.user?._id);
+  const following = user.following;
+  const feed = await Post.find({
+    createdBy: {$in: following}
+  }).populate({
+    path: "crdeatedBy",
+    select: "username email profilePicture"
+  });
+  return res
+  .status(200)
+  .json(new ApiResponse(200, feed, "User feed fetched successfully"));
+})
+
 
 const searchUsers = asyncHandler(async(req, res)=>{
   const {query} = req.query;
@@ -487,4 +509,4 @@ const searchUsers = asyncHandler(async(req, res)=>{
 })
 
 
-export { registerUser, loginUser, logoutUser, refreshAccessToken, changeCurrentPassword, getCurrentUser, updateAccountDetails, updateProfilePicture, getUserProfile, addPersonalDetails , followOrUnfollowUser, forgotPassword, resetPassword, searchUsers};
+export { registerUser, loginUser, logoutUser, refreshAccessToken, changeCurrentPassword, getCurrentUser, updateAccountDetails, updateProfilePicture, getUserProfile, addPersonalDetails , followOrUnfollowUser, forgotPassword, resetPassword, searchUsers, sendVerificationEmail, verifyEmail, resendVerificationEmail, getUserFeed, getUserPosts, getUserFollowers, getUserFollowing};
