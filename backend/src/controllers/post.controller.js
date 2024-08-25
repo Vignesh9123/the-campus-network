@@ -3,6 +3,7 @@ import { asyncHandler } from '../utils/asyncHandler.js';
 import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { User } from '../models/user.models.js';
+
 //create a new post
 const createPost = asyncHandler(async (req, res) => {
     const {title, content, tags, isPublic, onlyFollowers} = req.body;
@@ -104,11 +105,41 @@ const deletePost = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, deletedPost, "Post deleted successfully"));
 })
 
+const searchPosts = asyncHandler(async (req, res) => {
+    const {query} = req.query;
+    //validate the input fields
+    if(!query?.trim()){
+        throw new ApiError(400, "Search query is required");
+    }
+    //find the posts
+    const posts = await Post
+    .find({
+        $or: [
+            {title: {$regex: query, $options: "i"}},
+            {content: {$regex: query, $options: "i"}},
+            {tags: {$regex: query, $options: "i"}}
+        ],
+        public: true,
+        onlyFollowers: false
+    })
+    .populate({
+        path: "createdBy",
+        select: "username email profilePicture"
+    });
+    if(!posts){
+        throw new ApiError(404, "No posts found");
+    }
+    const postsCount = posts.length;
+    //return the response
+    return res.status(200).json(new ApiResponse(200, {posts, postsCount}, "Posts fetched successfully"));
+})
+
 export {
     createPost,
     getPost,
     updatePost,
     deletePost,
-    getUserPosts
+    getUserPosts,
+    searchPosts
     
 }
