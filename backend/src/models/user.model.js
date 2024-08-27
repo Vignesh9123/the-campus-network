@@ -94,6 +94,11 @@ const userSchema = new mongoose.Schema({
     emailVerificationTokenExpiry:{
         type:Date
     },
+    loginType:{
+        type:String,
+        enum:["email", "google"],
+        default:"email"
+    }
     
   
     

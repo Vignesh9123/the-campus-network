@@ -1,7 +1,7 @@
 import * as jwt from 'jsonwebtoken';
 import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { User } from "../models/user.models.js";
+import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { sendEmail } from "../utils/sendMail.js";
@@ -508,5 +508,25 @@ const searchUsers = asyncHandler(async(req, res)=>{
   .json(new ApiResponse(200, users, "Users fetched successfully"));
 })
 
+const handleSocialLogin = asyncHandler(async(req, res)=>{
+ const user = await User.findById(req.user?._id);
+ console.log("user:", user);
+ if(!user){
+  throw new ApiError(404, "User not found");
+ }
+ const {accessToken, refreshToken} = await generateAccesAndRefreshToken(user._id);
+ const options = {
+   httpOnly: true,
+   secure:process.env.NODE_ENV === "production"
+ }
+ return res
+ .status(201)
+ .cookie("accessToken", accessToken, options)
+ .cookie("refreshToken", refreshToken, options)
+ .redirect(`${process.env.CLIENT_URL}/profile?accessToken=${accessToken}&refreshToken=${refreshToken}`);
 
-export { registerUser, loginUser, logoutUser, refreshAccessToken, changeCurrentPassword, getCurrentUser, updateAccountDetails, updateProfilePicture, getUserProfile, addPersonalDetails , followOrUnfollowUser, forgotPassword, resetPassword, searchUsers, sendVerificationEmail, verifyEmail, resendVerificationEmail, getUserFeed, getUserFollowers, getUserFollowing};
+}
+)
+
+
+export { registerUser, loginUser, logoutUser, refreshAccessToken, changeCurrentPassword, getCurrentUser, updateAccountDetails, updateProfilePicture, getUserProfile, addPersonalDetails , followOrUnfollowUser, forgotPassword, resetPassword, searchUsers, sendVerificationEmail, verifyEmail, resendVerificationEmail, getUserFeed, getUserFollowers, getUserFollowing, handleSocialLogin};
