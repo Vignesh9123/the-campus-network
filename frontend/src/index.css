@@ -67,3 +67,31 @@
     @apply bg-background text-foreground;
   }
 }
+body {
+  scrollbar-width: thin;
+  scrollbar-color: black;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+::-webkit-scrollbar {
+  width: 3px; /* Set the width of the scrollbar */
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #555; /* Color of the track */
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: black; /* Color of the scroll thumb */
+  border-radius: 3px; /* Rounded corners */
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Darker color on hover */
+}
+.inner-carousel::-webkit-scrollbar{
+  display: none;
+}
