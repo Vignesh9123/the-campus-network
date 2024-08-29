@@ -228,6 +228,7 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
 })
 
 const getCurrentUser = asyncHandler(async (req, res) => {
+  console.log(req.user)
   return res
   .status(200)
   .json(new ApiResponse(200, req.user, "User fetched successfully"));
@@ -523,7 +524,7 @@ const handleSocialLogin = asyncHandler(async(req, res)=>{
  .status(201)
  .cookie("accessToken", accessToken, options)
  .cookie("refreshToken", refreshToken, options)
- .redirect(`${process.env.CLIENT_URL}/profile?accessToken=${accessToken}&refreshToken=${refreshToken}`);
+ .redirect(`${process.env.CLIENT_URL}/setLogin?access-token=${accessToken}&refresh-token=${refreshToken}`);
 
 }
 )
