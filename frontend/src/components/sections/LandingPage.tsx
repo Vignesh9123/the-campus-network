@@ -8,7 +8,6 @@ const LandingPage = () => {
   const { scrollYProgress } = useScroll();
   const [navVisible, setNavVisible] = useState(false)
   scrollYProgress.on("change",(e) => {
-    console.log(e);
     if (e > 0.2) {
       setNavVisible(true)
     } else {
@@ -29,7 +28,7 @@ const LandingPage = () => {
       <HeroCarousel/>
       <div className='w-[98vw] h-[1px] bg-gray-800' /> 
      <motion.div initial={navVisible?{opacity:1}:{opacity:0}} animate={navVisible?{opacity:1}:{opacity:0}} transition={{duration:0.5}}>
-      <NavBar className={navVisible ? "visible fixed top-0 m-0 w-screen bg-white dark:bg-black  mr-10 px-10 py-5" : "hidden"}/>
+      <NavBar className={navVisible ? "visible fixed top-0 m-0 w-screen p-3" : "hidden"}/>
       <div className='w-[98vw] h-[1px] bg-gray-800' />
       </motion.div>
       <div className='h-[90vh]' ref={ref}>

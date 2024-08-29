@@ -1,12 +1,26 @@
 import React from 'react'
 import LoginButton from '../modules/LoginButton'
+import AccountDropdown from '../modules/AccountDropdown'
 import SearchBar from '../modules/SearchBar'
 import { Menu } from 'lucide-react'
 import { ModeToggle } from '../mode-toggle'
+import { Link } from 'react-router-dom'
+import { useAuth } from '@/context/AuthContext'
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { CircleUser } from 'lucide-react'
+import { Button } from '../ui/button'
 const NavBar = ({className}:any) => {
+  const {user, logout} = useAuth()
   return (
-    <div className={'flex items-center ' + className}>
+    <div className={'flex items-center  bg-white dark:bg-black px-5 py-5 ' + className || ''}>
       <div className='title cursor-pointer text-black font-bold text-2xl md:text-xl xl:text-2xl dark:text-white'>Campus Chronicles</div>
       <div className='menus hidden lg:block lg:ml-10'>
         <ul className='flex gap-10 text-black dark:text-white'>
@@ -18,9 +32,14 @@ const NavBar = ({className}:any) => {
         </ul>
 
       </div>
-    <div className='hidden lg:block mx-10'>
+
+    {user?<div className='mx-5'>
+     
+    </div>:<div className='hidden lg:block mx-10'>
+      <Link to={'/login'} >
       <LoginButton />
-    </div>
+      </Link>
+    </div>}
     <div className='hidden md:block md:ml-28 lg:ml-10'>
       <SearchBar />
     </div>
@@ -30,7 +49,10 @@ const NavBar = ({className}:any) => {
     <div className='ml-2 hidden lg:block'>
       <ModeToggle />
     </div>
-
+      {user&&<div className='mx-5 flex items-center'>
+        <AccountDropdown />
+      
+    </div>}
     </div>
   )
 }

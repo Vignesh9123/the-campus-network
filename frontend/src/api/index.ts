@@ -17,8 +17,8 @@ apiClient.interceptors.request.use(
       return Promise.reject(error);
     }
 );
-const loginUser = (data: { username: string; password: string }) => {
-    return apiClient.post("/users/login", data);
+const loginUser = (data: {email:string|null, username: string|null; password: string }) => {
+    return apiClient.post("/users/loginuser", data);
 };
 const registerUser = (data: {
     email: string;
@@ -30,4 +30,7 @@ const registerUser = (data: {
 const logoutUser = () => {
     return apiClient.post("/users/logout");
 };
-export { loginUser, registerUser, logoutUser };
+const getCurrentUser = () =>{
+  return apiClient.get('/users/current-user')
+}
+export { loginUser, registerUser, logoutUser , getCurrentUser};

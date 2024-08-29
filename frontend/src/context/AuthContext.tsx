@@ -1,9 +1,9 @@
 import React, {useState, useEffect, useContext, createContext} from "react";
 import {useNavigate} from 'react-router-dom'
 import { requestHandler } from "@/utils";
-import { loginUser, registerUser, logoutUser } from "@/api";
+import { loginUser, registerUser, logoutUser,getCurrentUser } from "@/api";
 import Loader from "@/components/Loader";
-interface UserInterface {
+export interface UserInterface {
     _id: string;
     profilePicture: string;
     username: string;
@@ -15,35 +15,38 @@ interface UserInterface {
 const AuthContext = createContext<{
     user:UserInterface | null;
     token: string | null;
-    login:(data:{username:string;password:string })=>Promise<void>;
+    login:(data:{email:string|null,username:string|null;password:string })=>Promise<void>;
     register:(data:{username:string;email:string;password:string })=>Promise<void>;
     logout:()=>Promise<void>;
+    getGoogleSignedInUser:({accessToken}:any)=>Promise<void>
 }>({
     user:null,
     token:null,
     login:async()=>{},
     register:async()=>{},
     logout:async()=>{},
+    getGoogleSignedInUser:async()=>{}
 });
 
 const useAuth = () => useContext(AuthContext);
-const navigate = useNavigate();
 
 const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
     const [isLoading, setIsLoading] = useState(false);
     const [user, setUser] = useState<UserInterface | null>(null);
     const [token, setToken] = useState<string | null>(null);
-
-    const login = async (data:{username:string;password:string }) => {
+    
+    const navigate = useNavigate();
+    const login = async (data:{email:string|null,username:string|null;password:string }) => {
         await requestHandler(
             async () => await loginUser(data),
             setIsLoading,
             (res) => {
+                console.log(res);
                 setUser(res.data.user);
-                setToken(res.data.token);
+                setToken(res.data.accessToken);
                 localStorage.setItem("user", JSON.stringify(res.data.user));
-                localStorage.setItem("token", res.data.token);
-                navigate("/profile");
+                localStorage.setItem("token", res.data.accessToken);
+                navigate("/");
             },
             alert
         );
@@ -73,19 +76,35 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
             alert
         );
     }
+
+    const getGoogleSignedInUser = async({accessToken}:any)=>{
+        await requestHandler(
+            async()=>await getCurrentUser(),
+            setIsLoading,
+            (res)=>{
+                console.log(res);
+                setUser(res.data);
+                setToken(accessToken);
+                localStorage.setItem("user", JSON.stringify(res.data));
+                localStorage.setItem("token", accessToken);
+            },
+            alert
+        )
+    }
+   
      // Check for saved user and token in local storage during component initialization
   useEffect(() => {
     setIsLoading(true);
     const _token = localStorage.getItem("token");
     const _user:any = localStorage.getItem("user");
-    if (_token && _user?._id) {
-      setUser(_user);
+    if (_token && _user) {
+    setUser(JSON.parse(_user));
       setToken(_token);
     }
     setIsLoading(false);
   }, []);
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, token }}>
+    <AuthContext.Provider value={{ user, login, register, logout, token, getGoogleSignedInUser}}>
       {isLoading ? <Loader /> : children} {/* Display a loader while loading */}
     </AuthContext.Provider>
   );
