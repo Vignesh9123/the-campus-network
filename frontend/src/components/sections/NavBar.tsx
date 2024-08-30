@@ -21,14 +21,14 @@ const NavBar = ({className}:any) => {
   const {user, logout} = useAuth()
   return (
     <div className={'flex items-center  bg-white dark:bg-black px-5 py-5 ' + className || ''}>
-      <div className='title cursor-pointer text-black font-bold text-2xl md:text-xl xl:text-2xl dark:text-white'>Campus Chronicles</div>
+      <Link to='/' className='title cursor-pointer text-black font-bold text-2xl md:text-xl xl:text-2xl dark:text-white'>Campus Chronicles</Link>
       <div className='menus hidden lg:block lg:ml-10'>
         <ul className='flex gap-10 text-black dark:text-white'>
-          <li className='cursor-pointer hover:underline'>Home</li>
-          <li className='cursor-pointer hover:underline'>Groups</li>
-          <li className='cursor-pointer hover:underline'>Posts</li>
-          <li className='cursor-pointer hover:underline'>About</li>
-          <li className='cursor-pointer hover:underline'>Contact</li>
+          <Link to='/' className='cursor-pointer hover:underline'>Home</Link>
+          <Link to='/' className='cursor-pointer hover:underline'>Groups</Link>
+          <Link to='/' className='cursor-pointer hover:underline'>Posts</Link>
+          <Link to='/' className='cursor-pointer hover:underline'>About</Link>
+          <Link to='/' className='cursor-pointer hover:underline'>Contact</Link>
         </ul>
 
       </div>

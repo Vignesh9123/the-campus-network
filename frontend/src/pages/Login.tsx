@@ -1,28 +1,27 @@
 import { useAuth } from '@/context/AuthContext';
 import NavBar from '@/components/sections/NavBar';
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { cn } from "@/lib/utils";
 import { FcGoogle } from "react-icons/fc";
 import { Link } from 'react-router-dom';
-
-
-export default function SignupFormDemo() {
+export default function LoginForm() {
   const { login, logout, user,  } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-
+  
   const handleLogin = async () => {
     try {
       if(username.includes('@')){
           await login({ email: username,username:null, password });
-      }
-      else{
-
-        await login({email:null, username, password });
-      }
+        }
+        else{
+          
+          await login({email:null, username, password });
+          
+        }
       setError(''); // Reset any previous errors
     } catch (err) {
       setError('Login failed. Please check your credentials.');
@@ -63,17 +62,13 @@ export default function SignupFormDemo() {
 
         
       </form>
-          <form action="http://localhost:8000/api/v1/users/login/google" method="get">
+          <form action={`${import.meta.env.VITE_SERVER_URI}/users/login/google`} method="get">
           <button
-            className=" relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
-            onClick={()=>{
-              window.location.href = `${import.meta.env.VITE_SERVER_URI}/users/login/google`;
-            }}
-          >
+            className=" relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]">
             
             <FcGoogle className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
             <span className="text-neutral-700 dark:text-neutral-300 text-sm">
-              Google
+             Sign in with Google
             </span>
             <BottomGradient />
           </button>
