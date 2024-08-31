@@ -33,4 +33,7 @@ const logoutUser = () => {
 const getCurrentUser = () =>{
   return apiClient.get('/users/current-user')
 }
-export { loginUser, registerUser, logoutUser , getCurrentUser};
+const checkUsernameUnique = (username:string)=>{
+  return apiClient.get(`/users/check-username?username=${username}`)
+}
+export { loginUser, registerUser, logoutUser , getCurrentUser, checkUsernameUnique};

@@ -1,5 +1,5 @@
 "use client";
-import React,{useState} from "react";
+import React,{useEffect, useState} from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -8,6 +8,7 @@ import NavBar from "@/components/sections/NavBar";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import {FaEye, FaEyeSlash} from "react-icons/fa";
+import { checkUsernameUnique } from "@/api";
 
 export default function RegisterForm() {
     const { register } = useAuth();
@@ -16,11 +17,33 @@ export default function RegisterForm() {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const [isUnique, setIsUnique] = useState(true);
+    const [error, setError] = useState('')
     const togglePasswordVisibility = () => {
       setShowPassword(!showPassword);
-    
     };
-
+    const checkUsername = async () => {
+      if (username.length < 6) {
+        setIsUnique(false);
+        setError('Username must be at least 6 characters long');
+      } else {
+        const usernameRegex = /^[a-zA-Z_][a-zA-Z0-9_@]*$/;
+        if(!usernameRegex.test(username)){
+          setError('Username can only contain alphanumeric characters, underscores and @, and should start with an alphabet');
+        }
+        else{
+        try {
+          const response = await checkUsernameUnique(username);
+          const data = response.data.data
+          setIsUnique(data.isUnique);
+          setError('');
+        } catch (error) {
+          setIsUnique(false);
+          setError('')
+        }
+      }
+      }
+    };
     
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -28,12 +51,19 @@ export default function RegisterForm() {
       alert("Passwords do not match");
       return;
     }
-    if(username && email && password){
+    if(username && email && password && isUnique){
         register({username, email, password});
     }
 
     
   };
+  useEffect(() => {
+    
+      checkUsername();
+    
+  
+    // Cleanup the timeout if username changes within debounce delay
+  }, [username]);
   return (
     <>
     <NavBar className='mb-5'/>
@@ -44,31 +74,47 @@ export default function RegisterForm() {
       <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
         Have an account already? <Link to='/login' className="underline">Login Here</Link>
       </p>
-
+      <form
+            action={`${import.meta.env.VITE_SERVER_URI}/users/login/google`}
+            method="get"
+            >
+            <button className="mt-5 relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]">
+              <FcGoogle className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
+              <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+                Sign up with Google
+              </span>
+              <BottomGradient />
+            </button>
+          </form>
       <form className="my-8" onSubmit={handleSubmit}>
         
         <LabelInputContainer className="mb-4">
-          <Label htmlFor="username">Username</Label>
-          <Input value={username} onChange={(e) => setUsername(e.target.value)} id="username" placeholder="Unique Username" type="text" />
+          <Label htmlFor="username">Username <p className="inline text-red-500 text-sm">*</p></Label>
+          <Input value={username} onChange={(e)=>{
+            setUsername(e.target.value);
+          }} id="username" placeholder="Unique_Username" required={true} type="text" />
+          {(!isUnique || !!error)? <p className="text-red-500 text-sm">{error || "Username already taken"}</p>:
+          <p className="text-green-500 text-sm">Username available</p>}
         </LabelInputContainer>
         <LabelInputContainer className="mb-4">
-          <Label htmlFor="email">Email Address</Label>
-          <Input value={email} onChange={(e) => setEmail(e.target.value)} id="email" placeholder="projectmayhem@fc.com" type="email" />
+          <Label htmlFor="email">Email Address <p className="inline text-red-500 text-sm">*</p></Label>
+          <Input value={email} onChange={(e) => setEmail(e.target.value)} id="email" placeholder="projectmayhem@fc.com" required={true} type="email" />
         </LabelInputContainer>
         <LabelInputContainer className="mb-4 relative">
-          <Label htmlFor="password">Password</Label>
-          <Input value={password} onChange={(e) => setPassword(e.target.value)} id="password" placeholder="••••••••" type={showPassword ? "text" : "password"} />
+          <Label htmlFor="password">Password <p className="inline text-red-500 text-sm">*</p></Label>
+          <Input value={password} required={true} onChange={(e) => setPassword(e.target.value)} id="password" placeholder="••••••••" type={showPassword ? "text" : "password"} />
           <button type="button" onClick={togglePasswordVisibility} className="absolute right-3 top-7 text-white">
-            {showPassword ? <FaEyeSlash /> : <FaEye />}
+            {showPassword ? <FaEyeSlash className="text-black dark:text-white top-2"/> : <FaEye className="text-black dark:text-white top-2"/>}
           </button>
         </LabelInputContainer>
         <LabelInputContainer className="mb-4">
-          <Label htmlFor="confirmPassword">Confirm Password</Label>
-          <Input value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} id="confirmPassword" placeholder="••••••••" type="password" />
+          <Label htmlFor="confirmPassword">Confirm Password <p className="inline text-red-500 text-sm">*</p></Label>
+          <Input  required={true} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} id="confirmPassword" placeholder="••••••••" type="password" />
         </LabelInputContainer>
 
         <button
-          className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
+          className={`bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset] ${(isUnique && !error)?"":"opacity-75 cursor-not-allowed"}`}
+          disabled={(!isUnique || !!error)}
           type="submit"
         >
           Sign up &rarr;
@@ -78,20 +124,9 @@ export default function RegisterForm() {
         <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
 
         <div className="flex flex-col space-y-4">
-          <form
-            action={`${import.meta.env.VITE_SERVER_URI}/users/login/google`}
-            method="get"
-            >
-            <button className=" relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]">
-              <FcGoogle className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
-              <span className="text-neutral-700 dark:text-neutral-300 text-sm">
-                Sign up with Google
-              </span>
-              <BottomGradient />
-            </button>
-          </form>
         </div>
       </form>
+         
     </div>
               </>
   );

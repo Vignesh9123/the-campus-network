@@ -36,9 +36,8 @@ const NavBar = ({className}:any) => {
     {user?<div className='mx-5'>
      
     </div>:<div className='hidden lg:block mx-10'>
-      <Link to={'/login'} >
+   
       <LoginButton />
-      </Link>
     </div>}
     <div className='hidden md:block md:ml-28 lg:ml-10'>
       <SearchBar />
