@@ -511,7 +511,6 @@ const searchUsers = asyncHandler(async(req, res)=>{
 
 const handleSocialLogin = asyncHandler(async(req, res)=>{
  const user = await User.findById(req.user?._id);
- console.log("user:", user);
  if(!user){
   throw new ApiError(404, "User not found");
  }
@@ -529,5 +528,14 @@ const handleSocialLogin = asyncHandler(async(req, res)=>{
 }
 )
 
+const isUsernameUnique = asyncHandler(async(req,res)=>{
+  const {username} = req.query
+  const user = await User.findOne({username});
+  if(user){
+    return res.status(200).json(new ApiResponse(200, {isUnique: false}, "Username already exists"))
+  }
+  res.status(200).json(new ApiResponse(200, {isUnique:true}, "Username is unique"));
+})
 
-export { registerUser, loginUser, logoutUser, refreshAccessToken, changeCurrentPassword, getCurrentUser, updateAccountDetails, updateProfilePicture, getUserProfile, addPersonalDetails , followOrUnfollowUser, forgotPassword, resetPassword, searchUsers, sendVerificationEmail, verifyEmail, resendVerificationEmail, getUserFeed, getUserFollowers, getUserFollowing, handleSocialLogin};
+
+export { registerUser, loginUser, logoutUser, refreshAccessToken, changeCurrentPassword, getCurrentUser, updateAccountDetails, updateProfilePicture, getUserProfile, addPersonalDetails , followOrUnfollowUser, forgotPassword, resetPassword, searchUsers, sendVerificationEmail, verifyEmail, resendVerificationEmail, getUserFeed, getUserFollowers, getUserFollowing, handleSocialLogin, isUsernameUnique};
