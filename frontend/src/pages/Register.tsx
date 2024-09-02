@@ -23,12 +23,12 @@ export default function RegisterForm() {
       setShowPassword(!showPassword);
     };
     const checkUsername = async () => {
-      if (username.length < 6) {
+      if (username.length>0&&username.length < 6) {
         setIsUnique(false);
         setError('Username must be at least 6 characters long');
       } else {
         const usernameRegex = /^[a-zA-Z_][a-zA-Z0-9_@]*$/;
-        if(!usernameRegex.test(username)){
+        if(username.length>0&&!usernameRegex.test(username)){
           setError('Username can only contain alphanumeric characters, underscores and @, and should start with an alphabet');
         }
         else{
@@ -94,7 +94,7 @@ export default function RegisterForm() {
             setUsername(e.target.value);
           }} id="username" placeholder="Unique_Username" required={true} type="text" />
           {(!isUnique || !!error)? <p className="text-red-500 text-sm">{error || "Username already taken"}</p>:
-          <p className="text-green-500 text-sm">Username available</p>}
+          <p className="text-green-500 text-sm">{username.length>0?"Username is available":""}</p>}
         </LabelInputContainer>
         <LabelInputContainer className="mb-4">
           <Label htmlFor="email">Email Address <p className="inline text-red-500 text-sm">*</p></Label>
