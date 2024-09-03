@@ -4,7 +4,7 @@ import Login from './pages/Login'
 import SetLogin from './pages/SetLogin'
 import {Route, Routes, Navigate} from 'react-router-dom'
 import RegisterForm from './pages/Register'
-
+import Profile from './pages/Profile'
 
 function App() {
   return (
@@ -14,6 +14,7 @@ function App() {
         <Route path='/login' element={<Login/>}/>
         <Route path='/setLogin' element={<SetLogin/>}/>
         <Route path='/register' element={<RegisterForm/>}/>
+        <Route path='/profile' element={<Profile/>}/>
       </Routes>
       
     </div>

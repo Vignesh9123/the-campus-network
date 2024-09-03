@@ -7,7 +7,7 @@ import { AuthProvider } from './context/AuthContext.tsx'
 import { BrowserRouter } from 'react-router-dom'
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
+
     <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
         <BrowserRouter>
       <AuthProvider>
@@ -15,5 +15,5 @@ createRoot(document.getElementById('root')!).render(
       </AuthProvider>
         </BrowserRouter>
     </ThemeProvider>
-  </StrictMode>
+ 
 )

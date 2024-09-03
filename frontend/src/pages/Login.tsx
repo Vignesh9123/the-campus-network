@@ -4,6 +4,7 @@ import React, {useEffect, useState} from "react";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { cn } from "@/lib/utils";
+import { useNavigate } from 'react-router-dom';
 import { FcGoogle } from "react-icons/fc";
 import { Link } from 'react-router-dom';
 export default function LoginForm() {
@@ -11,7 +12,17 @@ export default function LoginForm() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  
+  const navigate = useNavigate();
+  useEffect(
+    ()=>{
+      if(user){
+        navigate('/profile');
+      }
+      document.title = "Campus Chronicles - Login"
+
+    }
+    
+    ,[])
   const handleLogin = async () => {
     try {
       if(username.includes('@')){

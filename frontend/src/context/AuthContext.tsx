@@ -10,6 +10,8 @@ export interface UserInterface {
     email: string;
     createdAt: string;
     updatedAt: string;
+    followers: string[];
+    following: string[];
   }
   
 const AuthContext = createContext<{
@@ -46,7 +48,7 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
                 setToken(res.data.accessToken);
                 localStorage.setItem("user", JSON.stringify(res.data.user));
                 localStorage.setItem("token", res.data.accessToken);
-                navigate("/");
+                navigate("/profile");
             },
             alert
         );
