@@ -20,12 +20,12 @@ apiClient.interceptors.request.use(
 const loginUser = (data: {email:string|null, username: string|null; password: string }) => {
     return apiClient.post("/users/loginuser", data);
 };
-const registerUser = (data: {
-    email: string;
-    password: string;
-    username: string;
-  }) => {
-    return apiClient.post("/users/register", data);
+const registerUser = (data:FormData) => {
+    return apiClient.post("/users/register", data,{
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
 };
 const logoutUser = () => {
     return apiClient.post("/users/logout");

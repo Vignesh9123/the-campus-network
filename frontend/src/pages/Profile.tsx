@@ -56,7 +56,7 @@ const Profile = () => {
                       setShowPreview(false);
                     }}
                     src={user.profilePicture}
-                    className=" mx-auto rounded-full border-[7px] border-muted hover:opacity-25  cursor-pointer"
+                    className=" mx-auto rounded-full border-[7px] w-44 h-44  border-muted hover:opacity-25 cursor-pointer"
                     alt=""
                   />
                   <ExternalLink

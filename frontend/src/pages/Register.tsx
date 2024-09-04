@@ -15,10 +15,12 @@ export default function RegisterForm() {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [profilePicture, setProfilePicture] = useState<File | null | undefined>(null);
     const [confirmPassword, setConfirmPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [isUnique, setIsUnique] = useState(true);
     const [error, setError] = useState('')
+
     const togglePasswordVisibility = () => {
       setShowPassword(!showPassword);
     };
@@ -51,8 +53,15 @@ export default function RegisterForm() {
       alert("Passwords do not match");
       return;
     }
+    const formData = new FormData()
+    formData.append('username', username)
+    formData.append('email', email)
+    formData.append('password', password)
+    if(profilePicture){
+      formData.append('profilePicture', profilePicture)
+    }
     if(username && email && password && isUnique){
-        register({username, email, password});
+        register(formData);
     }
 
     
@@ -64,6 +73,9 @@ export default function RegisterForm() {
   
     // Cleanup the timeout if username changes within debounce delay
   }, [username]);
+  useEffect(()=>{
+    document.title = 'Campus Chronicles - Register'
+  },[])
   return (
     <>
     <NavBar className='mb-5'/>
@@ -100,6 +112,11 @@ export default function RegisterForm() {
           <Label htmlFor="email">Email Address <p className="inline text-red-500 text-sm">*</p></Label>
           <Input value={email} onChange={(e) => setEmail(e.target.value)} id="email" placeholder="projectmayhem@fc.com" required={true} type="email" />
         </LabelInputContainer>
+        <LabelInputContainer className="mb-4">
+          <Label htmlFor="profilePicture">Profile Picture</Label>
+          <Input id="profilePicture" onChange={(e) => setProfilePicture(e.target.files?.[0])} type="file"/>
+        </LabelInputContainer>
+       
         <LabelInputContainer className="mb-4 relative">
           <Label htmlFor="password">Password <p className="inline text-red-500 text-sm">*</p></Label>
           <Input value={password} required={true} onChange={(e) => setPassword(e.target.value)} id="password" placeholder="••••••••" type={showPassword ? "text" : "password"} />

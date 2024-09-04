@@ -18,7 +18,7 @@ const AuthContext = createContext<{
     user:UserInterface | null;
     token: string | null;
     login:(data:{email:string|null,username:string|null;password:string })=>Promise<void>;
-    register:(data:{username:string;email:string;password:string })=>Promise<void>;
+    register:(data:FormData)=>Promise<void>;
     logout:()=>Promise<void>;
     getGoogleSignedInUser:({accessToken}:any)=>Promise<void>
 }>({
@@ -53,7 +53,7 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
             alert
         );
     }
-    const register = async (data:{username:string;email:string;password:string }) => {
+    const register = async (data:FormData) => {
         await requestHandler(
             async () => await registerUser(data),
             setIsLoading,
