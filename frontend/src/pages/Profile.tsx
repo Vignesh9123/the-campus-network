@@ -1,7 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import ProfileSideBar from "@/components/sections/ProfileSideBar";
-import { Globe, ThumbsUpIcon, EllipsisVertical, Repeat2,MessageSquare,ExternalLink} from "lucide-react";
+import {
+  Globe,
+  ThumbsUpIcon,
+  EllipsisVertical,
+  Repeat2,
+  MessageSquare,
+  ExternalLink,
+} from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -9,53 +16,64 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
+import FollowButton from "@/components/modules/FollowButton";
 const Profile = () => {
   const { user } = useAuth();
-  const pathname = window.location.pathname
-  const [showPreview, setShowPreview] = useState(false)
-  
+  const pathname = window.location.pathname;
+  const [showPreview, setShowPreview] = useState(false);
+
   return (
     <div>
       {user && (
         <div className="flex">
-          <div className="w-1/3 border-0 border-r-[1px] h-screen">
+          <div className="w-[15%] md:w-1/3 border-0 border-r-[1px] h-screen">
             <ProfileSideBar />
           </div>
-          <div className="w-2/3 overflow-y-scroll scrollbar-hide h-screen">
-            
-            <div className="flex">       
-            <div className={`w-1/2 py-5 text-center cursor-pointer ${pathname=='/profile'?"font-bold text-lg text- bg-muted border-0 border-b-4 border-blue-500":"hover:bg-slate-900 duration-200"}`}>Profile</div>
-            <div className="py-5 w-1/2 text-center cursor-pointer hover:bg-slate-900 duration-200">Edit Profile</div>      
+          <div className="md:w-2/3 overflow-y-scroll scrollbar-hide border-0 border-r-[1px] h-screen">
+            <div className="flex">
+              <div
+                className={`w-1/2 py-5 text-center cursor-pointer ${
+                  pathname == "/profile"
+                    ? "font-bold text-lg text- bg-muted border-0 border-b-4 border-blue-500"
+                    : "hover:bg-slate-900 duration-200"
+                }`}
+              >
+                Profile
+              </div>
+              <div className="py-5 w-1/2 text-center cursor-pointer hover:bg-slate-900 duration-200">
+                Edit Profile
+              </div>
             </div>
             <Dialog>
-
-            <div className="m-3 mx-auto w-44 rounded-full h-44">
-              <DialogTrigger>
-
-                <img
-                onMouseEnter={()=>{
-                  setShowPreview(true)
-                  
-                }}
-                onMouseLeave={()=>{
-                  setShowPreview(false)
-                }}
-                src={user.profilePicture}
-                className=" mx-auto rounded-full border-[7px] border-muted hover:opacity-25  cursor-pointer"
-                alt=""
-                />
-                <ExternalLink className={`w-10 cursor-pointer absolute top-[40%] hover:opacity-100 left-[40%] h-10 ${showPreview?"opacity-100":"opacity-0"}`}/>
+              <div className="m-3 mx-auto w-44 rounded-full h-44">
+                <DialogTrigger>
+                  <img
+                    onMouseEnter={() => {
+                      setShowPreview(true);
+                    }}
+                    onMouseLeave={() => {
+                      setShowPreview(false);
+                    }}
+                    src={user.profilePicture}
+                    className=" mx-auto rounded-full border-[7px] border-muted hover:opacity-25  cursor-pointer"
+                    alt=""
+                  />
+                  <ExternalLink
+                    className={`w-10 cursor-pointer absolute top-[40%] hover:opacity-100 left-[40%] h-10 ${
+                      showPreview ? "opacity-100" : "opacity-0"
+                    }`}
+                  />
                 </DialogTrigger>
                 <DialogContent className="bg-transparent border-0">
-                <img
-                src={user.profilePicture}
-                className="w-full h-full"
-                alt=""
-                />
+                  <img
+                    src={user.profilePicture}
+                    className="w-full h-full"
+                    alt=""
+                  />
                 </DialogContent>
               </div>
-                </Dialog>
+            </Dialog>
             <div className="text-center font-bold text-lg">{user.username}</div>
             <div className="flex justify-around">
               <div className="hover:underline cursor-pointer">0 Followers</div>
@@ -68,7 +86,7 @@ const Profile = () => {
               dolores excepturi.
             </div>
             <div className="w-full h-[2px] bg-muted"></div>
-            <div className="grid grid-cols-2 m-3 mx-5 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 m-3 mx-5 gap-3">
               <div className="flex items-center gap-2">
                 <div className="font-bold">College: </div>
                 <div className="text-sm">
@@ -91,7 +109,7 @@ const Profile = () => {
             <div className="w-full h-[2px] bg-muted mt-5"></div>
             <div className="posts">
               <div className="text-center font-bold text-lg mt-3">Posts</div>
-              
+
               <div className="postcard m-10 mt-3">
                 <div className="flex header items-center gap-2">
                   <div className="flex gap-2 items-center">
@@ -174,7 +192,25 @@ const Profile = () => {
                 </div>
                 <div className="w-3/4 h-[2px] mx-auto m-4 bg-muted"></div>
                 <div className="text-sm p-2">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique optio dolorum modi incidunt nobis rerum vero, mollitia nesciunt necessitatibus fugiat distinctio numquam, voluptatum veniam eius, quaerat doloremque aut! Laborum suscipit aspernatur libero possimus aliquid eum id nihil explicabo, tenetur harum, mollitia sapiente laudantium placeat quo? Vitae pariatur, error quibusdam officia ratione rerum quae illo repellendus praesentium hic? Illum esse tempore dolor nesciunt odit. Odit qui eveniet sequi. Quam ducimus reiciendis quisquam nostrum tempora itaque, quidem, illo voluptatem impedit iusto temporibus saepe inventore excepturi accusamus optio, est quod? Possimus praesentium laborum sed porro, similique consequuntur nulla dolore voluptatum sit illo debitis beatae eum ducimus pemolestiae. Officia modi beatae repellendus nihil perspiciatis vero dicta, explicabo corrupti? Et, in eligendi aperiam beatae praesentium a, ab fuga veritatis error optio odit aspernatur debitis? Labore vero impedit odio sed minima officiis perspiciatis itaque aliquam, ullam vitae deleniti ducimus!
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Similique optio dolorum modi incidunt nobis rerum vero,
+                  mollitia nesciunt necessitatibus fugiat distinctio numquam,
+                  voluptatum veniam eius, quaerat doloremque aut! Laborum
+                  suscipit aspernatur libero possimus aliquid eum id nihil
+                  explicabo, tenetur harum, mollitia sapiente laudantium placeat
+                  quo? Vitae pariatur, error quibusdam officia ratione rerum
+                  quae illo repellendus praesentium hic? Illum esse tempore
+                  dolor nesciunt odit. Odit qui eveniet sequi. Quam ducimus
+                  reiciendis quisquam nostrum tempora itaque, quidem, illo
+                  voluptatem impedit iusto temporibus saepe inventore excepturi
+                  accusamus optio, est quod? Possimus praesentium laborum sed
+                  porro, similique consequuntur nulla dolore voluptatum sit illo
+                  debitis beatae eum ducimus pemolestiae. Officia modi beatae
+                  repellendus nihil perspiciatis vero dicta, explicabo corrupti?
+                  Et, in eligendi aperiam beatae praesentium a, ab fuga
+                  veritatis error optio odit aspernatur debitis? Labore vero
+                  impedit odio sed minima officiis perspiciatis itaque aliquam,
+                  ullam vitae deleniti ducimus!
                 </div>
                 <div className="w-full h-[2px] m-2 bg-muted"></div>
                 <div className="flex items-center justify-around gap-2 m-3">
@@ -253,7 +289,82 @@ const Profile = () => {
               </div>
             </div>
           </div>
-          <div className="hidden md:block w-1/3 bg-muted-foreground h-screen"></div>
+          <div className="hidden lg:block w-1/3 h-screen">
+            <div className="text-xl font-semibold m-5 ml-2">Accounts to follow</div>
+
+            <div className="relative flex border-y-[1px] flex-col h-[40%] overflow-auto">
+            <div className="absolute top-0 left-0 right-0 h-[60px] bg-gradient-to-b from-slate-800 to-transparent"></div>
+              <div className="accountCard flex items-center justify-between gap-1 p-3 h-14 w-[95%] mx-auto border-y-2">
+                <div className="flex items-center gap-1">
+                    <div>
+                      <img src={user.profilePicture} className="w-10 h-10 rounded-full " alt="" />
+                    </div>
+                    <div className="font-semibold">
+                      Vignesh
+                    </div>
+                </div>
+                    <FollowButton className="h-3/4"/>
+              </div>
+              <div className="accountCard flex items-center justify-between gap-1 p-3 h-14 w-[95%] mx-auto border-y-2">
+                <div className="flex items-center gap-1">
+                    <div>
+                      <img src={user.profilePicture} className="w-10 h-10 rounded-full " alt="" />
+                    </div>
+                    <div className="font-semibold">
+                      Vignesh
+                    </div>
+                </div>
+                    <FollowButton className="h-3/4"/>
+              </div>
+              <div className="accountCard flex items-center justify-between gap-1 p-3 h-14 w-[95%] mx-auto border-y-2">
+                <div className="flex items-center gap-1">
+                    <div>
+                      <img src={user.profilePicture} className="w-10 h-10 rounded-full " alt="" />
+                    </div>
+                    <div className="font-semibold">
+                      Vignesh
+                    </div>
+                </div>
+                    <FollowButton className="h-3/4"/>
+              </div>
+              <div className="accountCard flex items-center justify-between gap-1 p-3 h-14 w-[95%] mx-auto border-y-2">
+                <div className="flex items-center gap-1">
+                    <div>
+                      <img src={user.profilePicture} className="w-10 h-10 rounded-full " alt="" />
+                    </div>
+                    <div className="font-semibold">
+                      Vignesh
+                    </div>
+                </div>
+                    <FollowButton className="h-3/4"/>
+              </div>
+              <div className="accountCard flex items-center justify-between gap-1 p-3 h-14 w-[95%] mx-auto border-y-2">
+                <div className="flex items-center gap-1">
+                    <div>
+                      <img src={user.profilePicture} className="w-10 h-10 rounded-full " alt="" />
+                    </div>
+                    <div className="font-semibold">
+                      Vignesh
+                    </div>
+                </div>
+                    <FollowButton className="h-3/4"/>
+              </div>
+              <div className="accountCard flex items-center justify-between gap-1 p-3 h-14 w-[95%] mx-auto border-y-2">
+                <div className="flex items-center gap-1">
+                    <div>
+                      <img src={user.profilePicture} className="w-10 h-10 rounded-full " alt="" />
+                    </div>
+                    <div className="font-semibold">
+                      Vignesh
+                    </div>
+                </div>
+                    <FollowButton className="h-3/4"/>
+              </div>
+              
+
+              
+            </div>
+          </div>
         </div>
       )}
     </div>
@@ -267,7 +378,7 @@ const Profile = () => {
 //       hidden:{opacity:0},
 //       visible:{opacity:1}
 //     }}
-//     initial="hidden" 
+//     initial="hidden"
 //     animate={controls}
 //       className="sticky flex flex-col top-0 w-full bg-white/30  backdrop-blur-3xl"
 //     >
@@ -278,4 +389,3 @@ const Profile = () => {
 // }
 
 export default Profile;
-
