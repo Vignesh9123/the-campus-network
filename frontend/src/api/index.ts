@@ -36,4 +36,8 @@ const getCurrentUser = () =>{
 const checkUsernameUnique = (username:string)=>{
   return apiClient.get(`/users/check-username?username=${username}`)
 }
-export { loginUser, registerUser, logoutUser , getCurrentUser, checkUsernameUnique};
+
+const createPost = (data:{title:string;content:string;isPublic:boolean;tags:string[];onlyFollowers:boolean}) =>{
+  return apiClient.post('/posts/create',data)
+}
+export { loginUser, registerUser, logoutUser , getCurrentUser, checkUsernameUnique, createPost};

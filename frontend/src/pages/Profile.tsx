@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import ProfileSideBar from "@/components/sections/ProfileSideBar";
+import PostCard from "@/components/modules/Posts/PostCard";
 import {
   Globe,
   ThumbsUpIcon,
@@ -9,6 +10,9 @@ import {
   MessageSquare,
   ExternalLink,
 } from "lucide-react";
+import HappeningPostCard from "@/components/modules/Posts/HappeningPostCard";
+import FloatingActionButton from "@/components/modules/FloatingActionButton";
+
 import {
   Dialog,
   DialogContent,
@@ -18,7 +22,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import Autoplay from "embla-carousel-autoplay"
-import { Card, CardContent } from "@/components/ui/card"
 import {
   Carousel,
   CarouselContent,
@@ -34,7 +37,10 @@ const Profile = () => {
   const { user } = useAuth();
   const pathname = window.location.pathname;
   const [showPreview, setShowPreview] = useState(false);
-
+  const [readMore, setReadMore] = useState(false)
+  useEffect(()=>{
+    document.title = "Campus Chronicles - Profile"
+  },[])
   return (
     <div>
       {user && (
@@ -53,7 +59,7 @@ const Profile = () => {
               >
                 Profile
               </div>
-              <div className="py-5 w-1/2 text-center cursor-pointer hover:bg-slate-900 duration-200">
+              <div className="py-5 w-1/2 text-center cursor-pointer hover:bg-slate-300 dark:hover:bg-slate-900 duration-200">
                 Edit Profile
               </div>
             </div>
@@ -68,7 +74,7 @@ const Profile = () => {
                       setShowPreview(false);
                     }}
                     src={user.profilePicture}
-                    className=" mx-auto rounded-full border-[7px] w-44 h-44  border-muted hover:opacity-25 cursor-pointer"
+                    className=" mx-auto rounded-full border-[7px] w-44 h-44  border-muted hover:opacity-50 dark:hover:opacity-25 cursor-pointer"
                     alt=""
                   />
                   <ExternalLink
@@ -121,191 +127,18 @@ const Profile = () => {
             <div className="w-full h-[2px] bg-muted mt-5"></div>
             <div className="posts">
               <div className="text-center font-bold text-lg mt-3">Posts</div>
+            
+              <PostCard user={user} title={"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Esse ipsum dolor eos non suscipit maxime il."} content={"Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum assumenda minima fugit. Commodi, debitis vero tempora quisquam optio eligendi enim, deserunt rerum, expedita similique vitae pariatur eos! Voluptatem quasi animi eos officia. Amet repellendus mollitia magni sequi provident. Totam, rerum itaque? Possimus officia, cumque sequi ab tempora tenetur quo maxime necessitatibus sint aliquam quibusdam facilis quidem molestiae architecto numquam expedita odio voluptates. Repellat et esse unde vel, sint blanditiis id. Consectetur voluptates molestias quae veritatis dignissimos, tenetur recusandae fuga nesciunt impedit sed, illo culpa qui aspernatur. Perferendis iure eos nulla iste, facere dolorem, velit doloremque mollitia totam veniam obcaecati repellendus minima placeat nesciunt praesentium vero sunt accusamus maiores aperiam. Sapiente distinctio labore voluptas necessitatibus maxime, ipsum quisquam praesentium quos est aliquid placeat illum!"}/>
+              <PostCard user={user} title={"Lorem ipsum dolor sit amet, consectetur adipisicing elit."} content={"lorem djnsjkdgn gnkgnwwn ngnngn gneke q jngkqjngkqkgkqnqq kqkk k"}/>
+              <PostCard user={user} title={"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Esse ipsum dolor eos."} content={"lorem djnsjkdgn gnkgnwwn ngnngn gneke q jngkqjngkqkgkqnqq kqkk k"}/>
 
-              <div className="postcard m-10 mt-3">
-                <div className="flex header items-center gap-2">
-                  <div className="flex gap-2 items-center">
-                    <div>
-                      <img
-                        src={user.profilePicture}
-                        className="w-10 h-10 rounded-full"
-                        alt=""
-                      />
-                    </div>
-                    <div className="flex-col">
-                      <div className="pl-1 font-semibold">three</div>
-                      <div className="text-muted-foreground text-sm flex gap-1 items-center">
-                        <Globe className="w-4 h-4" />
-                        <div> 1d ago</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="ml-auto pr-10">
-                    <EllipsisVertical className="h-8 cursor-pointer hover:bg-muted" />
-                  </div>
-                </div>
-                <div className="w-3/4 h-[2px] mx-auto m-4 bg-muted"></div>
-                <div className="text-sm p-2">
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                  Alias eos sint architecto recusandae! Hic, vero molestiae
-                  voluptates neque nihil dolore, similique praesentium in
-                  repudiandae dolores libero reprehenderit at soluta rem, amet
-                  quis repellendus. Ipsa ullam autem qui, natus provident fugit
-                  totam saepe distinctio ipsam, deserunt unde ipsum sit error
-                  magni, deleniti blanditiis incidunt. Commodi sunt deleniti
-                  libero quisquam eos quos ratione debitis quis, dolores minus
-                  pariatur fugit obcaecati perspiciatis asperiores similique?
-                  Accusantium eius beatae, cumque natus sit at officia
-                  laboriosam nesciunt quisquam possimus veritatis voluptate quis
-                  cupiditate ab maiores repudiandae magni dolor, ut fugit
-                  ratione quo obcaecati. Sunt dolores fuga itaque placeat ullam
-                  error exercitationem dolorum, esse expedita, soluta, animi
-                  rerum! Impedit nam error, natus maiores libero qui. Quaerat
-                  vero voluptatibus debitis ullam?
-                </div>
-                <div className="w-full h-[2px] m-2 bg-muted"></div>
-                <div className="flex items-center justify-around gap-2 m-3">
-                  <div className="flex hover:bg-muted cursor-pointer p-2 items-center gap-3">
-                    <ThumbsUpIcon className="w-5 h-5" />
-                    <div className="text-sm">0</div>
-                  </div>
-                  <div className="flex hover:bg-muted cursor-pointer p-2  items-center gap-3">
-                    <MessageSquare className="w-5 h-5" />
-                    <div className="text-sm">0</div>
-                  </div>
-                  <div className="flex hover:bg-muted cursor-pointer p-2  items-center gap-3">
-                    <Repeat2 className="w-5 h-5" />
-                    <div className="text-sm">0</div>
-                  </div>
-                </div>
-                <div className="w-full h-[2px] bg-muted"></div>
-              </div>
-              <div className="postcard m-10 mt-3">
-                <div className="flex header items-center gap-2">
-                  <div className="flex gap-2 items-center">
-                    <div>
-                      <img
-                        src={user.profilePicture}
-                        className="w-10 h-10 rounded-full"
-                        alt=""
-                      />
-                    </div>
-                    <div className="flex-col">
-                      <div className="pl-1 font-semibold">three</div>
-                      <div className="text-muted-foreground text-sm flex gap-1 items-center">
-                        <Globe className="w-4 h-4" />
-                        <div>1d ago</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="ml-auto pr-10">
-                    <EllipsisVertical className="h-8 cursor-pointer hover:bg-muted" />
-                  </div>
-                </div>
-                <div className="w-3/4 h-[2px] mx-auto m-4 bg-muted"></div>
-                <div className="text-sm p-2">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Similique optio dolorum modi incidunt nobis rerum vero,
-                  mollitia nesciunt necessitatibus fugiat distinctio numquam,
-                  voluptatum veniam eius, quaerat doloremque aut! Laborum
-                  suscipit aspernatur libero possimus aliquid eum id nihil
-                  explicabo, tenetur harum, mollitia sapiente laudantium placeat
-                  quo? Vitae pariatur, error quibusdam officia ratione rerum
-                  quae illo repellendus praesentium hic? Illum esse tempore
-                  dolor nesciunt odit. Odit qui eveniet sequi. Quam ducimus
-                  reiciendis quisquam nostrum tempora itaque, quidem, illo
-                  voluptatem impedit iusto temporibus saepe inventore excepturi
-                  accusamus optio, est quod? Possimus praesentium laborum sed
-                  porro, similique consequuntur nulla dolore voluptatum sit illo
-                  debitis beatae eum ducimus pemolestiae. Officia modi beatae
-                  repellendus nihil perspiciatis vero dicta, explicabo corrupti?
-                  Et, in eligendi aperiam beatae praesentium a, ab fuga
-                  veritatis error optio odit aspernatur debitis? Labore vero
-                  impedit odio sed minima officiis perspiciatis itaque aliquam,
-                  ullam vitae deleniti ducimus!
-                </div>
-                <div className="w-full h-[2px] m-2 bg-muted"></div>
-                <div className="flex items-center justify-around gap-2 m-3">
-                  <div className="flex hover:bg-muted cursor-pointer p-2 items-center gap-3">
-                    <ThumbsUpIcon className="w-5 h-5" />
-                    <div className="text-sm">0</div>
-                  </div>
-                  <div className="flex hover:bg-muted cursor-pointer p-2  items-center gap-3">
-                    <MessageSquare className="w-5 h-5" />
-                    <div className="text-sm">0</div>
-                  </div>
-                  <div className="flex hover:bg-muted cursor-pointer p-2  items-center gap-3">
-                    <Repeat2 className="w-5 h-5" />
-                    <div className="text-sm">0</div>
-                  </div>
-                </div>
-                <div className="w-full h-[2px] bg-muted"></div>
-              </div>
-              <div className="postcard m-10 mt-3">
-                <div className="flex header items-center gap-2">
-                  <div className="flex gap-2 items-center">
-                    <div>
-                      <img
-                        src={user.profilePicture}
-                        className="w-10 h-10 rounded-full"
-                        alt=""
-                      />
-                    </div>
-                    <div className="flex-col">
-                      <div className="pl-1 font-semibold">three</div>
-                      <div className="text-muted-foreground text-sm gap-1 flex items-center">
-                        <Globe className="w-4 h-4" />
-                        <div>1d ago</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="ml-auto pr-10">
-                    <EllipsisVertical className="h-8 cursor-pointer hover:bg-muted" />
-                  </div>
-                </div>
-                <div className="w-3/4 h-[2px] mx-auto m-4 bg-muted"></div>
-                <div className="text-sm p-2">
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                  Alias eos sint architecto recusandae! Hic, vero molestiae
-                  voluptates neque nihil dolore, similique praesentium in
-                  repudiandae dolores libero reprehenderit at soluta rem, amet
-                  quis repellendus. Ipsa ullam autem qui, natus provident fugit
-                  totam saepe distinctio ipsam, deserunt unde ipsum sit error
-                  magni, deleniti blanditiis incidunt. Commodi sunt deleniti
-                  libero quisquam eos quos ratione debitis quis, dolores minus
-                  pariatur fugit obcaecati perspiciatis asperiores similique?
-                  Accusantium eius beatae, cumque natus sit at officia
-                  laboriosam nesciunt quisquam possimus veritatis voluptate quis
-                  cupiditate ab maiores repudiandae magni dolor, ut fugit
-                  ratione quo obcaecati. Sunt dolores fuga itaque placeat ullam
-                  error exercitationem dolorum, esse expedita, soluta, animi
-                  rerum! Impedit nam error, natus maiores libero qui. Quaerat
-                  vero voluptatibus debitis ullam?
-                </div>
-                <div className="w-full h-[2px] m-2 bg-muted"></div>
-                <div className="flex items-center justify-around gap-2 m-3">
-                  <div className="flex hover:bg-muted cursor-pointer p-2 items-center gap-3">
-                    <ThumbsUpIcon className="w-5 h-5" />
-                    <div className="text-sm">0</div>
-                  </div>
-                  <div className="flex hover:bg-muted cursor-pointer p-2  items-center gap-3">
-                    <MessageSquare className="w-5 h-5" />
-                    <div className="text-sm">0</div>
-                  </div>
-                  <div className="flex hover:bg-muted cursor-pointer p-2  items-center gap-3">
-                    <Repeat2 className="w-5 h-5" />
-                    <div className="text-sm">0</div>
-                  </div>
-                </div>
-                <div className="w-full h-[2px] bg-muted"></div>
-              </div>
             </div>
           </div>
           <div className="hidden lg:block w-1/3 h-screen">
             <div className="text-xl font-semibold m-5 ml-2">Accounts to follow</div>
 
             <div className="relative flex border-y-[1px] flex-col h-[30%] overflow-auto">
-            <div className="absolute top-0 left-0 right-0 h-[60px] bg-gradient-to-b from-slate-800 to-transparent"></div>
+            <div className="absolute top-0 left-0 right-0 h-[60px] bg-gradient-to-b from-slate-200 dark:from-slate-800 to-transparent"></div>
               <div className="accountCard flex items-center justify-between gap-1 p-3 h-14 w-[95%] mx-auto border-y-[1px]">
                 <div className="flex items-center gap-1">
                     <div>
@@ -385,209 +218,22 @@ const Profile = () => {
     >
       <CarouselContent>
        <CarouselItem>
-       <div className="postcard max-h-[200px] w-[95%] mx-auto ml-6 overflow-y-auto overflow-x-hidden m-10 mt-3">
-                <div className="flex header items-center gap-2">
-                  <div className="flex gap-2 items-center">
-                    <div>
-                      <img
-                        src={user.profilePicture}
-                        className="w-10 h-10 rounded-full"
-                        alt=""
-                      />
-                    </div>
-                    <div className="flex-col">
-                      <div className="pl-1 font-semibold">three</div>
-                      <div className="text-muted-foreground text-sm gap-1 flex items-center">
-                        <Globe className="w-4 h-4" />
-                        <div>1d ago</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="ml-auto pr-10">
-                    <EllipsisVertical className="h-8 cursor-pointer hover:bg-muted" />
-                  </div>
-                </div>
-                <div className="w-3/4 h-[2px] mx-auto m-4 bg-muted"></div>
-                <div className="text-sm p-2">
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                  Alias eos sint architecto recusandae! Hic, vero molestiae
-                  voluptates neque nihil dolore, similique praesentium in
-                  repudiandae dolores libero reprehenderit at soluta rem, amet
-                  quis repellendus. Ipsa ullam autem qui, natus provident fugit
-                  totam saepe distinctio ipsam, deserunt unde ipsum sit error
-                  magni, deleniti blanditiis incidunt. Commodi sunt deleniti
-                  libero quisquam eos quos ratione debitis quis, dolores minus
-                  pariatur fugit obcaecati perspiciatis asperiores similique?
-                  Accusantium eius beatae, cumque natus sit at officia
-                  laboriosam nesciunt quisquam possimus veritatis voluptate quis
-                  cupiditate ab maiores repudiandae magni dolor, ut fugit
-                  ratione quo obcaecati. Sunt dolores fuga itaque placeat ullam
-                  error exercitationem dolorum, esse expedita, soluta, animi
-                  rerum! Impedit nam error, natus maiores libero qui. Quaerat
-                  vero voluptatibus debitis ullam?
-                </div>
-                <div className="w-full h-[2px] m-2 bg-muted"></div>
-                <div className="flex items-center justify-around gap-2 m-3">
-                  <div className="flex hover:bg-muted cursor-pointer p-2 items-center gap-3">
-                    <ThumbsUpIcon className="w-5 h-5" />
-                    <div className="text-sm">0</div>
-                  </div>
-                  <div className="flex hover:bg-muted cursor-pointer p-2  items-center gap-3">
-                    <MessageSquare className="w-5 h-5" />
-                    <div className="text-sm">0</div>
-                  </div>
-                  <div className="flex hover:bg-muted cursor-pointer p-2  items-center gap-3">
-                    <Repeat2 className="w-5 h-5" />
-                    <div className="text-sm">0</div>
-                  </div>
-                </div>
-                <div className="w-full h-[2px] bg-muted"></div>
-              </div>
+      <HappeningPostCard user={user} content={"Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum assumenda minima fugit. Commodi, debitis vero tempora quisquam optio eligendi enim, deserunt rerum, expedita similique vitae pariatur eos! Voluptatem quasi animi eos officia. Amet repellendus mollitia magni sequi provident. Totam, rerum itaque? Possimus officia, cumque sequi ab tempora tenetur quo maxime necessitatibus sint aliquam quibusdam facilis quidem molestiae architecto numquam expedita odio voluptates. Repellat et esse unde vel, sint blanditiis id. Consectetur voluptates molestias quae veritatis dignissimos, tenetur recusandae fuga nesciunt impedit sed, illo culpa qui aspernatur. Perferendis iure eos nulla iste, facere dolorem, velit doloremque mollitia totam veniam obcaecati repellendus minima placeat nesciunt praesentium vero sunt accusamus maiores aperiam. Sapiente distinctio labore voluptas necessitatibus maxime, ipsum quisquam praesentium quos est aliquid placeat illum!"}/>
        </CarouselItem>
        <CarouselItem>
-       <div className="postcard max-h-[200px] w-[95%] mx-auto ml-6 overflow-y-auto overflow-x-hidden m-10 mt-3">
-                <div className="flex header items-center gap-2">
-                  <div className="flex gap-2 items-center">
-                    <div>
-                      <img
-                        src={user.profilePicture}
-                        className="w-10 h-10 rounded-full"
-                        alt=""
-                      />
-                    </div>
-                    <div className="flex-col">
-                      <div className="pl-1 font-semibold">three</div>
-                      <div className="text-muted-foreground text-sm gap-1 flex items-center">
-                        <Globe className="w-4 h-4" />
-                        <div>1d ago</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="ml-auto pr-10">
-                    <EllipsisVertical className="h-8 cursor-pointer hover:bg-muted" />
-                  </div>
-                </div>
-                <div className="w-3/4 h-[2px] mx-auto m-4 bg-muted"></div>
-                <div className="text-sm p-2">
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                  Alias eos sint architecto recusandae! Hic, vero molestiae
-                  voluptates neque nihil dolore, similique praesentium in
-                  repudiandae dolores libero reprehenderit at soluta rem, amet
-                  quis repellendus. Ipsa ullam autem qui, natus provident fugit
-                  totam saepe distinctio ipsam, deserunt unde ipsum sit error
-                  magni, deleniti blanditiis incidunt. Commodi sunt deleniti
-                  libero quisquam eos quos ratione debitis quis, dolores minus
-                  pariatur fugit obcaecati perspiciatis asperiores similique?
-                  Accusantium eius beatae, cumque natus sit at officia
-                  laboriosam nesciunt quisquam possimus veritatis voluptate quis
-                  cupiditate ab maiores repudiandae magni dolor, ut fugit
-                  ratione quo obcaecati. Sunt dolores fuga itaque placeat ullam
-                  error exercitationem dolorum, esse expedita, soluta, animi
-                  rerum! Impedit nam error, natus maiores libero qui. Quaerat
-                  vero voluptatibus debitis ullam?
-                </div>
-                <div className="w-full h-[2px] m-2 bg-muted"></div>
-                <div className="flex items-center justify-around gap-2 m-3">
-                  <div className="flex hover:bg-muted cursor-pointer p-2 items-center gap-3">
-                    <ThumbsUpIcon className="w-5 h-5" />
-                    <div className="text-sm">0</div>
-                  </div>
-                  <div className="flex hover:bg-muted cursor-pointer p-2  items-center gap-3">
-                    <MessageSquare className="w-5 h-5" />
-                    <div className="text-sm">0</div>
-                  </div>
-                  <div className="flex hover:bg-muted cursor-pointer p-2  items-center gap-3">
-                    <Repeat2 className="w-5 h-5" />
-                    <div className="text-sm">0</div>
-                  </div>
-                </div>
-                <div className="w-full h-[2px] bg-muted"></div>
-              </div>
+      <HappeningPostCard user={user} content={"Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum assumenda minima fugit. Commodi, debitis vero tempora quisquam optio eligendi enim, deserunt rerum, expedita similique vitae pariatur eos! Voluptatem quasi animi eos officia. Amet repellendus mollitia magni sequi provident. Totam, rerum itaque? Possimus officia, cumque sequi ab tempora tenetur quo maxime necessitatibus sint aliquam quibusdam facilis quidem molestiae architecto numquam expedita odio voluptates. Repellat et esse unde vel, sint blanditiis id. Consectetur voluptates molestias quae veritatis dignissimos, tenetur recusandae fuga nesciunt impedit sed, illo culpa qui aspernatur. Perferendis iure eos nulla iste, facere dolorem, velit doloremque mollitia totam veniam obcaecati repellendus minima placeat nesciunt praesentium vero sunt accusamus maiores aperiam. Sapiente distinctio labore voluptas necessitatibus maxime, ipsum quisquam praesentium quos est aliquid placeat illum!"}/>
        </CarouselItem>
        <CarouselItem>
-       <div className="postcard max-h-[200px] w-[95%] mx-auto ml-6 overflow-y-auto overflow-x-hidden m-10 mt-3">
-                <div className="flex header items-center gap-2">
-                  <div className="flex gap-2 items-center">
-                    <div>
-                      <img
-                        src={user.profilePicture}
-                        className="w-10 h-10 rounded-full"
-                        alt=""
-                      />
-                    </div>
-                    <div className="flex-col">
-                      <div className="pl-1 font-semibold">three</div>
-                      <div className="text-muted-foreground text-sm gap-1 flex items-center">
-                        <Globe className="w-4 h-4" />
-                        <div>1d ago</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="ml-auto pr-10">
-                    <EllipsisVertical className="h-8 cursor-pointer hover:bg-muted" />
-                  </div>
-                </div>
-                <div className="w-3/4 h-[2px] mx-auto m-4 bg-muted"></div>
-                <div className="text-sm p-2">
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                  Alias eos sint architecto recusandae! Hic, vero molestiae
-                  voluptates neque nihil dolore, similique praesentium in
-                  repudiandae dolores libero reprehenderit at soluta rem, amet
-                  quis repellendus. Ipsa ullam autem qui, natus provident fugit
-                  totam saepe distinctio ipsam, deserunt unde ipsum sit error
-                  magni, deleniti blanditiis incidunt. Commodi sunt deleniti
-                  libero quisquam eos quos ratione debitis quis, dolores minus
-                  pariatur fugit obcaecati perspiciatis asperiores similique?
-                  Accusantium eius beatae, cumque natus sit at officia
-                  laboriosam nesciunt quisquam possimus veritatis voluptate quis
-                  cupiditate ab maiores repudiandae magni dolor, ut fugit
-                  ratione quo obcaecati. Sunt dolores fuga itaque placeat ullam
-                  error exercitationem dolorum, esse expedita, soluta, animi
-                  rerum! Impedit nam error, natus maiores libero qui. Quaerat
-                  vero voluptatibus debitis ullam?
-                </div>
-                <div className="w-full h-[2px] m-2 bg-muted"></div>
-                <div className="flex items-center justify-around gap-2 m-3">
-                  <div className="flex hover:bg-muted cursor-pointer p-2 items-center gap-3">
-                    <ThumbsUpIcon className="w-5 h-5" />
-                    <div className="text-sm">0</div>
-                  </div>
-                  <div className="flex hover:bg-muted cursor-pointer p-2  items-center gap-3">
-                    <MessageSquare className="w-5 h-5" />
-                    <div className="text-sm">0</div>
-                  </div>
-                  <div className="flex hover:bg-muted cursor-pointer p-2  items-center gap-3">
-                    <Repeat2 className="w-5 h-5" />
-                    <div className="text-sm">0</div>
-                  </div>
-                </div>
-                <div className="w-full h-[2px] bg-muted"></div>
-              </div>
+      <HappeningPostCard user={user} content={"Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum assumenda minima fugit. Commodi, debitis vero tempora quisquam optio eligendi enim, deserunt rerum, expedita similique vitae pariatur eos! Voluptatem quasi animi eos officia. Amet repellendus mollitia magni sequi provident. Totam, rerum itaque? Possimus officia, cumque sequi ab tempora tenetur quo maxime necessitatibus sint aliquam quibusdam facilis quidem molestiae architecto numquam expedita odio voluptates. Repellat et esse unde vel, sint blanditiis id. Consectetur voluptates molestias quae veritatis dignissimos, tenetur recusandae fuga nesciunt impedit sed, illo culpa qui aspernatur. Perferendis iure eos nulla iste, facere dolorem, velit doloremque mollitia totam veniam obcaecati repellendus minima placeat nesciunt praesentium vero sunt accusamus maiores aperiam. Sapiente distinctio labore voluptas necessitatibus maxime, ipsum quisquam praesentium quos est aliquid placeat illum!"}/>
        </CarouselItem>
       </CarouselContent>
     </Carousel>
           </div>
         </div>
       )}
+      <FloatingActionButton/>
     </div>
   );
 };
 
-//TODO: const PostNavbar = ({controls}:any)=>{
-//   return(
-//     <motion.div
-//     variants={{
-//       hidden:{opacity:0},
-//       visible:{opacity:1}
-//     }}
-//     initial="hidden"
-//     animate={controls}
-//       className="sticky flex flex-col top-0 w-full bg-white/30  backdrop-blur-3xl"
-//     >
-//       <div>three</div>
-//       <div>3 posts</div>
-//     </motion.div>
-//   )
-// }
-
-export default Profile;
+export default Profile
