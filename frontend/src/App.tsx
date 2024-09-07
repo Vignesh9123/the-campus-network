@@ -7,6 +7,7 @@ import RegisterForm from './pages/Register'
 import Profile from './pages/Profile'
 import PrivateRoute from './pages/PrivateRoute'
 import PublicRoute from './pages/PublicRoute'
+import EditProfile from './pages/EditProfile'
 function App() {
   return (
     <div>
@@ -22,6 +23,7 @@ function App() {
           
         </PrivateRoute>}>
           <Route path='/profile' element={<Profile/>}/>
+        <Route path='/editProfile' element={<EditProfile/>}/>
         </Route>
         
       </Routes>

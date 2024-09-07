@@ -1,17 +1,22 @@
 import React, {useState, useEffect, useContext, createContext} from "react";
 import {useNavigate} from 'react-router-dom'
 import { requestHandler } from "@/utils";
-import { loginUser, registerUser, logoutUser,getCurrentUser } from "@/api";
+import { loginUser, registerUser, logoutUser,getCurrentUser,updateAccountDetails,addPersonalDetails , updateProfilePicture} from "@/api";
 import Loader from "@/components/Loader";
 export interface UserInterface {
     _id: string;
     profilePicture: string;
     username: string;
+    bio:string;
+    phone:string;
     email: string;
     createdAt: string;
     updatedAt: string;
     followers: string[];
     following: string[];
+    college:string;
+    engineeringDomain:string;
+    yearOfGraduation:string;
   }
   
 const AuthContext = createContext<{
@@ -20,14 +25,20 @@ const AuthContext = createContext<{
     login:(data:{email:string|null,username:string|null;password:string })=>Promise<void>;
     register:(data:FormData)=>Promise<void>;
     logout:()=>Promise<void>;
-    getGoogleSignedInUser:({accessToken}:any)=>Promise<void>
+    getGoogleSignedInUser:({accessToken}:any)=>Promise<void>;
+    updateAccDetails: (data:{username:string|null, email:string|null, bio:string|null})=>Promise<void>;
+    updatePersonalDetails:(data:{ phone:string|null, engineeringDomain:string|null, college:string|null, yearOfGraduation:string|null })=>Promise<void>;
+    updatePFP:(data:FormData)=>Promise<void>;
 }>({
     user:null,
     token:null,
     login:async()=>{},
     register:async()=>{},
     logout:async()=>{},
-    getGoogleSignedInUser:async()=>{}
+    getGoogleSignedInUser:async()=>{},
+    updateAccDetails:async()=>{},
+    updatePersonalDetails:async()=>{},
+    updatePFP:async()=>{}
 });
 
 const useAuth = () => useContext(AuthContext);
@@ -43,7 +54,6 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
             async () => await loginUser(data),
             setIsLoading,
             (res) => {
-                console.log(res);
                 setUser(res.data.user);
                 setToken(res.data.accessToken);
                 localStorage.setItem("user", JSON.stringify(res.data.user));
@@ -93,6 +103,42 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
             alert
         )
     }
+    const updateAccDetails = async(data:{username:string|null, email:string|null, bio:string|null})=>{
+        await requestHandler(
+            async()=>await updateAccountDetails(data),
+            setIsLoading,
+            (res)=>{
+                console.log(res);
+                setUser(res.data.user);
+                localStorage.setItem("user", JSON.stringify(res.data));
+            },
+            alert
+        )
+    }
+    const updatePersonalDetails = async(data:{ phone:string|null, engineeringDomain:string|null, college:string|null, yearOfGraduation:string|null })=>{
+        await requestHandler(
+            async()=>await addPersonalDetails(data),
+            setIsLoading,
+            (res)=>{
+                console.log(res);
+                setUser(res.data.user);
+                localStorage.setItem("user", JSON.stringify(res.data));
+            },
+            alert
+        )
+    }
+    const updatePFP = async(data:FormData)=>{
+        await requestHandler(
+            async()=>await updateProfilePicture(data),
+            setIsLoading,
+            (res)=>{
+                console.log(res);
+                setUser(res.data.user);
+                localStorage.setItem("user", JSON.stringify(res.data));
+            },
+            alert
+        )
+    }
    
      // Check for saved user and token in local storage during component initialization
   useEffect(() => {
@@ -106,7 +152,7 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
     setIsLoading(false);
   }, []);
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, token, getGoogleSignedInUser}}>
+    <AuthContext.Provider value={{ user, login, register, logout, token, getGoogleSignedInUser,updateAccDetails,updatePersonalDetails,updatePFP}}>
       {isLoading ? <Loader /> : children} {/* Display a loader while loading */}
     </AuthContext.Provider>
   );

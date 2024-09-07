@@ -37,7 +37,22 @@ const checkUsernameUnique = (username:string)=>{
   return apiClient.get(`/users/check-username?username=${username}`)
 }
 
+const updateAccountDetails = (data:{username:string|null, email:string|null, bio:string|null}) =>{
+  return apiClient.patch('/users/update-account-details',data)
+}
+
+const addPersonalDetails = (data:{ phone:string|null, engineeringDomain:string|null, college:string|null, yearOfGraduation:string|null })=>{
+  return apiClient.post('/users/add-personal-details',data)
+}
+
+const updateProfilePicture = (data:FormData)=>{
+  return apiClient.patch('/users/update-profile-picture', data,{
+    headers: {
+        'Content-Type': 'multipart/form-data'
+    }
+  })
+}
 const createPost = (data:{title:string;content:string;isPublic:boolean;tags:string[];onlyFollowers:boolean}) =>{
   return apiClient.post('/posts/create',data)
 }
-export { loginUser, registerUser, logoutUser , getCurrentUser, checkUsernameUnique, createPost};
+export { loginUser, registerUser, logoutUser , getCurrentUser, checkUsernameUnique, createPost, updateAccountDetails,addPersonalDetails, updateProfilePicture};

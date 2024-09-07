@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import HappeningPostCard from "@/components/modules/Posts/HappeningPostCard";
 import FloatingActionButton from "@/components/modules/FloatingActionButton";
-
+import {Link} from 'react-router-dom'
 import {
   Dialog,
   DialogContent,
@@ -59,9 +59,9 @@ const Profile = () => {
               >
                 Profile
               </div>
-              <div className="py-5 w-1/2 text-center cursor-pointer hover:bg-slate-300 dark:hover:bg-slate-900 duration-200">
+              <Link to='/editProfile' className="py-5 w-1/2 text-center cursor-pointer hover:bg-slate-300 dark:hover:bg-slate-900 duration-200">
                 Edit Profile
-              </div>
+              </Link>
             </div>
             <Dialog>
               <div className="m-3 mx-auto w-44 rounded-full h-44">
