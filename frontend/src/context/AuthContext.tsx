@@ -29,6 +29,7 @@ const AuthContext = createContext<{
     updateAccDetails: (data:{username:string|null, email:string|null, bio:string|null})=>Promise<void>;
     updatePersonalDetails:(data:{ phone:string|null, engineeringDomain:string|null, college:string|null, yearOfGraduation:string|null })=>Promise<void>;
     updatePFP:(data:FormData)=>Promise<void>;
+    authError:string|null;
 }>({
     user:null,
     token:null,
@@ -38,7 +39,8 @@ const AuthContext = createContext<{
     getGoogleSignedInUser:async()=>{},
     updateAccDetails:async()=>{},
     updatePersonalDetails:async()=>{},
-    updatePFP:async()=>{}
+    updatePFP:async()=>{},
+    authError:null
 });
 
 const useAuth = () => useContext(AuthContext);
@@ -47,7 +49,7 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
     const [isLoading, setIsLoading] = useState(false);
     const [user, setUser] = useState<UserInterface | null>(null);
     const [token, setToken] = useState<string | null>(null);
-    
+    const [authError, setAuthError] = useState<string|null>('')
     const navigate = useNavigate();
     const login = async (data:{email:string|null,username:string|null;password:string }) => {
         await requestHandler(
@@ -58,9 +60,20 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
                 setToken(res.data.accessToken);
                 localStorage.setItem("user", JSON.stringify(res.data.user));
                 localStorage.setItem("token", res.data.accessToken);
+                setAuthError(null);
                 navigate("/profile");
             },
-            alert
+            (err:any)=>{
+                if(err.status == 401){
+                    setAuthError("Invalid Credentials");
+                }
+                else if(err.status == 404){
+                    setAuthError("Please make sure you have entered correct username/email")
+                }
+                else{
+                    setAuthError("Something went wrong, please try again later");
+                }
+            }
         );
     }
     const register = async (data:FormData) => {
@@ -70,7 +83,14 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
             ()=>{
                 navigate("/login");
             },
-            alert
+            (err:any)=>{
+                if(err.status == 400){
+                    setAuthError("User with this email already exists, please login");
+                }
+                else{
+                    setAuthError("Something went wrong, please try again later");
+                }
+            }
         );
     }
 
@@ -152,7 +172,7 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
     setIsLoading(false);
   }, []);
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, token, getGoogleSignedInUser,updateAccDetails,updatePersonalDetails,updatePFP}}>
+    <AuthContext.Provider value={{ user, login, register, logout, token, getGoogleSignedInUser,updateAccDetails,updatePersonalDetails,updatePFP, authError}}>
       {isLoading ? <Loader /> : children} {/* Display a loader while loading */}
     </AuthContext.Provider>
   );

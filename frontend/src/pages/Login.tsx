@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { FcGoogle } from "react-icons/fc";
 import { Link } from 'react-router-dom';
 export default function LoginForm() {
-  const { login, logout, user,  } = useAuth();
+  const { login, logout, user,authError  } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -23,8 +23,9 @@ export default function LoginForm() {
     }
     
     ,[])
-  const handleLogin = async () => {
-    try {
+  const handleLogin = async (e:any) => {
+    e.preventDefault();
+
       if(username.includes('@')){
           await login({ email: username,username:null, password });
         }
@@ -34,9 +35,7 @@ export default function LoginForm() {
           
         }
       setError(''); // Reset any previous errors
-    } catch (err) {
-      setError('Login failed. Please check your credentials.');
-    }
+   
   };
   
   return (
@@ -59,7 +58,7 @@ export default function LoginForm() {
           <Label htmlFor="password">Password</Label>
           <Input value={password} onChange={(e) => setPassword(e.target.value)} id="password" placeholder="••••••••" type="password" />
         </LabelInputContainer>
-       
+       {authError && <div className="text-red-500 text-sm m-2">{authError}</div>}
 
         <button
           className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"

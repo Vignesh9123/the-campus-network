@@ -16,7 +16,7 @@ const PostCard = ({user, title, content}:{user:UserInterface;title:string;conten
                       />
                     </div>
                     <div className="flex-col">
-                      <div className="pl-1 font-semibold">three</div>
+                      <div className="pl-1 font-semibold">{user.username}</div>
                       <div className="text-muted-foreground text-sm flex gap-1 items-center">
                         <Globe className="w-4 h-4" />
                         <div> 1d ago</div>

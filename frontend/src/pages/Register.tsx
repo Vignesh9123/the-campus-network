@@ -11,7 +11,7 @@ import {FaEye, FaEyeSlash} from "react-icons/fa";
 import { checkUsernameUnique } from "@/api";
 
 export default function RegisterForm() {
-    const { register } = useAuth();
+    const { register, authError } = useAuth();
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -99,7 +99,8 @@ export default function RegisterForm() {
             </button>
           </form>
       <form className="my-8" onSubmit={handleSubmit}>
-        
+      {authError && <div className="text-red-500 text-sm m-2">{authError}</div>}
+
         <LabelInputContainer className="mb-4">
           <Label htmlFor="username">Username <p className="inline text-red-500 text-sm">*</p></Label>
           <Input value={username} onChange={(e)=>{

@@ -21,7 +21,7 @@ export const requestHandler = async (
         localStorage.clear(); // Clear local storage on authentication issues
         if (isBrowser) window.location.href = "/login"; // Redirect to login page
       }
-      onError(error?.response?.data?.message || "Something went wrong");
+      onError(error);
     } finally {
       // Hide loading state if setLoading function is provided
       setLoading && setLoading(false);
