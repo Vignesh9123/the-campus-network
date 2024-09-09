@@ -1,14 +1,29 @@
-import React from 'react'
-import {Outlet,Navigate} from 'react-router-dom'
-import { useAuth } from '@/context/AuthContext'
-function PrivateRoute() {
-    const {user}=useAuth()
-    console.log(user)
-  if(!user){
-    return <Navigate to='/login' replace/>
-  }
-  return <Outlet/>
-}
- 
+import React, { useEffect, useState } from 'react';
+import { Outlet, Navigate, useLocation } from 'react-router-dom';
+import { useAuth } from '@/context/AuthContext';
+import Loader from '@/components/Loader';
 
-export default PrivateRoute
+function PrivateRoute() {
+    const { user, isLoading } = useAuth();
+    const location = useLocation();
+    const [isReady, setIsReady] = useState(false);
+
+    useEffect(() => {
+        if (!isLoading) {
+            setIsReady(true);
+        }
+    }, [isLoading]);
+
+    if (!isReady) {
+        return <Loader/>; // or a loading spinner
+    }
+
+    if (!user) {
+        // Redirect to login, but save the current location
+        return <Navigate to='/login' state={{ from: location }} replace />;
+    }
+
+    return <Outlet />;
+}
+
+export default PrivateRoute;

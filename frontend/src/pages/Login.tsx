@@ -15,10 +15,7 @@ export default function LoginForm() {
   const navigate = useNavigate();
   useEffect(
     ()=>{
-      if(user){
-        navigate('/profile');
-      }
-      document.title = "Campus Chronicles - Login"
+      document.title = "The Campus Network - Login"
 
     }
     
