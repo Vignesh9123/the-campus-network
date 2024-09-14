@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useContext, createContext} from "react";
 import {useNavigate, useLocation} from 'react-router-dom'
 import { requestHandler } from "@/utils";
-import { loginUser, registerUser, logoutUser,getCurrentUser,updateAccountDetails,addPersonalDetails , updateProfilePicture} from "@/api";
+import { loginUser, registerUser, logoutUser,getCurrentUser,updateAccountDetails,addPersonalDetails , updateProfilePicture, refreshToken} from "@/api";
 import Loader from "@/components/Loader";
 export interface UserInterface {
     _id: string;
@@ -110,9 +110,34 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
                 localStorage.removeItem("token");
                 navigate("/login");
             },
-            alert
+            (err:any)=>{
+                if(err.status == 403){
+                    refreshAccessToken().then(()=>logout())
+                    .catch((err)=>{
+                        console.log(err)
+                    })
+                    
+                }
+                else{
+                    console.log(err)
+                }
+            }
         );
     }
+
+    const refreshAccessToken = async()=>{
+        await requestHandler(
+            async()=>await refreshToken(),
+            setIsLoading,
+            (res)=>{
+                setToken(res.data.accessToken);
+                localStorage.setItem("token", res.data.accessToken);
+            },
+            alert
+        )
+    }
+    
+    
 
     const getGoogleSignedInUser = async({accessToken}:any)=>{
         await requestHandler(
@@ -137,7 +162,18 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
                 setUser(res.data.user);
                 localStorage.setItem("user", JSON.stringify(res.data));
             },
-            alert
+            (err:any)=>{
+                if(err.status == 403){
+                    refreshAccessToken().then(()=>updateAccDetails(data))
+                    .catch((err)=>{
+                        console.log(err)
+                    })
+                }
+                else{
+                    console.log(err)
+                }
+            }
+
         )
     }
     const updatePersonalDetails = async(data:{ phone:string|null, engineeringDomain:string|null, college:string|null, yearOfGraduation:string|null })=>{
@@ -149,7 +185,17 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
                 setUser(res.data.user);
                 localStorage.setItem("user", JSON.stringify(res.data));
             },
-            alert
+            (err:any)=>{
+                if(err.status == 403){
+                    refreshAccessToken().then(()=>updatePersonalDetails(data))
+                    .catch((err)=>{
+                        console.log(err)
+                    })
+                }
+                else{
+                    console.log(err)
+                }
+            }
         )
     }
     const updatePFP = async(data:FormData)=>{
@@ -161,7 +207,17 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
                 setUser(res.data.user);
                 localStorage.setItem("user", JSON.stringify(res.data));
             },
-            alert
+            (err:any)=>{
+                if(err.status == 403){
+                    refreshAccessToken().then(()=>updatePFP(data))
+                    .catch((err)=>{
+                        console.log(err)
+                    })
+                }
+                else{
+                    console.log(err)
+                }
+            }
         )
     }
    

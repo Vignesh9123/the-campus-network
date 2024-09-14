@@ -1,7 +1,6 @@
 import { User } from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 import { ApiError } from "../utils/ApiError.js";
-
 export const verifyJWT = async (req, res, next) => {
   try {
     const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "");
@@ -23,6 +22,9 @@ export const verifyJWT = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
+    if(error instanceof jwt.TokenExpiredError){
+      return res.status(403).json({message: "Token has expired"})
+    }
     return res.status(401).json({ message: "Something went wrong while authenticating user" });
   }
 };

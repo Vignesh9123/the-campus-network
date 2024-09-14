@@ -1,4 +1,4 @@
-import * as jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { User } from "../models/user.model.js";
@@ -11,7 +11,6 @@ const generateAccesAndRefreshToken = async(userId) => {
     const user = await User.findById(userId);
     const accessToken = user.generateAccessToken();
     const refreshToken = user.generateRefreshToken();
-
     user.refreshToken = refreshToken;
     await user.save({validateBeforeSave: false});
 
@@ -136,7 +135,8 @@ const loginUser = asyncHandler(async (req, res) =>{
 
   const options = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production"
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
   }
 
   return res
@@ -181,6 +181,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
   if(!incomingRefreshToken){
     throw new ApiError(401, "Unauthorized request");
+
   }
   try {
     const decodedToken = jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET);
@@ -191,7 +192,8 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     if(incomingRefreshToken !== user?.refreshToken){
       throw new ApiError(401, "Refresh token is expired or used");
     }
-    const {accessToken, newRefreshToken} = await generateAccesAndRefreshToken(user._id);
+    const {accessToken, refreshToken} = await generateAccesAndRefreshToken(user._id);
+    const newRefreshToken = refreshToken;
     const options = {
       httpOnly: true,
       secure:process.env.NODE_ENV === "production"
@@ -228,7 +230,6 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
 })
 
 const getCurrentUser = asyncHandler(async (req, res) => {
-  console.log(req.user)
   return res
   .status(200)
   .json(new ApiResponse(200, req.user, "User fetched successfully"));

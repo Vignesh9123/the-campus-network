@@ -55,4 +55,18 @@ const updateProfilePicture = (data:FormData)=>{
 const createPost = (data:{title:string;content:string;isPublic:boolean;tags:string[];onlyFollowers:boolean}) =>{
   return apiClient.post('/posts/create',data)
 }
-export { loginUser, registerUser, logoutUser , getCurrentUser, checkUsernameUnique, createPost, updateAccountDetails,addPersonalDetails, updateProfilePicture};
+
+const getUserPosts = (data:{username:string})=>{
+  return apiClient.get(`/posts/user/${data.username}`)
+}
+
+const searchUser = (data:{query:string})=>{
+  return apiClient.get(`/users/search?query=${data.query}`)
+}
+const getUserProfile = (data:{username:string | undefined}) =>{
+  return apiClient.get(`/users/u=${data.username}`)
+}
+const refreshToken = () => {
+    return apiClient.post("/users/refresh-token");
+};
+export {refreshToken, loginUser, registerUser, logoutUser , getCurrentUser, checkUsernameUnique, createPost, updateAccountDetails,addPersonalDetails, updateProfilePicture,getUserPosts,searchUser, getUserProfile};
