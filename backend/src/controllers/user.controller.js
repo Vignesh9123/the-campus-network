@@ -392,6 +392,7 @@ const followOrUnfollowUser = asyncHandler(async (req, res) => {
     new ApiResponse(200, {
       following: currentUser.following,
       followers: userToFollow.followers,
+      currentUser
     }, 'Follow/Unfollow successful')
   );
 });

@@ -80,7 +80,9 @@ const getUserPosts = asyncHandler(async(req, res)=>{
     const posts = await Post.find({createdBy: user?._id}).populate({
       path: "createdBy",
       select: "username email profilePicture"
-    });
+    }).sort(
+        {createdAt: -1}
+    );
     return res
     .status(200)
     .json(new ApiResponse(200, posts, "User posts fetched successfully"));
