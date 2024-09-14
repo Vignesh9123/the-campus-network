@@ -13,6 +13,7 @@ import {
 import HappeningPostCard from "@/components/modules/Posts/HappeningPostCard";
 import FloatingActionButton from "@/components/modules/FloatingActionButton";
 import {Link} from 'react-router-dom'
+import { formatNumber } from "@/utils";
 import {
   Dialog,
   DialogContent,
@@ -30,6 +31,8 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 import FollowButton from "@/components/modules/FollowButton";
+import { getUserPosts } from '@/api'
+import { PostInterface } from "@/types";
 const Profile = () => {
   const plugin = useRef(
     Autoplay({ stopOnMouseEnter:true, stopOnInteraction:false,stopOnFocusIn:false, delay: 3000 })
@@ -37,9 +40,13 @@ const Profile = () => {
   const { user } = useAuth();
   const pathname = window.location.pathname;
   const [showPreview, setShowPreview] = useState(false);
+  const [posts, setPosts] = useState([])
   const [readMore, setReadMore] = useState(false)
   useEffect(()=>{
-    document.title = "Campus Chronicles - Profile"
+    document.title = "The Campus Network - Profile"
+    getUserPosts({username:user?.username!}).then((res)=>{
+      setPosts(res.data.data)
+    })
   },[])
   return (
     <div>
@@ -94,21 +101,23 @@ const Profile = () => {
             </Dialog>
             <div className="text-center font-bold text-lg">{user.username}</div>
             <div className="flex justify-around">
-              <div className="hover:underline cursor-pointer">0 Followers</div>
-              <div className="hover:underline cursor-pointer"> 0 Following</div>
+              <div className="hover:underline cursor-pointer">{
+                formatNumber(user.followers.length)+" "
+            } Followers</div>
+              <div className="hover:underline cursor-pointer"> {
+                formatNumber(user.following.length)+" "
+            } Following</div>
             </div>
             <div className="text-center mt-3 font-bold text-lg">Bio</div>
             <div className="text-center text-sm m-3 text-muted-foreground">
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Natus
-              doloribus corporis quaerat neque maxime voluptates porro ea soluta
-              dolores excepturi.
+              {user.bio}
             </div>
             <div className="w-full h-[2px] bg-muted"></div>
             <div className="grid grid-cols-1 md:grid-cols-2 m-3 mx-5 gap-3">
               <div className="flex items-center gap-2">
                 <div className="font-bold">College: </div>
                 <div className="text-sm">
-                  Sri Jayachamarajendra College of Engineering
+                  {user.college}
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -117,21 +126,23 @@ const Profile = () => {
               </div>
               <div className="flex items-center gap-2">
                 <div className="font-bold">Graduation: </div>
-                <div className="text-sm">2026</div>
+                <div className="text-sm">{user.yearOfGraduation}</div>
               </div>
               <div className="flex items-center gap-2">
                 <div className="font-bold">Branch: </div>
-                <div className="text-sm">CSE</div>
+                <div className="text-sm">{user.engineeringDomain}</div>
               </div>
             </div>
             <div className="w-full h-[2px] bg-muted mt-5"></div>
             <div className="posts">
               <div className="text-center font-bold text-lg mt-3">Posts</div>
-            
-              <PostCard user={user} title={"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Esse ipsum dolor eos non suscipit maxime il."} content={"Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum assumenda minima fugit. Commodi, debitis vero tempora quisquam optio eligendi enim, deserunt rerum, expedita similique vitae pariatur eos! Voluptatem quasi animi eos officia. Amet repellendus mollitia magni sequi provident. Totam, rerum itaque? Possimus officia, cumque sequi ab tempora tenetur quo maxime necessitatibus sint aliquam quibusdam facilis quidem molestiae architecto numquam expedita odio voluptates. Repellat et esse unde vel, sint blanditiis id. Consectetur voluptates molestias quae veritatis dignissimos, tenetur recusandae fuga nesciunt impedit sed, illo culpa qui aspernatur. Perferendis iure eos nulla iste, facere dolorem, velit doloremque mollitia totam veniam obcaecati repellendus minima placeat nesciunt praesentium vero sunt accusamus maiores aperiam. Sapiente distinctio labore voluptas necessitatibus maxime, ipsum quisquam praesentium quos est aliquid placeat illum!"}/>
-              <PostCard user={user} title={"Lorem ipsum dolor sit amet, consectetur adipisicing elit."} content={"lorem djnsjkdgn gnkgnwwn ngnngn gneke q jngkqjngkqkgkqnqq kqkk k"}/>
-              <PostCard user={user} title={"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Esse ipsum dolor eos."} content={"lorem djnsjkdgn gnkgnwwn ngnngn gneke q jngkqjngkqkgkqnqq kqkk k"}/>
-
+            {
+              posts.map((post:PostInterface, index) => (
+                <PostCard key={index} user={user} title={post.title} createdOn={post.createdOn} content={post.content}/>
+              ))
+            }
+          
+ 
             </div>
           </div>
           <div className="hidden lg:block w-1/3 h-screen">
@@ -148,7 +159,7 @@ const Profile = () => {
                       Vignesh
                     </div>
                 </div>
-                    <FollowButton className="h-3/4"/>
+                    <FollowButton userIdToFollow="dummy" className="h-3/4"/>
               </div>
               <div className="accountCard flex items-center justify-between gap-1 p-3 h-14 w-[95%] mx-auto border-y-[1px]">
                 <div className="flex items-center gap-1">
@@ -159,7 +170,7 @@ const Profile = () => {
                       Vignesh
                     </div>
                 </div>
-                    <FollowButton className="h-3/4"/>
+                    <FollowButton userIdToFollow="dummy" className="h-3/4"/>
               </div>
               <div className="accountCard flex items-center justify-between gap-1 p-3 h-14 w-[95%] mx-auto border-y-[1px]">
                 <div className="flex items-center gap-1">
@@ -170,7 +181,7 @@ const Profile = () => {
                       Vignesh
                     </div>
                 </div>
-                    <FollowButton className="h-3/4"/>
+                    <FollowButton userIdToFollow="dummy" className="h-3/4"/>
               </div>
               <div className="accountCard flex items-center justify-between gap-1 p-3 h-14 w-[95%] mx-auto border-y-[1px]">
                 <div className="flex items-center gap-1">
@@ -181,7 +192,7 @@ const Profile = () => {
                       Vignesh
                     </div>
                 </div>
-                    <FollowButton className="h-3/4"/>
+                    <FollowButton userIdToFollow="dummy" className="h-3/4"/>
               </div>
               <div className="accountCard flex items-center justify-between gap-1 p-3 h-14 w-[95%] mx-auto border-y-[1px]">
                 <div className="flex items-center gap-1">
@@ -192,7 +203,7 @@ const Profile = () => {
                       Vignesh
                     </div>
                 </div>
-                    <FollowButton className="h-3/4"/>
+                    <FollowButton userIdToFollow="dummy" className="h-3/4"/>
               </div>
               <div className="accountCard flex items-center justify-between gap-1 p-3 h-14 w-[95%] mx-auto border-y-[1px]">
                 <div className="flex items-center gap-1">
@@ -203,7 +214,7 @@ const Profile = () => {
                       Vignesh
                     </div>
                 </div>
-                    <FollowButton className="h-3/4"/>
+                    <FollowButton userIdToFollow="dummy" className="h-3/4"/>
               </div>
               
 

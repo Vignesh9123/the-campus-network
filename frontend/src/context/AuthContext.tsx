@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useContext, createContext} from "react";
 import {useNavigate, useLocation} from 'react-router-dom'
 import { requestHandler } from "@/utils";
-import { loginUser, registerUser, logoutUser,getCurrentUser,updateAccountDetails,addPersonalDetails , updateProfilePicture, refreshToken} from "@/api";
+import { loginUser, registerUser, logoutUser,getCurrentUser,updateAccountDetails,addPersonalDetails , updateProfilePicture, refreshToken,followOrUnfollow} from "@/api";
 import Loader from "@/components/Loader";
 export interface UserInterface {
     _id: string;
@@ -31,6 +31,8 @@ const AuthContext = createContext<{
     updatePFP:(data:FormData)=>Promise<void>;
     authError:string|null;
     isLoading:boolean;
+    setIsLoading:(isLoading:boolean)=>void;
+    followOrUnfollowUser:(userId:string)=>Promise<void>;
 }>({
     user:null,
     token:null,
@@ -42,7 +44,10 @@ const AuthContext = createContext<{
     updatePersonalDetails:async()=>{},
     updatePFP:async()=>{},
     authError:null,
-    isLoading:false
+    isLoading:false,
+    setIsLoading:(isLoading:boolean)=>{},
+    followOrUnfollowUser:async()=>{},
+
 });
 
 const useAuth = () => useContext(AuthContext);
@@ -125,6 +130,28 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
         );
     }
 
+    const followOrUnfollowUser = async(userId:string)=>{
+        await requestHandler(
+            async()=>await followOrUnfollow({userId}),
+            setIsLoading,
+            (res)=>{
+                console.log(res);
+                setUser(res.data.currentUser);
+                localStorage.setItem("user", JSON.stringify(res.data.currentUser));
+            },
+            (err:any)=>{
+                if(err.status == 403){
+                    refreshAccessToken().then(()=>followOrUnfollowUser(userId))
+                    .catch((err)=>{
+                        console.log(err)
+                    })
+                }
+                else{
+                    console.log(err)
+                }
+            }
+        )
+    }
     const refreshAccessToken = async()=>{
         await requestHandler(
             async()=>await refreshToken(),
@@ -238,7 +265,7 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
         initializeAuth();
     }, []);
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, token, getGoogleSignedInUser,updateAccDetails,updatePersonalDetails,updatePFP, authError,isLoading}}>
+    <AuthContext.Provider value={{ user, login, register, logout, token, getGoogleSignedInUser,updateAccDetails,updatePersonalDetails,updatePFP, authError,isLoading,setIsLoading,followOrUnfollowUser}}>
       {isLoading ? <Loader /> : children} {/* Display a loader while loading */}
     </AuthContext.Provider>
   );

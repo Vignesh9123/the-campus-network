@@ -10,6 +10,7 @@ import {
     CarouselNext,
     CarouselPrevious,
   } from "@/components/ui/carousel"
+import {Highlight} from '../ui/hero-highlight'
   import { Card, CardContent } from "@/components/ui/card"
 const HeroCarousel = () => {
   const controls = useAnimation();
@@ -38,7 +39,9 @@ const HeroCarousel = () => {
           opacity: is1InView ? 1 : 0,
   
           transition: "all 0.9s cubic-bezier(0.17, 0.55, 0.55, 1) 0.5s",
-        }} className='text-5xl mb-10 pt-[40vh] text-center font-bold'>Welcome to Campus Chronicles</motion.h1>
+        }} className='text-5xl mb-10 pt-[40vh] text-white text-center font-bold'>Welcome to <Highlight className="text-white">
+        The Campus Network
+      </Highlight></motion.h1>
      <motion.h1 style={{
           transform: is1InView ? "none" : "translateX(-100px)",
           opacity: is1InView ? 1 : 0,
@@ -61,7 +64,7 @@ const HeroCarousel = () => {
           opacity: is2InView ? 1 : 0,
      
           transition: "all 0.9s cubic-bezier(0.17, 0.55, 0.55, 1) 0.5s",
-        }} className='text-5xl mb-10 pt-[40vh] text-center font-bold'>Connect with Like-minded Engineers</motion.h1>
+        }} className='text-5xl text-white mb-10 pt-[40vh] text-center font-bold'>Connect with Like-minded Engineers</motion.h1>
      <motion.h1 style={{
           transform: is2InView ? "none" : "translateX(-100px)",
           opacity: is2InView ? 1 : 0,

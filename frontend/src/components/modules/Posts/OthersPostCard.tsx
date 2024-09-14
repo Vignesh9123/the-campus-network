@@ -1,7 +1,8 @@
 import React,{useState} from 'react'
 import {Globe, EllipsisVertical, ThumbsUpIcon, MessageSquare, Repeat2}  from 'lucide-react'
 import { UserInterface } from '@/context/AuthContext'
-const PostCard = ({user, title, content,createdOn}:{user:UserInterface;title:string;content:string;createdOn:Date}) => {
+import FollowButton from '../FollowButton'
+const PostCard = ({user, title, content,createdOn, following}:{user:UserInterface;title:string;content:string;createdOn:Date, following?:boolean}) => {
    const [readMore, setReadMore] = useState(false)
     const postCreationTime = new Date(createdOn)
   return (
@@ -17,7 +18,7 @@ const PostCard = ({user, title, content,createdOn}:{user:UserInterface;title:str
                       />
                     </div>
                     <div className="flex-col">
-                      <div className="pl-1 font-semibold">{user.username}</div>
+                      <div className="pl-1 cursor-pointer font-semibold hover:underline">{user.username}</div>
                       <div className="text-muted-foreground text-sm flex gap-1 items-center">
                         <Globe className="w-4 h-4" />
                         <div>
@@ -57,7 +58,7 @@ const PostCard = ({user, title, content,createdOn}:{user:UserInterface;title:str
                     </div>
                   </div>
                   <div className="ml-auto pr-10">
-                    <EllipsisVertical className="h-8 cursor-pointer hover:bg-muted" />
+                    <FollowButton userIdToFollow={user._id} following={following}/>
                   </div>
                 </div>
                 <div className="w-3/4 h-[2px] mx-auto m-4 bg-muted"></div>

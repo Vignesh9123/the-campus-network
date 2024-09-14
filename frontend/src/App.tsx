@@ -8,6 +8,9 @@ import Profile from './pages/Profile'
 import PrivateRoute from './pages/PrivateRoute'
 import PublicRoute from './pages/PublicRoute'
 import EditProfile from './pages/EditProfile'
+import ExplorePosts from './pages/ExplorePosts'
+import SearchPage from './pages/SearchPage'
+import OtherUserProfile from './pages/OtherUserProfile'
 function App() {
   return (
     <div>
@@ -24,6 +27,9 @@ function App() {
         </PrivateRoute>}>
           <Route path='/profile' element={<Profile/>}/>
         <Route path='/editProfile' element={<EditProfile/>}/>
+        <Route path='/explore' element={<ExplorePosts/>}/>
+        <Route path='/search' element={<SearchPage/>}/>
+        <Route path='/user/:username' element={<OtherUserProfile/>}/>
         </Route>
         
       </Routes>

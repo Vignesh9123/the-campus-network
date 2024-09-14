@@ -69,4 +69,7 @@ const getUserProfile = (data:{username:string | undefined}) =>{
 const refreshToken = () => {
     return apiClient.post("/users/refresh-token");
 };
-export {refreshToken, loginUser, registerUser, logoutUser , getCurrentUser, checkUsernameUnique, createPost, updateAccountDetails,addPersonalDetails, updateProfilePicture,getUserPosts,searchUser, getUserProfile};
+const followOrUnfollow = (data:{userId:string})=>{
+  return apiClient.post(`/users/follow/${data.userId}`)
+}
+export {refreshToken, loginUser, registerUser, logoutUser , getCurrentUser, checkUsernameUnique, createPost, updateAccountDetails,addPersonalDetails, updateProfilePicture,getUserPosts,searchUser, getUserProfile,followOrUnfollow};

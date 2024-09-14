@@ -42,7 +42,7 @@ const LandingPage = () => {
           scale: isInView ? 1 : 0.5,
           transition: "all 0.9s cubic-bezier(0.17, 0.55, 0.55, 1) 0.5s",
         }} className='text-center w-[50vw] mx-auto pt-5 text-[19px]'>
-        ​Campus Chronicles is a central hub where engineering students from various disciplines can connect and share their knowledge through blogs. It conveys a sense of community and collaboration, which is ideal for the purpose of the website.
+       The Campus Network is a central hub where engineering students from various disciplines can connect and share their knowledge through blogs. It conveys a sense of community and collaboration, which is ideal for the purpose of the website.
         </motion.div>
       <div className=''>
       

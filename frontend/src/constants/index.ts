@@ -1,0 +1,1 @@
+export const USER_NO_PROFILE = "https://res.cloudinary.com/dxygc9jz4/image/upload/v1724111299/bpd60ycdypstg6tzqmus.png"
