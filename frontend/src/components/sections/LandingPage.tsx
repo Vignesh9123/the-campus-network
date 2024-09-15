@@ -2,8 +2,7 @@ import React, {useState, useRef, useEffect} from 'react'
 import NavBar from './NavBar'
 import { motion , useScroll, useInView, useAnimation} from "framer-motion";
 import HeroCarousel from './HeroCarousel';
-
-
+import { ContainerScroll } from '../ui/hero-scroll';
 const LandingPage = () => {
   const { scrollYProgress } = useScroll();
   const [navVisible, setNavVisible] = useState(false)
@@ -21,7 +20,31 @@ const LandingPage = () => {
   
   return (
     <div className='' >
-      <HeroCarousel/>
+      {/* <HeroCarousel/> */}
+      
+       <div className="flex flex-col overflow-hidden">
+      <ContainerScroll
+        titleComponent={
+          <>
+            <h1 className="text-4xl font-semibold text-black dark:text-white">
+            Where graduates connect and share their true  <br />
+              <span className="text-4xl md:text-[6rem] font-bold mt-1 leading-none">
+              college journeys.
+              </span>
+            </h1>
+          </>
+        }
+      >
+        <img
+          src={`/hero.png`}
+          alt="hero"
+          height={720}
+          width={1400}
+          className="mx-auto rounded-2xl object-cover h-full object-left-top"
+          draggable={false}
+        />
+      </ContainerScroll>
+    </div>
       <div className='w-[98vw] h-[1px] bg-gray-800' /> 
      <motion.div initial={navVisible?{opacity:1}:{opacity:0}} animate={navVisible?{opacity:1}:{opacity:0}} transition={{duration:0.5}}>
       <NavBar className={navVisible ? "visible fixed top-0 m-0 w-screen p-3" : "hidden"}/>

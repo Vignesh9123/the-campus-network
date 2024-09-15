@@ -9,6 +9,7 @@ import {
   Repeat2,
   MessageSquare,
   ExternalLink,
+  Mail,
 } from "lucide-react";
 import HappeningPostCard from "@/components/modules/Posts/HappeningPostCard";
 import FloatingActionButton from "@/components/modules/FloatingActionButton";
@@ -100,6 +101,8 @@ const Profile = () => {
               </div>
             </Dialog>
             <div className="text-center font-bold text-lg">{user.username}</div>
+            <div className="text-center text-muted-foreground flex justify-center gap-1 items-center"><Mail size={20}/>{user.email}</div>
+
             <div className="flex justify-around">
               <div className="hover:underline cursor-pointer">{
                 formatNumber(user.followers.length)+" "
