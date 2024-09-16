@@ -72,4 +72,7 @@ const refreshToken = () => {
 const followOrUnfollow = (data:{userId:string})=>{
   return apiClient.post(`/users/follow/${data.userId}`)
 }
-export {refreshToken, loginUser, registerUser, logoutUser , getCurrentUser, checkUsernameUnique, createPost, updateAccountDetails,addPersonalDetails, updateProfilePicture,getUserPosts,searchUser, getUserProfile,followOrUnfollow};
+const searchPost = (data:{query:string})=>{
+  return apiClient.get(`/posts/search?query=${data.query}`)
+}
+export {refreshToken, loginUser, registerUser, logoutUser , getCurrentUser, checkUsernameUnique, createPost, updateAccountDetails,addPersonalDetails, updateProfilePicture,getUserPosts,searchUser, getUserProfile,followOrUnfollow, searchPost};

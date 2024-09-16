@@ -7,7 +7,7 @@ import LogoutButton from '../modules/LogoutButton';
 const ProfileSideBar = () => {
   const pathname = window.location.pathname
   return (
-    <div className='flex flex-col gap-3'>
+    <div className='flex flex-col gap-3 max-h-screen'>
       <Link to={'/'} className=' md:hidden font-bold text-center m-3'>TCN</Link>
       <Link to={'/'} className='hidden md:block text-2xl font-bold text-center m-3'>The Campus Network</Link>
       <Link to='/' className='hover:bg-muted duration-150 flex gap-2 items-center text-lg p-3'>
