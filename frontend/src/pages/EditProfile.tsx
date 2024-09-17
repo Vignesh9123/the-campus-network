@@ -60,12 +60,10 @@ function EditProfile() {
     const handleAccountSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       await updateAccDetails({username, email, bio})
-      window.location.reload()
     }
     const handlePersonalSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       await updatePersonalDetails({phone, college, engineeringDomain, yearOfGraduation})
-      window.location.reload()
     }
     
     const handleUpdatePFP = async() => {

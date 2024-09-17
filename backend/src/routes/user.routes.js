@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { registerUser,loginUser, logoutUser, refreshAccessToken, changeCurrentPassword, getCurrentUser, updateProfilePicture, getUserProfile, addPersonalDetails, followOrUnfollowUser, forgotPassword,resetPassword, searchUsers, getUserFeed, getUserFollowers, getUserFollowing,handleSocialLogin,isUsernameUnique,updateAccountDetails } from "../controllers/user.controller.js";
+import { registerUser,loginUser, logoutUser, refreshAccessToken, changeCurrentPassword, getCurrentUser, updateProfilePicture, getUserProfile, addPersonalDetails, followOrUnfollowUser, forgotPassword,resetPassword, searchUsers, getUserFeed, getUserFollowers, getUserFollowing,handleSocialLogin,isUsernameUnique,updateAccountDetails,checkToken } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { sendEmail } from "../utils/sendMail.js";
@@ -84,6 +84,9 @@ router.route('/reset-password/:resetToken').post(resetPassword)
 router.route('/search').get(searchUsers)
 router.route('/feed').get(verifyJWT, getUserFeed)
 router.route('/check-username').get(isUsernameUnique)
+router.route('/followers/:username').get(verifyJWT, getUserFollowers)
+router.route('/following/:username').get(verifyJWT, getUserFollowing)
+router.route('/check-token').get(verifyJWT,checkToken)
 
 //SSO routes
 router.route('/login/google').get(passport.authenticate("google", { scope: ['profile', 'email'] }), (req,res)=>{

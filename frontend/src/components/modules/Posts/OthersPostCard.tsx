@@ -2,6 +2,7 @@ import React,{useState} from 'react'
 import {Globe, EllipsisVertical, ThumbsUpIcon, MessageSquare, Repeat2}  from 'lucide-react'
 import { UserInterface } from '@/context/AuthContext'
 import FollowButton from '../FollowButton'
+import { Link } from 'react-router-dom'
 const PostCard = ({user, title, content,createdOn, following}:{user:UserInterface;title:string;content:string;createdOn:Date, following?:boolean}) => {
    const [readMore, setReadMore] = useState(false)
     const postCreationTime = new Date(createdOn)
@@ -18,7 +19,7 @@ const PostCard = ({user, title, content,createdOn, following}:{user:UserInterfac
                       />
                     </div>
                     <div className="flex-col">
-                      <div className="pl-1 cursor-pointer font-semibold hover:underline">{user.username}</div>
+                      <Link to={`/user/${user.username}`} className="pl-1 cursor-pointer font-semibold hover:underline">{user.username}</Link>
                       <div className="text-muted-foreground text-sm flex gap-1 items-center">
                         <Globe className="w-4 h-4" />
                         <div>

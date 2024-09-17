@@ -5,6 +5,7 @@ import { PlaceholdersAndVanishInput } from '@/components/ui/placeholders-and-van
 import { searchUser, searchPost } from '@/api';
 import { Link } from 'react-router-dom';
 import Loader from '@/components/Loader';
+import PostCard from '@/components/modules/Posts/OthersPostCard';
 
 function SearchPage() {
     const {user} = useAuth();
@@ -38,13 +39,7 @@ function SearchPage() {
         <PlaceholdersAndVanishInput  placeholders={["Search for a user", "Search for a post"]}  onChange={handleChange}
         onSubmit={onSubmit}/>
         {searched && loading && <div className="text-xl font-semibold m-5 ml-2">
-          <Loader/></div>}
-        {/* {searched && !loading && (userSearchResults.length > 0 || postSearchResults.length > 0) && (
-          <div className="text-xl font-semibold m-5 ml-2">Search Results</div>
-        )} */}
-        {searched && !loading && userSearchResults.length === 0 && postSearchResults.length === 0 && (
-          <div className="text-xl font-semibold m-5 ml-2">No results found</div>
-        )}
+          <Loader/></div>}        
 
         <div className="flex">
           <div className="w-full">
@@ -88,12 +83,9 @@ function SearchPage() {
               <div>
                 {/* Render post search results */}
                 {postSearchResults.map((result:any) => {
-                  return (
-                    <div className="p-3">
-                      <div>{result.title}</div>
-                      <div>{result.content}</div>
-                    </div>
-                  );
+                  return(
+                    <PostCard content={result.content} title={result.title} createdOn={result.createdOn} user={result.createdBy} following={user.following.includes(result.createdBy._id)} key={result._id} />
+                  )
                 })}
               </div>
             )}

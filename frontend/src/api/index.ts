@@ -75,4 +75,13 @@ const followOrUnfollow = (data:{userId:string})=>{
 const searchPost = (data:{query:string})=>{
   return apiClient.get(`/posts/search?query=${data.query}`)
 }
-export {refreshToken, loginUser, registerUser, logoutUser , getCurrentUser, checkUsernameUnique, createPost, updateAccountDetails,addPersonalDetails, updateProfilePicture,getUserPosts,searchUser, getUserProfile,followOrUnfollow, searchPost};
+const getFollowers =(data:{username:string|undefined})=>{
+  return apiClient.get(`/users/followers/${data.username}`)
+}
+const getFollowing = (data:{username:string|undefined})=>{
+  return apiClient.get(`/users/following/${data.username}`)
+}
+const checkToken = ()=>{
+  return apiClient.get('/users/check-token')
+}
+export {refreshToken, loginUser,checkToken, registerUser, logoutUser , getCurrentUser, checkUsernameUnique, createPost, updateAccountDetails,addPersonalDetails, updateProfilePicture,getUserPosts,searchUser, getUserProfile,followOrUnfollow, searchPost,getFollowers, getFollowing};

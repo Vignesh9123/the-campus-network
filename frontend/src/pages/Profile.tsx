@@ -32,8 +32,9 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 import FollowButton from "@/components/modules/FollowButton";
-import { getUserPosts } from '@/api'
+import { getUserPosts,getFollowers,getFollowing } from '@/api'
 import { PostInterface } from "@/types";
+import DotLoader from "@/components/DotLoader";
 const Profile = () => {
   const plugin = useRef(
     Autoplay({ stopOnMouseEnter:true, stopOnInteraction:false,stopOnFocusIn:false, delay: 3000 })
@@ -43,6 +44,33 @@ const Profile = () => {
   const [showPreview, setShowPreview] = useState(false);
   const [posts, setPosts] = useState([])
   const [readMore, setReadMore] = useState(false)
+
+  const [followers, setFollowers] = useState([])
+  const [following, setFollowing] = useState([])
+  const [followLoading, setFollowLoading] = useState(false)
+  
+
+  const getOwnFollowers = ()=>{
+    if(followers[0]) return
+    setFollowLoading(true)
+    console.log("Hey")
+    getFollowers({username:user?.username}).then(
+      (res)=>{
+        setFollowers(res.data.data)
+        setFollowLoading(false)
+      }
+    )
+  }
+  const getOwnFollowing = ()=>{
+    if(following[0]) return
+    setFollowLoading(true)
+    getFollowing({username:user?.username}).then(
+      (res)=>{
+        setFollowing(res.data.data)
+        setFollowLoading(false)
+      }
+    )
+  }
   useEffect(()=>{
     document.title = "The Campus Network - Profile"
     getUserPosts({username:user?.username!}).then((res)=>{
@@ -56,7 +84,7 @@ const Profile = () => {
           <div className="w-[15%] md:w-1/3 border-0 border-r-[1px] h-screen">
             <ProfileSideBar />
           </div>
-          <div className="md:w-2/3 overflow-y-scroll scrollbar-hide border-0 border-r-[1px] h-screen">
+          <div className="md:w-2/3 w-full overflow-y-scroll scrollbar-hide border-0 border-r-[1px] h-screen">
             <div className="flex">
               <div
                 className={`w-1/2 py-5 text-center cursor-pointer ${
@@ -104,13 +132,71 @@ const Profile = () => {
             <div className="text-center text-muted-foreground flex justify-center gap-1 items-center"><Mail size={20}/>{user.email}</div>
 
             <div className="flex justify-around">
+              <Dialog onOpenChange={getOwnFollowers}>
+                  <DialogTrigger>
               <div className="hover:underline cursor-pointer">{
                 formatNumber(user.followers.length)+" "
-            } Followers</div>
-              <div className="hover:underline cursor-pointer"> {
+              } Followers</div>
+              </DialogTrigger>
+              <DialogContent className="bg-slate-900 border-0 max-w-[80vw] md:max-w-[35vw]">
+                <DialogHeader>
+                  <DialogTitle>Followers</DialogTitle>
+                  <DialogDescription>
+                    <div className="flex flex-col mt-3 gap-2  max-h-[70vh] overflow-y-auto">
+                      {followLoading && <DotLoader/>}
+                      {!followLoading && !followers[0] &&
+                       <div className="text-center text-sm m-3 text-muted-foreground">No Followers yet</div>}
+                      
+                      {
+                        followers[0] && followers.map((follower:any, index) => (
+                          <div key={index} className="flex items-center gap-2">
+                            <img src={follower.profilePicture} className="w-10 h-10 rounded-full" alt="" />
+                            <div className="flex flex-col">
+                              <div className="font-bold">{follower.username}</div>
+                              <div className="text-sm text-muted-foreground">{follower.name}</div>
+                            </div>
+                          </div>
+                        ))
+                      }
+                    </div>
+                  </DialogDescription>
+                </DialogHeader>
+              </DialogContent>
+              </Dialog>
+              <Dialog onOpenChange={getOwnFollowing}>
+                  <DialogTrigger>
+              <div className="hover:underline cursor-pointer">{
                 formatNumber(user.following.length)+" "
-            } Following</div>
+              } Following</div>
+              </DialogTrigger>
+              <DialogContent className="bg-slate-900 border-0 max-w-[80vw] md:max-w-[35vw]">
+                <DialogHeader>
+                  <DialogTitle>Following</DialogTitle>
+                  <DialogDescription>
+                    <div className="flex flex-col mt-3 gap-2  max-h-[70vh] overflow-y-auto">
+                      {followLoading && <DotLoader/>}
+                      {!followLoading && !following[0] &&
+                       <div className="text-center text-sm m-3 text-muted-foreground">You are not following anyone yet</div>}
+
+                      
+                      {
+                        following[0] && following.map((follow:any, index) => (
+                          <div key={index} className="flex items-center gap-2">
+                            <img src={follow.profilePicture} className="w-10 h-10 rounded-full" alt="" />
+                            <div className="flex flex-col">
+                              <div className="font-bold">{follow.username}</div>
+                              <div className="text-sm text-muted-foreground">{follow.name}</div>
+                            </div>
+                          </div>
+                        ))
+                      }
+                    </div>
+                  </DialogDescription>
+                </DialogHeader>
+              </DialogContent>
+              </Dialog>
             </div>
+           
             <div className="text-center mt-3 font-bold text-lg">Bio</div>
             <div className="text-center text-sm m-3 text-muted-foreground">
               {user.bio}

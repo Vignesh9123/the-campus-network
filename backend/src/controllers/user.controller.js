@@ -336,7 +336,7 @@ const getUserFollowing = asyncHandler(async(req, res)=>{
 
 const addPersonalDetails = asyncHandler(async(req, res)=>{
     const { phone, engineeringDomain, college, yearOfGraduation } = req.body
-    if(!phone || !engineeringDomain || !college || !yearOfGraduation){
+    if(!phone && !engineeringDomain && !college && !yearOfGraduation){
         throw new ApiError(400, "Atleast one field is required");
     }
     const user = await User.findByIdAndUpdate(
@@ -540,5 +540,14 @@ const isUsernameUnique = asyncHandler(async(req,res)=>{
   res.status(200).json(new ApiResponse(200, {isUnique:true}, "Username is unique"));
 })
 
+const checkToken = asyncHandler(async(req, res)=>{
+  const user = await User.findById(req.user?._id);
+  if(!user){
+    throw new ApiError(404, "User not found");
+  }
+  return res
+  .status(200)
+  .json(new ApiResponse(200, {}, "Token is valid"));
+})
 
-export { registerUser, loginUser, logoutUser, refreshAccessToken, changeCurrentPassword, getCurrentUser, updateAccountDetails, updateProfilePicture, getUserProfile, addPersonalDetails , followOrUnfollowUser, forgotPassword, resetPassword, searchUsers, sendVerificationEmail, verifyEmail, resendVerificationEmail, getUserFeed, getUserFollowers, getUserFollowing, handleSocialLogin, isUsernameUnique};
+export { registerUser, loginUser, logoutUser, refreshAccessToken, changeCurrentPassword, getCurrentUser, updateAccountDetails, updateProfilePicture, getUserProfile, addPersonalDetails , followOrUnfollowUser, forgotPassword, resetPassword, searchUsers, sendVerificationEmail, verifyEmail, resendVerificationEmail, getUserFeed, getUserFollowers, getUserFollowing, handleSocialLogin, isUsernameUnique, checkToken};

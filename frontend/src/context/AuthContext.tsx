@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useContext, createContext} from "react";
 import {useNavigate, useLocation} from 'react-router-dom'
 import { requestHandler } from "@/utils";
-import { loginUser, registerUser, logoutUser,getCurrentUser,updateAccountDetails,addPersonalDetails , updateProfilePicture, refreshToken,followOrUnfollow} from "@/api";
+import { loginUser, registerUser, logoutUser,getCurrentUser,updateAccountDetails,addPersonalDetails , updateProfilePicture, refreshToken,followOrUnfollow,checkToken} from "@/api";
 import Loader from "@/components/Loader";
 export interface UserInterface {
     _id: string;
@@ -69,7 +69,11 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
                 localStorage.setItem("user", JSON.stringify(res.data.user));
                 localStorage.setItem("token", res.data.accessToken);
                 setAuthError(null);
+                const currentUser = res.data.user
+                if(!currentUser?.college && !currentUser?.engineeringDomain){
+                    return navigate("/editProfile");
                 
+                }
                 const savedLocation = location.state?.from || '/profile';
             navigate(savedLocation);
             },
@@ -171,6 +175,20 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
             }
         )
     }
+    const checkTokenValidity = async()=>{
+        await requestHandler(
+            async()=>await checkToken(),
+            setIsLoading,
+            (res)=>{
+                console.log(res);
+            },
+            (err:any)=>{
+                if(err.status == 403){
+                    refreshAccessToken()
+                }
+            }
+        )
+    }
     
     
 
@@ -193,8 +211,7 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
             async()=>await updateAccountDetails(data),
             setIsLoading,
             (res)=>{
-                console.log(res);
-                setUser(res.data.user);
+                setUser(res.data);
                 localStorage.setItem("user", JSON.stringify(res.data));
             },
             (err:any)=>{
@@ -217,7 +234,7 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
             setIsLoading,
             (res)=>{
                 console.log(res);
-                setUser(res.data.user);
+                setUser(res.data);
                 localStorage.setItem("user", JSON.stringify(res.data));
             },
             (err:any)=>{
@@ -260,17 +277,18 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
      useEffect(() => {
         const initializeAuth = async () => {
             setIsLoading(true);
+
             const _token = localStorage.getItem("token");
             const _user: any = localStorage.getItem("user");
             if (_token && _user) {
                 setUser(JSON.parse(_user));
                 setToken(_token);
-                // Optionally, verify the token with the server here
             }
             setIsLoading(false);
         };
 
         initializeAuth();
+        checkTokenValidity();
     }, []);
   return (
     <AuthContext.Provider value={{ user, login, register, logout, token, getGoogleSignedInUser,updateAccDetails,updatePersonalDetails,updatePFP, authError,isLoading,setIsLoading,followOrUnfollowUser}}>

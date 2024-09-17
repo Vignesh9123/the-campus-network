@@ -1,8 +1,8 @@
 import React,{useState,useEffect} from 'react'
 import ProfileSideBar from '@/components/sections/ProfileSideBar'
 import { getUserProfile } from '@/api'
-import { getUserPosts } from '@/api'
-import { useParams } from 'react-router-dom'
+import { getUserPosts,getFollowers,getFollowing } from '@/api'
+import { Link, useParams } from 'react-router-dom'
 import Loader from '@/components/Loader'
 import { PostInterface } from '@/types'
 import { formatNumber } from '@/utils'
@@ -18,17 +18,50 @@ import {
   import { ExternalLink } from "lucide-react";
 import PostCard from '@/components/modules/Posts/OthersPostCard'
 import FollowButton from '@/components/modules/FollowButton'
+import { useNavigate } from 'react-router-dom'
+import DotLoader from '@/components/DotLoader'
 function OtherUserProfile() {
+    const navigate = useNavigate()
     const {username} = useParams()
     const [otherUser,setOtherUser] = useState<any>(null)
     const [loading, setLoading] = useState(false)
     const [showPreview, setShowPreview] = useState(false);
     const [posts,setPosts] = useState<any>([])
     const {user} = useAuth()
+    const [followers, setFollowers] = useState([])
+    const [following, setFollowing] = useState([])
+    const [followLoading,setFollowLoading] = useState(false)
+    
+
+    const getOtherFollowers = ()=>{
+      if(followers[0]) return
+      setFollowLoading(true)
+      getFollowers({username:otherUser?.username}).then(
+        (res)=>{
+          setFollowers(res.data.data)
+          setFollowLoading(false)
+        }
+      )
+    }
+    const getOtherFollowing = ()=>{
+      if(following[0]) return
+      setFollowLoading(true)
+      getFollowing({username:otherUser?.username}).then(
+        (res)=>{
+          setFollowing(res.data.data)
+          setFollowLoading(false)
+        }
+
+      )
+    }
 
     useEffect(()=>{
         const fetchUserProfile = async()=>{
             setLoading(true)
+            if(user?.username == username){
+
+              navigate('/profile')
+            }
             const response = await getUserProfile({username})
             console.log(response.data.data.user)
             setOtherUser(response.data.data.user)
@@ -80,10 +113,41 @@ function OtherUserProfile() {
             </Dialog>
             <div className="text-center font-bold text-lg">{otherUser.username}</div>
             <div className="flex mt-4 justify-around">
+            <Dialog onOpenChange={getOtherFollowers}>
+                  <DialogTrigger>
               <div className="hover:underline cursor-pointer">{
-                //logic to convert numbers to roundups such as 2k, 100k, 1M etc
                 formatNumber(otherUser.followers.length)+" "
-                } Followers </div>
+              } Followers</div>
+              </DialogTrigger>
+              <DialogContent className="bg-slate-900 border-0 max-w-[80vw] md:max-w-[35vw]">
+                <DialogHeader>
+                  <DialogTitle>Followers</DialogTitle>
+                  <DialogDescription>
+                    <div className="flex flex-col mt-3 gap-2  max-h-[70vh] overflow-y-auto">
+                      {followLoading && <DotLoader />}
+                      {!followLoading && !followers[0] && 
+                      <div className="text-center text-sm m-3 text-muted-foreground">
+                        No one is following {otherUser.username} yet
+                      </div>}
+                      {
+                        followers[0] && followers.map((follower:any, index) => (
+                          <div onClick={()=>{
+                            navigate(`/user/${follower.username}`)
+                            window.location.reload()
+                            }} key={index} className="flex cursor-pointer hover:bg-muted p-2 items-center gap-2">
+                            <img src={follower.profilePicture} className="w-10 h-10 rounded-full" alt="" />
+                            <div className="flex flex-col">
+                              <div className="font-bold">{follower.username}</div>
+                              <div className="text-sm text-muted-foreground">{follower.email}</div>
+                            </div>
+                          </div>
+                        ))
+                      }
+                    </div>
+                  </DialogDescription>
+                </DialogHeader>
+              </DialogContent>
+              </Dialog>
                 {user?.following.includes(otherUser._id) && (
                   <FollowButton className='' userIdToFollow={otherUser._id} following={
                     user?.following.includes(otherUser._id)
@@ -94,9 +158,43 @@ function OtherUserProfile() {
                   user?.following.includes(otherUser._id)
                 }/>
                 )}
+              <Dialog onOpenChange={getOtherFollowing}>
+                  <DialogTrigger>
               <div className="hover:underline cursor-pointer">{
                 formatNumber(otherUser.following.length)+" "
-                } Following</div>
+              } Following</div>
+              </DialogTrigger>
+              <DialogContent className="bg-slate-900 border-0 max-w-[80vw] md:max-w-[35vw]">
+                <DialogHeader>
+                  <DialogTitle>Following</DialogTitle>
+                  <DialogDescription>
+                    <div className="flex flex-col mt-3 gap-2  max-h-[70vh] overflow-y-auto">
+                    {followLoading && <DotLoader />}
+
+                      {!followLoading && !following[0] &&
+                      <div className="text-center text-sm m-3 text-muted-foreground">
+                        {otherUser.username} is not following anyone yet
+                      </div>}
+                   
+                      {
+                        following[0] && following.map((follow:any, index) => (
+                          <div onClick={()=>{
+                            navigate(`/user/${follow.username}`)
+                            window.location.reload()
+                            }} key={index} className="flex cursor-pointer hover:bg-muted p-2 items-center gap-2">
+                            <img src={follow.profilePicture} className="w-10 h-10 rounded-full" alt="" />
+                            <div className="flex flex-col">
+                              <div className="font-bold">{follow.username}</div>
+                              <div className="text-sm text-muted-foreground">{follow.email}</div>
+                            </div>
+                          </div>
+                        ))
+                      }
+                    </div>
+                  </DialogDescription>
+                </DialogHeader>
+              </DialogContent>
+              </Dialog>
             </div>
             <div className="text-center mt-3 font-bold text-lg">Bio</div>
             <div className="text-center text-sm m-3 text-muted-foreground">
