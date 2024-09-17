@@ -160,7 +160,15 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
                 setToken(res.data.accessToken);
                 localStorage.setItem("token", res.data.accessToken);
             },
-            alert
+            (err:any)=>{
+                if(err.status == 401){
+                    setUser(null);
+                    setToken(null);
+                    localStorage.removeItem("user");
+                    localStorage.removeItem("token");
+                    navigate("/login");
+                }
+            }
         )
     }
     
