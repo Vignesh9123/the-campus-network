@@ -85,7 +85,7 @@ function SearchPage() {
                 {/* Render post search results */}
                 {postSearchResults.map((result:any) => {
                   return(
-                    <PostCard content={result.content} title={result.title} createdOn={result.createdOn} user={result.createdBy} following={user.following.includes(result.createdBy._id)} key={result._id} />
+                    <PostCard post={result} otherUser={result.createdBy} following={user.following.includes(result.createdBy._id)} key={result._id} />
                   )
                 })}
               </div>

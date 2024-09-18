@@ -15,9 +15,21 @@ function ExplorePosts() {
         </div>
         <div className="w-[50%] border-0 border-r-[1px] h-screen overflow-y-auto scrollbar-hide">
             <div className="text-xl font-bold mx-10 my-5 text-center">Explore Posts</div>
-        <OthersPostCard user={user} title='Hello' createdOn={new Date()} content='Hello this is the content'/>
-        <OthersPostCard user={user} title='Hello' createdOn={new Date()} content='Hello this is the content'/>
-        <OthersPostCard user={user} title='Hello' createdOn={new Date()} content='Hello this is the content'/>
+        <OthersPostCard otherUser={user} post={{
+          title:"Hello",
+          content:"Hey this is content",
+          createdOn:Date.now()
+        }}/>
+        <OthersPostCard otherUser={user} post={{
+          title:"Hello",
+          content:"Hey this is content",
+          createdOn:Date.now()
+        }}/>
+        <OthersPostCard otherUser={user} post={{
+          title:"Hello",
+          content:"Hey this is content",
+          createdOn:Date.now()
+        }}/>
 
         <FloatingActionButton/>
         </div>

@@ -3,9 +3,29 @@ import {Globe, EllipsisVertical, ThumbsUpIcon, MessageSquare, Repeat2}  from 'lu
 import { UserInterface } from '@/context/AuthContext'
 import FollowButton from '../FollowButton'
 import { Link } from 'react-router-dom'
-const PostCard = ({user, title, content,createdOn, following}:{user:UserInterface;title:string;content:string;createdOn:Date, following?:boolean}) => {
+import { PostInterface } from '@/types'
+import { likePost } from '@/api'
+import { useAuth } from '@/context/AuthContext'
+const PostCard = ({otherUser, post, following}:{otherUser:UserInterface; following?:boolean;post:any}) => {
    const [readMore, setReadMore] = useState(false)
-    const postCreationTime = new Date(createdOn)
+   const {user} = useAuth()
+    const postCreationTime = new Date(post.createdOn)
+    const [likes, setLikes] = useState(post.likes.length)
+    const [liked, setLiked] = useState(post.likes.includes(user?._id))
+    const [likeLoading, 
+        setLikeLoading] = useState(false)
+    const handleLike = async () => {
+       try {
+        if(likeLoading) return
+        setLikeLoading(true)
+        const res = await likePost({postId:post._id})
+        setLikes(res.data.data)
+        setLiked(!liked)
+        setLikeLoading(false)
+       } catch (error) {
+        
+       }
+    }
   return (
     <div>
       <div className="postcard m-10 mt-3">
@@ -13,13 +33,13 @@ const PostCard = ({user, title, content,createdOn, following}:{user:UserInterfac
                   <div className="flex gap-2 items-center">
                     <div>
                       <img
-                        src={user.profilePicture}
+                        src={otherUser.profilePicture}
                         className="w-10 h-10 rounded-full"
                         alt=""
                       />
                     </div>
                     <div className="flex-col">
-                      <Link to={`/user/${user.username}`} className="pl-1 cursor-pointer font-semibold hover:underline">{user.username}</Link>
+                      <Link to={`/user/${otherUser.username}`} className="pl-1 cursor-pointer font-semibold hover:underline">{otherUser.username}</Link>
                       <div className="text-muted-foreground text-sm flex gap-1 items-center">
                         <Globe className="w-4 h-4" />
                         <div>
@@ -59,22 +79,22 @@ const PostCard = ({user, title, content,createdOn, following}:{user:UserInterfac
                     </div>
                   </div>
                   <div className="ml-auto pr-10">
-                    <FollowButton userIdToFollow={user._id} following={following}/>
+                    <FollowButton userIdToFollow={otherUser._id} following={following}/>
                   </div>
                 </div>
                 <div className="w-3/4 h-[2px] mx-auto m-4 bg-muted"></div>
-                <div className='text-lg p-1 font-bold'>{title}</div>
+                <div className='text-lg p-1 font-bold'>{post.title}</div>
                 <div className="text-sm p-2">
-                 {readMore?content:content.slice(0,300)}
-                 {content.length>300? <span className="text-blue-500 cursor-pointer" onClick={()=>setReadMore(!readMore)}>
+                 {readMore?post.content:post.content.slice(0,300)}
+                 {post.content.length>300? <span className="text-blue-500 cursor-pointer" onClick={()=>setReadMore(!readMore)}>
                     {readMore?"...Read Less":"...Read More"}
                   </span>:""}
                 </div>
                 <div className="w-full h-[2px] m-2 bg-muted"></div>
                 <div className="flex items-center justify-around gap-2 m-3">
-                  <div className="flex hover:bg-muted cursor-pointer p-2 items-center gap-3">
-                    <ThumbsUpIcon className="w-5 h-5" />
-                    <div className="text-sm">0</div>
+                  <div className="flex hover:bg-muted cursor-pointer p-2 items-center gap-3 " onClick={handleLike}>
+                    <ThumbsUpIcon className={`w-5 h-5 ${liked?"text-red-500":""}`}  />
+                    <div className="text-sm">{likes}</div>
                   </div>
                   <div className="flex hover:bg-muted cursor-pointer p-2  items-center gap-3">
                     <MessageSquare className="w-5 h-5" />

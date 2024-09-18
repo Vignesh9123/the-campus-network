@@ -144,12 +144,48 @@ const searchPosts = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, {posts, postsCount}, "Posts fetched successfully"));
 })
 
+const likeorUnlikePost = asyncHandler(async (req, res) => {
+    const {postId} = req.params;
+    //validate the input fields
+    if(!postId){
+        throw new ApiError(400, "Post id is required");
+    }
+    //find the post
+    const post = await Post.findById(postId);
+    if(!post){
+        throw new ApiError(404, "Post not found");
+    }
+    //check if userid is already present post.likes
+    if(post.likes.includes(req.user._id)){
+        //unlike the post
+        post.likes = post.likes.filter((id) => id.toString() !== req.user._id.toString());
+    }
+    else{
+        //find user
+        const user = await User.findById(req.user._id);
+        if(!user){
+            throw new ApiError(404, "User not found");
+        }
+        //update user prefs with post tags
+        user.preferences = [...new Set([...user.preferences, ...post.tags])];
+        await user.save({validateBeforeSave:false});
+        //like the post
+        post.likes.push(req.user._id);
+    } 
+    
+    //save the post
+    const updatedPost = await post.save();
+    const updatedLikesCount = updatedPost.likes.length;
+    //return the response
+    return res.status(200).json(new ApiResponse(200, updatedLikesCount, "Post liked/disliked successfully"));
+})
+
 export {
     createPost,
     getPost,
     updatePost,
     deletePost,
     getUserPosts,
-    searchPosts
-    
+    searchPosts,
+    likeorUnlikePost
 }

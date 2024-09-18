@@ -227,7 +227,7 @@ function OtherUserProfile() {
             }
             {
               posts.map((post:PostInterface, index:any) => (
-                <PostCard key={index} user={otherUser} title={post.title} createdOn={post.createdOn} content={post.content} following={user?.following.includes(otherUser._id)}/>
+                <PostCard key={index} otherUser={otherUser} post={post} following={user?.following.includes(otherUser._id)}/>
               ))
             }
           
