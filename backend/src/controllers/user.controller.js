@@ -487,7 +487,7 @@ const getUserFeed = asyncHandler(async(req, res)=>{
   const feed = await Post.find({
     createdBy: {$in: following}
   }).populate({
-    path: "crdeatedBy",
+    path: "createdBy",
     select: "username email profilePicture"
   });
   return res

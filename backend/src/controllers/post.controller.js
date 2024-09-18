@@ -3,14 +3,22 @@ import { asyncHandler } from '../utils/asyncHandler.js';
 import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { User } from '../models/user.model.js';
+import { postKeywords } from '../constants.js';
 
 //create a new post
 const createPost = asyncHandler(async (req, res) => {
-    const {title, content, tags, isPublic, onlyFollowers} = req.body;
+    const {title, content, isPublic, onlyFollowers} = req.body;
     //validate the input fields
     if(!title || !content){
         throw new ApiError(400, "Title and content are required");
     }
+    const contentWords = content.toLowerCase().split(/\W+/);
+    const titleWords = title.toLowerCase().split(/\W+/);
+    const unionWords = [...new Set([...contentWords, ...titleWords])];
+    const tags = postKeywords.filter(keyword => unionWords.includes(keyword)); 
+    tags.push(req.user.engineeringDomain)    
+    tags.push(req.user.college)
+
     //create a new post
     const post = await Post.create({
         title,
