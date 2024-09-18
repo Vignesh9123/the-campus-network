@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import {useAuth} from '@/context/AuthContext'
 import ProfileSideBar from '@/components/sections/ProfileSideBar'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { checkUsernameUnique } from "@/api";
 import { User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {Dialog,DialogContent,DialogClose,DialogTrigger,DialogTitle} from '@/components/ui/dialog'
+import SelectWithSearch from '@/components/modules/SelectWithSearch'
+import { branches, colleges } from '@/constants'
 function EditProfile() {
     const {user, updateAccDetails, updatePersonalDetails,updatePFP} = useAuth()
     const pathname = window.location.pathname
@@ -21,6 +23,8 @@ function EditProfile() {
     const [isUnique, setIsUnique] = useState(true);
     const [error, setError] = useState('')
     const [profilePicture, setProfilePicture] = useState<File | null | undefined>(null);
+    const [valError, setValError] = useState('')
+    const navigate = useNavigate()
     const checkUsername = async () => {
       if (username.length>0&&username.length < 6) {
         setIsUnique(false);
@@ -63,6 +67,30 @@ function EditProfile() {
     }
     const handlePersonalSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
+      if(!college){
+        setValError('College is required')
+        return
+      }
+      if(!engineeringDomain){
+        setValError('Engineering Domain is required')
+        return
+      }
+      if(yearOfGraduation.length < 4 || isNaN(
+        Number(yearOfGraduation)
+      )){
+        setValError('Enter a valid year of graduation')
+        return
+      }
+      if(college == user?.college
+        && engineeringDomain == user?.engineeringDomain
+        && yearOfGraduation == user?.yearOfGraduation
+        && phone == user?.phone
+      ){
+        
+        return navigate('/profile')
+      }
+      
+      setValError('')
       await updatePersonalDetails({phone, college, engineeringDomain, yearOfGraduation})
     }
     
@@ -151,6 +179,7 @@ function EditProfile() {
            <div className='w-full bg-muted h-[1px]'></div>
             <div className="mx-auto my-4 w-fit text-2xl font-bold">Personal Details</div>
             <form onSubmit={handlePersonalSubmit}>
+                {valError && <p className='text-red-500 mx-5'>{valError}</p>}
 
             <div className='m-5'>
                 <Label htmlFor="Phone number" className='text-xl p-1 font-bold'>Phone number</Label>
@@ -158,11 +187,14 @@ function EditProfile() {
             </div>
             <div className='m-5'>
                 <Label htmlFor="college" className='text-xl p-1 font-bold'>College</Label>
-                <Input id="college" className='my-1' value={college} onChange={(e) => setCollege(e.target.value)} type='text' />
-            </div>
+                <SelectWithSearch id="college" options={colleges} initialValue={user.college} setValue={(option:any)=>{
+            setCollege(option)
+          }}/>            </div>
             <div className='m-5'>
                 <Label htmlFor="engineeringDomain" className='text-xl p-1 font-bold'>Engineering Domain</Label>
-                <Input id="engineeringDomain" className='my-1' value={engineeringDomain} onChange={(e) => setEngineeringDomain(e.target.value)} type='text' />  
+                <SelectWithSearch id="engineeringDomain" options={branches} initialValue={user.engineeringDomain} setValue={(option:any)=>{
+            setEngineeringDomain(option)
+          }}/>  
             </div>
             <div className='m-5'>
                 <Label htmlFor="yearOfGraduation" className='text-xl p-1 font-bold'>Year of Graduation</Label>

@@ -210,10 +210,6 @@ const Profile = () => {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <div className="font-bold">University: </div>
-                <div className="text-sm">JSSSTU</div>
-              </div>
-              <div className="flex items-center gap-2">
                 <div className="font-bold">Graduation: </div>
                 <div className="text-sm">{user.yearOfGraduation}</div>
               </div>
@@ -225,6 +221,10 @@ const Profile = () => {
             <div className="w-full h-[2px] bg-muted mt-5"></div>
             <div className="posts">
               <div className="text-center font-bold text-lg mt-3">Posts</div>
+              {
+                posts.length == 0 &&
+                <div className="text-center text-muted-foreground mt-3">No posts yet</div>
+              }
             {
               posts.map((post:PostInterface, index) => (
                 <PostCard key={index} user={user} title={post.title} createdOn={post.createdOn} content={post.content}/>

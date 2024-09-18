@@ -71,7 +71,7 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
                 setAuthError(null);
                 const currentUser = res.data.user
                 if(!currentUser?.college && !currentUser?.engineeringDomain){
-                    return navigate("/editProfile");
+                    return navigate("/add-personal-details");
                 
                 }
                 const savedLocation = location.state?.from || '/profile';
@@ -180,7 +180,7 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
             async()=>await checkToken(),
             setIsLoading,
             (res)=>{
-                console.log(res);
+                // console.log(res);
             },
             (err:any)=>{
                 if(err.status == 403){
@@ -236,6 +236,7 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
                 console.log(res);
                 setUser(res.data);
                 localStorage.setItem("user", JSON.stringify(res.data));
+                navigate('/profile')
             },
             (err:any)=>{
                 if(err.status == 403){

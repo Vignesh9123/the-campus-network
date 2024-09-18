@@ -209,10 +209,6 @@ function OtherUserProfile() {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <div className="font-bold">University: </div>
-                <div className="text-sm">JSSSTU</div>
-              </div>
-              <div className="flex items-center gap-2">
                 <div className="font-bold">Graduation: </div>
                 <div className="text-sm">{otherUser.yearOfGraduation}</div>
               </div>

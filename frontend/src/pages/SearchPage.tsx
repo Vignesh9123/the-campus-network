@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import Loader from '@/components/Loader';
 import PostCard from '@/components/modules/Posts/OthersPostCard';
 
+
 function SearchPage() {
     const {user} = useAuth();
     const [searchQuery, setSearchQuery] = useState('')
@@ -34,7 +35,7 @@ function SearchPage() {
         <div className="w-[15%] md:w-1/4 border-0 border-r-[1px] h-screen">
         <ProfileSideBar/>
         </div>
-        <div className="w-[50%] overflow-y-scroll scrollbar-hide border-0 border-r-[1px] h-screen">
+        <div className="md:w-[50%] w-[85vw] overflow-y-scroll scrollbar-hide border-0 border-r-[1px] h-screen">
           <div className='mt-5'></div>
         <PlaceholdersAndVanishInput  placeholders={["Search for a user", "Search for a post"]}  onChange={handleChange}
         onSubmit={onSubmit}/>
