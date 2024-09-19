@@ -1,13 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import ProfileSideBar from "@/components/sections/ProfileSideBar";
 import PostCard from "@/components/modules/Posts/PostCard";
 import {
-  Globe,
-  ThumbsUpIcon,
-  EllipsisVertical,
-  Repeat2,
-  MessageSquare,
   ExternalLink,
   Mail,
 } from "lucide-react";
@@ -28,8 +23,6 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from "@/components/ui/carousel"
 import FollowButton from "@/components/modules/FollowButton";
 import { getUserPosts,getFollowers,getFollowing } from '@/api'
@@ -43,7 +36,6 @@ const Profile = () => {
   const pathname = window.location.pathname;
   const [showPreview, setShowPreview] = useState(false);
   const [posts, setPosts] = useState([])
-  const [readMore, setReadMore] = useState(false)
 
   const [followers, setFollowers] = useState([])
   const [following, setFollowing] = useState([])

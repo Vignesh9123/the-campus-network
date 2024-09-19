@@ -1,4 +1,3 @@
-import React from 'react'
 import { Button } from '../ui/button'
 import { useAuth } from '@/context/AuthContext'
 import { useNavigate } from 'react-router-dom' 
@@ -7,7 +6,6 @@ import {
     AlertDialogAction,
     AlertDialogCancel,
     AlertDialogContent,
-    AlertDialogDescription,
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,

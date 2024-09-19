@@ -45,7 +45,7 @@ const AuthContext = createContext<{
     updatePFP:async()=>{},
     authError:null,
     isLoading:false,
-    setIsLoading:(isLoading:boolean)=>{},
+    setIsLoading:()=>{},
     followOrUnfollowUser:async()=>{},
 
 });
@@ -179,7 +179,7 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
         await requestHandler(
             async()=>await checkToken(),
             setIsLoading,
-            (res)=>{
+            (_res)=>{
                 // console.log(res);
             },
             (err:any)=>{

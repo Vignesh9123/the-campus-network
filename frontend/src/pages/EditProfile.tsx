@@ -5,7 +5,6 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { checkUsernameUnique } from "@/api";
-import { User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {Dialog,DialogContent,DialogClose,DialogTrigger,DialogTitle} from '@/components/ui/dialog'
 import SelectWithSearch from '@/components/modules/SelectWithSearch'

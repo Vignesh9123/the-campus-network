@@ -1,5 +1,5 @@
-import React,{useRef, useEffect} from 'react'
-import { motion , useScroll,useAnimation, useInView} from "framer-motion";
+import {useRef} from 'react'
+import { motion , useInView} from "framer-motion";
 import Autoplay from "embla-carousel-autoplay"
 import LoginButton from '../modules/LoginButton';
 import { Button } from '../ui/button';
@@ -7,13 +7,9 @@ import {
     Carousel,
     CarouselContent,
     CarouselItem,
-    CarouselNext,
-    CarouselPrevious,
   } from "@/components/ui/carousel"
 import {Highlight} from '../ui/hero-highlight'
-  import { Card, CardContent } from "@/components/ui/card"
 const HeroCarousel = () => {
-  const controls = useAnimation();
   const ref1 = useRef(null);
   const ref2 = useRef(null);
   const is1InView = useInView(ref1,{});

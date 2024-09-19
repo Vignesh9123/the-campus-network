@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const SelectWithSearch = ({ options, setValue, id, initialValue }:any) => {
     const [isOpen, setIsOpen] = useState(false);

@@ -1,6 +1,5 @@
 import React,{useState} from 'react'
 import NavBar from '@/components/sections/NavBar'
-import { Link, useNavigate } from 'react-router-dom'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
@@ -14,7 +13,7 @@ function AddPersonalDetails() {
     const [yearOfGraduation, setYearOfGraduation] = useState<string>('')
     const [phone, setPhone] = useState<string>('')
     const [valError,  setValError] = useState<string>('')
-   const {user, authError,updatePersonalDetails} = useAuth()
+   const {user, updatePersonalDetails} = useAuth()
 
    const handleSubmit = (e:React.FormEvent<HTMLFormElement>)=>{
     e.preventDefault()

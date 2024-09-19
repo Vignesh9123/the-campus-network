@@ -7,7 +7,6 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
-import { UserInterface } from '@/context/AuthContext'
 import { Button } from '../ui/button'
 import { AuthContext } from '@/context/AuthContext'
 function AccountDropdown() {

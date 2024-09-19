@@ -1,11 +1,10 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import {
     Globe,
     ThumbsUpIcon,
     EllipsisVertical,
     Repeat2,
     MessageSquare,
-    ExternalLink,
   } from "lucide-react";
 import { UserInterface } from '@/context/AuthContext';
 function HappeningPostCard({user,content}:{user:UserInterface;content:string}) {

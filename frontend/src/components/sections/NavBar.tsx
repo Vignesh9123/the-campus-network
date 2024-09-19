@@ -1,4 +1,3 @@
-import React from 'react'
 import LoginButton from '../modules/LoginButton'
 import AccountDropdown from '../modules/AccountDropdown'
 import SearchBar from '../modules/SearchBar'
@@ -7,18 +6,8 @@ import { ModeToggle } from '../mode-toggle'
 import { Link } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { CircleUser } from 'lucide-react'
-import { Button } from '../ui/button'
 const NavBar = ({className}:any) => {
-  const {user, logout} = useAuth()
+  const {user} = useAuth()
   return (
     <div className={'flex items-center  bg-white dark:bg-black px-5 py-5 ' + className || ''}>
       <Link to='/' className='title cursor-pointer text-black font-bold text-2xl md:text-xl xl:text-2xl dark:text-white'>The Campus Network</Link>

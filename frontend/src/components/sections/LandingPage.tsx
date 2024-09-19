@@ -1,7 +1,6 @@
-import React, {useState, useRef, useEffect} from 'react'
+import {useState, useRef} from 'react'
 import NavBar from './NavBar'
-import { motion , useScroll, useInView, useAnimation} from "framer-motion";
-import HeroCarousel from './HeroCarousel';
+import { motion , useScroll, useInView} from "framer-motion";
 import { ContainerScroll } from '../ui/hero-scroll';
 const LandingPage = () => {
   const { scrollYProgress } = useScroll();
@@ -13,7 +12,6 @@ const LandingPage = () => {
       setNavVisible(false)
     }
   });
-  const controls = useAnimation();
   const ref = useRef(null);
   const isInView = useInView(ref);
   

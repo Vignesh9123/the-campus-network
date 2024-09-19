@@ -1,4 +1,3 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
 import {Home, Compass, Search, User,Settings} from 'lucide-react'
 import { FaUsers } from "react-icons/fa";

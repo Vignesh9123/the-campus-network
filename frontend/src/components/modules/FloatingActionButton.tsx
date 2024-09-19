@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
-import { Plus, Edit, UserPlus, Settings,Send } from 'lucide-react';
+import { Plus, Edit } from 'lucide-react';
 import { ModeToggle } from '../mode-toggle';
 import {
   Dialog,
   DialogContent,
   DialogClose,
   DialogTrigger,
-  DialogTitle,
-  DialogFooter
-} from '@/components/ui/dialog'
-import { Button } from '../ui/button';
+  DialogTitle} from '@/components/ui/dialog'
 import CreatePostModule from './Posts/CreatePostModal';
 const FloatingActionButton: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);

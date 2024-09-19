@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import {useState} from 'react'
 import {Globe, EllipsisVertical, ThumbsUpIcon, MessageSquare, Repeat2}  from 'lucide-react'
 import { UserInterface } from '@/context/AuthContext'
 const PostCard = ({user, title, content,createdOn}:{user:UserInterface;title:string;content:string;createdOn:Date}) => {

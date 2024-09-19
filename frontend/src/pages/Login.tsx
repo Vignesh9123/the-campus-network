@@ -4,20 +4,18 @@ import React, {useEffect, useState} from "react";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { cn } from "@/lib/utils";
-import { useNavigate } from 'react-router-dom';
 import { FcGoogle } from "react-icons/fc";
 import { Link } from 'react-router-dom';
 export default function LoginForm() {
-  const { login, logout, user,authError  } = useAuth();
+  const { login, authError  } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
   useEffect(
     ()=>{
       document.title = "The Campus Network - Login"
 
     }
+
     
     ,[])
   const handleLogin = async (e:any) => {
@@ -31,7 +29,6 @@ export default function LoginForm() {
           await login({email:null, username, password });
           
         }
-      setError(''); // Reset any previous errors
    
   };
   

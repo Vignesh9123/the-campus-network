@@ -11,6 +11,6 @@
     },
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "allowUnusedLabels": true
+    "allowUnusedLabels": true,
   }
 }

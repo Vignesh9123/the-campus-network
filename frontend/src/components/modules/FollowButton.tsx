@@ -1,9 +1,8 @@
-import React, {useState} from 'react'
+import {useState} from 'react'
 import { Button } from '../ui/button'
-import { followOrUnfollow } from '@/api'
 import { useAuth } from '@/context/AuthContext'
 const FollowButton = ({className, userIdToFollow, following}:{className?:string, userIdToFollow:string, following?:boolean}) => {
-  const [isFollowing, setIsFollowing] = useState(following)
+  const [isFollowing] = useState(following)
   const [isHovered, setIsHovered] = useState(false)
   const {followOrUnfollowUser} = useAuth()
   const handleMouseEnter = () => {

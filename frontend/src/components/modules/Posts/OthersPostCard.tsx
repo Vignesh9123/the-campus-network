@@ -1,9 +1,8 @@
-import React,{useState} from 'react'
-import {Globe, EllipsisVertical, ThumbsUpIcon, MessageSquare, Repeat2}  from 'lucide-react'
+import {useState} from 'react'
+import {Globe, ThumbsUpIcon, MessageSquare, Repeat2}  from 'lucide-react'
 import { UserInterface } from '@/context/AuthContext'
 import FollowButton from '../FollowButton'
 import { Link } from 'react-router-dom'
-import { PostInterface } from '@/types'
 import { likePost } from '@/api'
 import { useAuth } from '@/context/AuthContext'
 const PostCard = ({otherUser, post, following}:{otherUser:UserInterface; following?:boolean;post:any}) => {

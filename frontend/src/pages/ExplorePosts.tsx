@@ -1,4 +1,4 @@
-import React,{useState, useEffect} from 'react'
+import {useState, useEffect} from 'react'
 import ProfileSideBar from '@/components/sections/ProfileSideBar'
 import FloatingActionButton from '@/components/modules/FloatingActionButton'
 import OthersPostCard from '@/components/modules/Posts/OthersPostCard'
