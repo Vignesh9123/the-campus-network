@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import HappeningPostCard from "@/components/modules/Posts/HappeningPostCard";
 import FloatingActionButton from "@/components/modules/FloatingActionButton";
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import { formatNumber } from "@/utils";
 import {
   Dialog,
@@ -19,6 +19,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import Autoplay from "embla-carousel-autoplay"
+
 import {
   Carousel,
   CarouselContent,
@@ -29,6 +30,7 @@ import { getUserPosts,getFollowers,getFollowing } from '@/api'
 import { PostInterface } from "@/types";
 import DotLoader from "@/components/DotLoader";
 const Profile = () => {
+  const navigate = useNavigate()
   const plugin = useRef(
     Autoplay({ stopOnMouseEnter:true, stopOnInteraction:false,stopOnFocusIn:false, delay: 3000 })
   )
@@ -141,11 +143,14 @@ const Profile = () => {
                       
                       {
                         followers[0] && followers.map((follower:any, index) => (
-                          <div key={index} className="flex items-center gap-2">
+                          <div onClick={()=>{
+                            navigate(`/user/${follower.username}`)
+                            window.location.reload()
+                            }} key={index} className="flex items-center gap-2 hover:bg-muted cursor-pointer p-2">
                             <img src={follower.profilePicture} className="w-10 h-10 rounded-full" alt="" />
                             <div className="flex flex-col">
                               <div className="font-bold">{follower.username}</div>
-                              <div className="text-sm text-muted-foreground">{follower.name}</div>
+                              <div className="text-sm text-muted-foreground">{follower.email}</div>
                             </div>
                           </div>
                         ))
@@ -173,11 +178,14 @@ const Profile = () => {
                       
                       {
                         following[0] && following.map((follow:any, index) => (
-                          <div key={index} className="flex items-center gap-2">
+                          <div onClick={()=>{
+                            navigate(`/user/${follow.username}`)
+                            window.location.reload()
+                            }} key={index} className="flex items-center gap-2 hover:bg-muted cursor-pointer p-2">
                             <img src={follow.profilePicture} className="w-10 h-10 rounded-full" alt="" />
                             <div className="flex flex-col">
                               <div className="font-bold">{follow.username}</div>
-                              <div className="text-sm text-muted-foreground">{follow.name}</div>
+                              <div className="text-sm text-muted-foreground">{follow.email}</div>
                             </div>
                           </div>
                         ))
