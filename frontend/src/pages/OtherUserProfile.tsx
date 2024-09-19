@@ -149,14 +149,10 @@ function OtherUserProfile() {
               </DialogContent>
               </Dialog>
                 {user?.following.includes(otherUser._id) && (
-                  <FollowButton className='' userIdToFollow={otherUser._id} following={
-                    user?.following.includes(otherUser._id)
-                  }/>
+                  <FollowButton className='' userIdToFollow={otherUser._id}/>
                 )}
                 {!user?.following.includes(otherUser._id) && (
-                <FollowButton className='' userIdToFollow={otherUser._id} following={
-                  user?.following.includes(otherUser._id)
-                }/>
+                <FollowButton className='' userIdToFollow={otherUser._id} />
                 )}
               <Dialog onOpenChange={getOtherFollowing}>
                   <DialogTrigger>
@@ -227,7 +223,7 @@ function OtherUserProfile() {
             }
             {
               posts.map((post:PostInterface, index:any) => (
-                <PostCard key={index} otherUser={otherUser} post={post} following={user?.following.includes(otherUser._id)}/>
+                <PostCard key={index} otherUser={otherUser} post={post}/>
               ))
             }
           
