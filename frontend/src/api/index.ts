@@ -87,4 +87,7 @@ const checkToken = ()=>{
 const likePost = (data:{postId:string})=>{
   return apiClient.post(`/posts/like/${data.postId}`)
 }
-export {refreshToken, loginUser,checkToken, registerUser, logoutUser , getCurrentUser, checkUsernameUnique, createPost, updateAccountDetails,addPersonalDetails, updateProfilePicture,getUserPosts,searchUser, getUserProfile,followOrUnfollow, searchPost,getFollowers, getFollowing, likePost};
+const getUserFeed = ( ()=>{
+  return apiClient.get('/users/feed')
+})
+export {refreshToken, loginUser,checkToken, registerUser, logoutUser , getCurrentUser, checkUsernameUnique, createPost, updateAccountDetails,addPersonalDetails, updateProfilePicture,getUserPosts,searchUser, getUserProfile,followOrUnfollow, searchPost,getFollowers, getFollowing, likePost, getUserFeed};

@@ -9,7 +9,7 @@ import { useAuth } from '@/context/AuthContext'
 const PostCard = ({otherUser, post, following}:{otherUser:UserInterface; following?:boolean;post:any}) => {
    const [readMore, setReadMore] = useState(false)
    const {user} = useAuth()
-    const postCreationTime = new Date(post.createdOn)
+    const postCreationTime = new Date(post.createdAt)
     const [likes, setLikes] = useState(post.likes.length)
     const [liked, setLiked] = useState(post.likes.includes(user?._id))
     const [likeLoading, 
