@@ -484,12 +484,56 @@ const resendVerificationEmail = asyncHandler(async(req, res)=>{
 const getUserFeed = asyncHandler(async(req, res)=>{
   const user = await User.findById(req.user?._id);
   const following = user.following;
-  const feed = await Post.find({
-    createdBy: {$in: following}
-  }).populate({
-    path: "createdBy",
-    select: "username email profilePicture"
-  });
+  const feed = await Post.aggregate([
+    {
+      $match: {
+        $and: [
+          {
+            $or: [
+              { createdBy: { $in: following } },
+              { tags: { $in: [user.engineeringDomain, user.college] } },
+              { tags: { $in: user.preferences } }
+            ]
+          },
+          { createdAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) } } // 24 hours ago
+        ]
+      }
+    },
+    {
+      $addFields: {
+        isFollowedUser: { $cond: [{ $in: ["$createdBy", following] }, 1, 0] } // Mark posts by followed users
+      }
+    },
+    {
+      $sort: { isFollowedUser: -1, createdAt: -1 } // Sort followed users first, then by createdAt
+    },
+    {
+      $lookup: {
+        from: 'users', // Collection where users are stored
+        localField: 'createdBy', // Field in Post collection to match
+        foreignField: '_id', // Field in User collection to match with
+        as: 'createdBy' // Output field for user data
+      }
+    },
+    {
+      $unwind: '$createdBy' // Unwind the array so that createdByUser is a single object
+    },
+    {
+      $project: {
+        // Select the fields you want to include
+        createdBy: {_id:1, username: 1, email: 1, profilePicture: 1 },
+        tags: 1,
+        createdAt: 1,
+        isFollowedUser: 1,
+        title:1,
+        content:1,
+        likes:1,
+        comments:1,
+        public:1
+      }
+    }
+  ]);
+  
   return res
   .status(200)
   .json(new ApiResponse(200, feed, "User feed fetched successfully"));
