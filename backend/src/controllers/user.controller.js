@@ -529,7 +529,8 @@ const getUserFeed = asyncHandler(async(req, res)=>{
         content:1,
         likes:1,
         comments:1,
-        public:1
+        public:1,
+        createdAt:1
       }
     }
   ]);
