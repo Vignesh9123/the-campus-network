@@ -54,22 +54,27 @@ function OtherUserProfile() {
 
       )
     }
+    const fetchUserProfile = async()=>{
+      if(user?.username == username){
 
+        navigate('/profile')
+      }
+      const response = await getUserProfile({username})
+      console.log(response.data.data.user)
+      setOtherUser(response.data.data.user)
+      setFollowers([])
+      setFollowing([])
+      const posts = await getUserPosts({username:username||''})
+      setPosts(posts.data.data)
+  }
     useEffect(()=>{
-        const fetchUserProfile = async()=>{
-            setLoading(true)
-            if(user?.username == username){
-
-              navigate('/profile')
-            }
-            const response = await getUserProfile({username})
-            console.log(response.data.data.user)
-            setOtherUser(response.data.data.user)
-            const posts = await getUserPosts({username:username||''})
-            setPosts(posts.data.data)
-            setLoading(false)
-        }
-        fetchUserProfile()
+      setLoading(true);
+      const fetchData = async () => {
+        await fetchUserProfile();
+        setLoading(false);
+      };
+    
+      fetchData();
     },[])
 
   return (
@@ -149,10 +154,14 @@ function OtherUserProfile() {
               </DialogContent>
               </Dialog>
                 {user?.following.includes(otherUser._id) && (
-                  <FollowButton className='' userIdToFollow={otherUser._id}/>
+                  <div>
+                  <FollowButton className='' userIdToFollow={otherUser._id} callback={fetchUserProfile}/>
+                  </div>
                 )}
                 {!user?.following.includes(otherUser._id) && (
-                <FollowButton className='' userIdToFollow={otherUser._id} />
+                <div>
+                <FollowButton className='' userIdToFollow={otherUser._id} callback={fetchUserProfile}/>
+                </div>
                 )}
               <Dialog onOpenChange={getOtherFollowing}>
                   <DialogTrigger>
@@ -223,7 +232,7 @@ function OtherUserProfile() {
             }
             {
               posts.map((post:PostInterface, index:any) => (
-                <PostCard key={index} otherUser={otherUser} post={post}/>
+                <PostCard key={index} otherUser={otherUser} post={post} followCallback={fetchUserProfile}/>
               ))
             }
           

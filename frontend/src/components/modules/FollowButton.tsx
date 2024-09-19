@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { Button } from '../ui/button';
 import { useAuth } from '@/context/AuthContext';
 
-const FollowButton = ({ className, userIdToFollow }: { className?: string, userIdToFollow: string }) => {
+const FollowButton = ({ className, userIdToFollow, callback }: { className?: string, userIdToFollow: string, 
+  callback?: () => void
+ }) => {
   const [isHovered, setIsHovered] = useState(false);
   const { followOrUnfollowUser, following } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
@@ -16,6 +18,7 @@ const FollowButton = ({ className, userIdToFollow }: { className?: string, userI
     setIsLoading(true);
     try {
       await followOrUnfollowUser(userIdToFollow);
+      if (callback) callback();
     } catch (error) {
       console.error(error);
       // toast.error("Failed to update follow status. Please try again.");
