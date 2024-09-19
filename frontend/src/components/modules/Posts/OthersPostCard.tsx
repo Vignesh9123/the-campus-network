@@ -5,7 +5,7 @@ import FollowButton from '../FollowButton'
 import { Link } from 'react-router-dom'
 import { likePost } from '@/api'
 import { useAuth } from '@/context/AuthContext'
-const PostCard = ({otherUser, post, following}:{otherUser:UserInterface; following?:boolean;post:any}) => {
+const PostCard = ({otherUser, post }:{otherUser:UserInterface;post:any}) => {
    const [readMore, setReadMore] = useState(false)
    const {user} = useAuth()
     const postCreationTime = new Date(post.createdAt)
@@ -78,7 +78,7 @@ const PostCard = ({otherUser, post, following}:{otherUser:UserInterface; followi
                     </div>
                   </div>
                   <div className="ml-auto pr-10">
-                    <FollowButton userIdToFollow={otherUser._id} following={following}/>
+                    <FollowButton userIdToFollow={otherUser._id}/>
                   </div>
                 </div>
                 <div className="w-3/4 h-[2px] mx-auto m-4 bg-muted"></div>

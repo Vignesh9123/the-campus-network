@@ -33,6 +33,7 @@ const AuthContext = createContext<{
     isLoading:boolean;
     setIsLoading:(isLoading:boolean)=>void;
     followOrUnfollowUser:(userId:string)=>Promise<void>;
+    following:string[];
 }>({
     user:null,
     token:null,
@@ -47,6 +48,7 @@ const AuthContext = createContext<{
     isLoading:false,
     setIsLoading:()=>{},
     followOrUnfollowUser:async()=>{},
+    following:[]
 
 });
 
@@ -57,6 +59,7 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
     const [user, setUser] = useState<UserInterface | null>(null);
     const [token, setToken] = useState<string | null>(null);
     const [authError, setAuthError] = useState<string|null>('')
+    const [following, setFollowing] = useState<string[]>([]);
     const navigate = useNavigate();
     const location = useLocation();
     const login = async (data:{email:string|null,username:string|null;password:string }) => {
@@ -137,11 +140,12 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
     const followOrUnfollowUser = async(userId:string)=>{
         await requestHandler(
             async()=>await followOrUnfollow({userId}),
-            setIsLoading,
+            ()=>{},
             (res)=>{
-                console.log(res);
                 setUser(res.data.currentUser);
                 localStorage.setItem("user", JSON.stringify(res.data.currentUser));
+                setFollowing(res.data.currentUser.following);
+
             },
             (err:any)=>{
                 if(err.status == 403){
@@ -284,6 +288,7 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
             if (_token && _user) {
                 setUser(JSON.parse(_user));
                 setToken(_token);
+                setFollowing(JSON.parse(_user).following);
             }
             setIsLoading(false);
         };
@@ -292,7 +297,7 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
         checkTokenValidity();
     }, []);
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, token, getGoogleSignedInUser,updateAccDetails,updatePersonalDetails,updatePFP, authError,isLoading,setIsLoading,followOrUnfollowUser}}>
+    <AuthContext.Provider value={{ user,following, login, register, logout, token, getGoogleSignedInUser,updateAccDetails,updatePersonalDetails,updatePFP, authError,isLoading,setIsLoading,followOrUnfollowUser}}>
       {isLoading ? <Loader /> : children} {/* Display a loader while loading */}
     </AuthContext.Provider>
   );

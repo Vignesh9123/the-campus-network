@@ -45,7 +45,7 @@ function ExplorePosts() {
             {!loading && posts.length === 0 && <div className="text-center mt-10">No posts to show, search or follow new content</div>}
             {!loading && posts.length > 0 &&
             posts.map((post:any) => (
-                <OthersPostCard otherUser={post.createdBy} key={post._id} post={post} following={post.isFollowedUser} />
+                <OthersPostCard otherUser={post.createdBy} key={post._id} post={post}/>
             ))}
 
         <FloatingActionButton/>

@@ -1,45 +1,43 @@
-import {useState} from 'react'
-import { Button } from '../ui/button'
-import { useAuth } from '@/context/AuthContext'
-const FollowButton = ({className, userIdToFollow, following}:{className?:string, userIdToFollow:string, following?:boolean}) => {
-  const [isFollowing] = useState(following)
-  const [isHovered, setIsHovered] = useState(false)
-  const {followOrUnfollowUser} = useAuth()
-  const handleMouseEnter = () => {
-    setIsHovered(true)
-  }
-  const handleMouseLeave = () => {
-    setIsHovered(false)
-  }
-  const handleFollow = () => {
+import { useState } from 'react';
+import { Button } from '../ui/button';
+import { useAuth } from '@/context/AuthContext';
+
+const FollowButton = ({ className, userIdToFollow }: { className?: string, userIdToFollow: string }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const { followOrUnfollowUser, following } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const isFollowing = following.includes(userIdToFollow);
+
+  const handleMouseEnter = () => setIsHovered(true);
+  const handleMouseLeave = () => setIsHovered(false);
+
+  const handleFollowAction = async () => {
+    setIsLoading(true);
     try {
-      followOrUnfollowUser(userIdToFollow)
+      await followOrUnfollowUser(userIdToFollow);
     } catch (error) {
-      console.log(error);
-      
+      console.error(error);
+      // toast.error("Failed to update follow status. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
-  }
-  const handleUnfollow = () => {
-    try {
-      followOrUnfollowUser(userIdToFollow)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-  
+  };
+
   return (
     <div>
-      {isFollowing ? (
-        <Button className={className +'min-w-28'} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} onClick={handleUnfollow}>
-          {isHovered ? "Unfollow" : "Following"}
-        </Button>
-      ) : (
-        <Button className={className} onClick={handleFollow}>
-          Follow
-        </Button>
-      )}
+      <Button 
+        variant={isFollowing ? (isHovered ? 'default' : 'outline') : 'default'}
+        className={`${className} min-w-28`}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onClick={handleFollowAction}
+        disabled={isLoading}
+      >
+        {isLoading ? 'Loading...' : (isFollowing ? (isHovered ? 'Unfollow' : 'Following') : 'Follow')}
+      </Button>
     </div>
-  )
-}
+  );
+};
 
-export default FollowButton
+export default FollowButton;
