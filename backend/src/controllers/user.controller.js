@@ -495,7 +495,7 @@ const getUserFeed = asyncHandler(async(req, res)=>{
               { tags: { $in: user.preferences } }
             ]
           },
-          { createdAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) } },// 24 hours ago
+          { createdAt: { $gte: new Date(Date.now() - 48 * 60 * 60 * 1000) } },// 24 hours ago
           { createdBy: { $ne: user._id } }
         ]
       }

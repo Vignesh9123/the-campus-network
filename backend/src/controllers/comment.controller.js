@@ -22,7 +22,11 @@ const addComment = asyncHandler(async (req, res) => {
         comment,
         post: postId,
         user: userId
-    })
+    }).then(
+        async (comment) => await comment.populate('user', 'username profilePicture email')
+    )
+    post.comments.push(savedComment._id)
+    await post.save()
 
     res.status(201).json(new ApiResponse(201, savedComment, 'Comment added successfully'))
 })
@@ -88,6 +92,9 @@ const deleteComment = asyncHandler(async (req, res) => {
     }
 
     await Comment.findByIdAndDelete(commentId)
+    await Post.findByIdAndUpdate(comment.post, {
+        $pull: { comments: commentId }
+    })
 
     res.status(200).json(new ApiResponse(200, null, 'Comment deleted successfully'))
 })

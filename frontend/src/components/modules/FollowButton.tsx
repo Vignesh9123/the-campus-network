@@ -2,14 +2,14 @@ import { useState } from 'react';
 import { Button } from '../ui/button';
 import { useAuth } from '@/context/AuthContext';
 
-const FollowButton = ({ className, userIdToFollow, callback }: { className?: string, userIdToFollow: string, 
+const FollowButton = ({ className, userIdToFollow, callback }: { className?: string, userIdToFollow: string|undefined, 
   callback?: () => void
  }) => {
   const [isHovered, setIsHovered] = useState(false);
   const { followOrUnfollowUser, following } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
-  const isFollowing = following.includes(userIdToFollow);
+  const isFollowing = following.includes(userIdToFollow!);
 
   const handleMouseEnter = () => setIsHovered(true);
   const handleMouseLeave = () => setIsHovered(false);
@@ -17,7 +17,7 @@ const FollowButton = ({ className, userIdToFollow, callback }: { className?: str
   const handleFollowAction = async () => {
     setIsLoading(true);
     try {
-      await followOrUnfollowUser(userIdToFollow);
+      await followOrUnfollowUser(userIdToFollow!);
       if (callback) callback();
     } catch (error) {
       console.error(error);

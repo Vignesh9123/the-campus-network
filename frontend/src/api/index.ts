@@ -90,4 +90,16 @@ const likePost = (data:{postId:string})=>{
 const getUserFeed = ( ()=>{
   return apiClient.get('/users/feed')
 })
-export {refreshToken, loginUser,checkToken, registerUser, logoutUser , getCurrentUser, checkUsernameUnique, createPost, updateAccountDetails,addPersonalDetails, updateProfilePicture,getUserPosts,searchUser, getUserProfile,followOrUnfollow, searchPost,getFollowers, getFollowing, likePost, getUserFeed};
+const addComment = (data:{postId:string|undefined, content:string})=>{
+  return apiClient.post(`/comments/${data.postId}`, {comment:data.content})
+}
+const getCommentsbyPost = (data:{postId:string|undefined})=>{
+  return apiClient.get(`/comments/${data.postId}`)
+}
+const deleteComment = (data:{commentId:string|undefined})=>{
+  return apiClient.delete(`/comments/${data.commentId}`)
+}
+const getPost = (data:{postId:string|undefined})=>{
+  return apiClient.get(`/posts/post/${data.postId}`)
+}
+export {refreshToken, loginUser,checkToken, registerUser, logoutUser , getCurrentUser, checkUsernameUnique, createPost, updateAccountDetails,addPersonalDetails, updateProfilePicture,getUserPosts,searchUser, getUserProfile,followOrUnfollow, searchPost,getFollowers, getFollowing, likePost, getUserFeed, addComment,deleteComment,getCommentsbyPost,getPost};

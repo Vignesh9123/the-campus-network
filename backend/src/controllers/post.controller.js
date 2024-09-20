@@ -4,6 +4,7 @@ import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { User } from '../models/user.model.js';
 import { postKeywords } from '../constants.js';
+import * as mongoose from 'mongoose';
 
 //create a new post
 const createPost = asyncHandler(async (req, res) => {
@@ -48,12 +49,51 @@ const getPost = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Post id is required");
     }
     //find the post
-    const post = await Post.findById(postId);
+    const post = await Post.
+    aggregate([
+        {
+            $match: {
+                _id: new mongoose.Types.ObjectId(postId)
+            }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "createdBy",
+                foreignField: "_id",
+                as: "createdBy"
+            }
+        },
+        {
+            $unwind: "$createdBy"
+        },
+        {
+            $project: {
+                _id: 1,
+                title: 1,
+                content: 1,
+                tags: 1,
+                public: 1,
+                onlyFollowers: 1,
+                createdAt: 1,
+                createdBy: {
+                    _id: 1,
+                    username: 1,
+                    email: 1,
+                    profilePicture: 1
+                },
+                likes:1,
+                comments:1
+                
+            
+            }
+        }
+    ]);
     if(!post){
         throw new ApiError(404, "Post not found");
     }
     //return the response
-    return res.status(200).json(new ApiResponse(200, post, "Post fetched successfully"));
+    return res.status(200).json(new ApiResponse(200, post[0], "Post fetched successfully"));
 })
 
 const updatePost = asyncHandler(async (req, res) => {
