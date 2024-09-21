@@ -2,6 +2,7 @@ import {Group} from '../models/group.model.js'
 import {asyncHandler} from '../utils/asyncHandler.js'
 import {ApiError} from '../utils/ApiError.js'
 import {ApiResponse} from '../utils/ApiResponse.js'
+import {User} from '../models/user.model.js'
 
 const createGroup = asyncHandler(async (req, res) => {
     const {name, description} = req.body
@@ -17,7 +18,9 @@ const createGroup = asyncHandler(async (req, res) => {
     if (!group) {
         throw new ApiError(500, "Something went wrong while creating group")
     }
-    return res.status(201).json(new ApiResponse(201, group, "Group created successfully"))
+    const user = await User.findByIdAndUpdate(req.user._id, {$push: {groups: group._id}}, {new: true})
+    .select('-password -refreshToken')
+    return res.status(201).json(new ApiResponse(201, {user,group}, "Group created successfully"))
 })
 
 const isGroupNameUnique = asyncHandler(async (req, res) => {
@@ -52,6 +55,8 @@ const exitFromGroup = asyncHandler(async (req, res) => {
     }
     group.members = group.members.filter(member => member.toString() !== req.user._id.toString())
     await group.save()
+    const user = await User.findByIdAndUpdate(req.user._id, {$pull: {groups: group._id}}, {new: true})
+    .select('-password -refreshToken')
     return res.status(200).json(new ApiResponse(200, null, "User left from group"))
 })
 
@@ -68,6 +73,9 @@ const requestToJoinGroup = asyncHandler(async (req, res) => {
         throw new ApiError(400, "User already the member of the group")
     group.joinRequests.push(req.user._id)
     await group.save()
+
+    const user = await User.findByIdAndUpdate(req.user._id, {$push: {pendingGroupRequests: group._id}}, {new: true})
+    .select('-password -refreshToken')
     return res.status(200).json(new ApiResponse(200, null, "Request sent"))
 })
 
@@ -88,6 +96,8 @@ const acceptRequest = asyncHandler(async (req, res) => {
     group.joinRequests = group.joinRequests.filter(request => request.toString() !== userId.toString())
     group.members.push(userId)
     await group.save()
+    const user = await User.findByIdAndUpdate(userId, {$push: {groups: group._id}, $pull: {pendingGroupRequests: group._id}}, {new: true})
+    .select('-password -refreshToken')
     return res.status(200).json(new ApiResponse(200, group, "Request accepted"))
 })
 
@@ -107,6 +117,9 @@ const rejectRequest = asyncHandler(async (req, res) => {
     }
     group.joinRequests = group.joinRequests.filter(request => request.toString() !== userId.toString())
     await group.save()
+
+    const user = await User.findByIdAndUpdate(userId, {$pull: {pendingGroupRequests: group._id}}, {new: true})
+    .select('-password -refreshToken')
     return res.status(200).json(new ApiResponse(200, group, "Request rejected"))
 })
 
@@ -127,7 +140,8 @@ const addToGroup = asyncHandler(async (req, res) => {
         group.members.push(userId)
         await group.save()
     }
-    return res.status(200).json(new ApiResponse(200, group, "User added to group"))
+    const user = await User.findByIdAndUpdate(userId, {$push: {groups: group._id}}, {new: true})
+    return res.status(200).json(new ApiResponse(200, {user,group}, "User added to group"))
 })
 
 const removeFromGroup = asyncHandler(async (req, res) => {
@@ -147,6 +161,7 @@ const removeFromGroup = asyncHandler(async (req, res) => {
         group.members = group.members.filter(member => member.toString() !== userId.toString())
         await group.save()
     }
+    await User.findByIdAndUpdate(userId, {$pull: {groups: group._id}}, {new: true})
     return res.status(200).json(new ApiResponse(200, group, "User removed from group"))
 })
 
@@ -159,7 +174,25 @@ const deleteGroup = asyncHandler(async (req, res) => {
     if (!group.admin.equals(req.user._id)) {
         throw new ApiError(403, "You are not authorized to delete this group")
     }
+    for(let id of group.members){
+        await User.findByIdAndUpdate(id, 
+            {
+                $pull:{groups:group._id,}
+
+            }
+        )
+    }
+
+    for(let id of group.joinRequests){
+        await User.findByIdAndUpdate(id,
+            {
+                $pull:{pendingGroupRequests:group._id,}
+
+            }
+        )
+    }
     await Group.findByIdAndDelete(groupId)
+
     return res.status(200).json(new ApiResponse(200, null, "Group deleted successfully"))
 })
 
