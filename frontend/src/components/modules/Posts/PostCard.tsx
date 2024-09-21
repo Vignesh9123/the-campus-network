@@ -1,9 +1,15 @@
 import {useState} from 'react'
 import {Globe, EllipsisVertical, ThumbsUpIcon, MessageSquare, Repeat2}  from 'lucide-react'
 import { UserInterface } from '@/context/AuthContext'
-const PostCard = ({user, title, content,createdOn}:{user:UserInterface;title:string;content:string;createdOn:Date}) => {
+import { formatDistanceToNow } from 'date-fns'
+import { PostInterface } from '@/types'
+import { useNavigate } from 'react-router-dom'
+const PostCard = ({user, post}:{user:UserInterface;post:PostInterface}) => {
+
+  const navigate = useNavigate()
+  
    const [readMore, setReadMore] = useState(false)
-    const postCreationTime = new Date(createdOn)
+    const postCreationTime = new Date(post.createdAt!)
   return (
     <div>
       <div className="postcard m-10 mt-3">
@@ -23,32 +29,7 @@ const PostCard = ({user, title, content,createdOn}:{user:UserInterface;title:str
                         <div>
                           {
                             //logic to display when the post was created eg, 1d, 10min, 1mo
-                            (() => {
-                              const currentTime = new Date()
-                              const diffInMs = currentTime.getTime() - postCreationTime.getTime()
-                              const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24))
-                              const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60))
-                              const diffInMinutes = Math.floor(diffInMs / (1000 * 60))
-                              const diffInMonths = Math.floor(diffInDays / 30)
-                              const diffInYears = Math.floor(diffInMonths / 12)
-                              const diffInSeconds = Math.floor(diffInMs / 1000)
-                              if (diffInYears > 0) {
-                                return `${diffInYears}y ago`
-                              } else if (diffInMonths > 0) {
-                                return `${diffInMonths}mo go`
-                              } else if (diffInDays > 0) {
-                                return `${diffInDays}d ago`
-                              } else if (diffInHours > 0) {
-                                return `${diffInHours}h ago`
-                              } else if (diffInMinutes > 0) {
-                                return `${diffInMinutes}min ago`
-                              } else if (diffInSeconds > 0) {
-                                return `${diffInSeconds}s ago`
-                              } else {
-                                return `just now`
-                              }
-                              
-                            })()
+                           formatDistanceToNow(postCreationTime, { addSuffix: true })
                             
                           }
                           
@@ -61,10 +42,10 @@ const PostCard = ({user, title, content,createdOn}:{user:UserInterface;title:str
                   </div>
                 </div>
                 <div className="w-3/4 h-[2px] mx-auto m-4 bg-muted"></div>
-                <div className='text-lg p-1 font-bold'>{title}</div>
+                <div className='text-lg p-1 font-bold'>{post.title}</div>
                 <div className="text-sm p-2">
-                 {readMore?content:content.slice(0,300)}
-                 {content.length>300? <span className="text-blue-500 cursor-pointer" onClick={()=>setReadMore(!readMore)}>
+                 {readMore?post.content:post.content.slice(0,300)}
+                 {post.content.length>300? <span className="text-blue-500 cursor-pointer" onClick={()=>setReadMore(!readMore)}>
                     {readMore?"...Read Less":"...Read More"}
                   </span>:""}
                 </div>
@@ -72,11 +53,13 @@ const PostCard = ({user, title, content,createdOn}:{user:UserInterface;title:str
                 <div className="flex items-center justify-around gap-2 m-3">
                   <div className="flex hover:bg-muted cursor-pointer p-2 items-center gap-3">
                     <ThumbsUpIcon className="w-5 h-5" />
-                    <div className="text-sm">0</div>
+                    <div className="text-sm">{post.likes?.length}</div>
                   </div>
-                  <div className="flex hover:bg-muted cursor-pointer p-2  items-center gap-3">
+                  <div 
+                    onClick={()=>navigate(`/post/${post._id}`)}
+                  className="flex hover:bg-muted cursor-pointer p-2  items-center gap-3">
                     <MessageSquare className="w-5 h-5" />
-                    <div className="text-sm">0</div>
+                    <div className="text-sm">{post.comments?.length}</div>
                   </div>
                   <div className="flex hover:bg-muted cursor-pointer p-2  items-center gap-3">
                     <Repeat2 className="w-5 h-5" />

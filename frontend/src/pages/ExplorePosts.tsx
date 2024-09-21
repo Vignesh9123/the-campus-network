@@ -10,54 +10,68 @@ function ExplorePosts() {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const {user} = useAuth();
+
+    const fetchPosts = async () => {
+      setLoading(true);
+      try {
+        const data = await getUserFeed();
+        setPosts(data.data.data);
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+      }
+      setLoading(false);
+    };
+
+    const scrollToTop = () => {
+      const contentDiv = document.querySelector('.scrollbar-hide');
+      if (contentDiv) {
+        contentDiv.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    };
+
     useEffect(() => {
-        const fetchPosts = async () => {
-          setLoading(true);
-          try {
-            const data = await getUserFeed();
-            setPosts(data.data.data);
-          } catch (error) {
-            console.error('Error fetching posts:', error);
-          }
-          setLoading(false);
-        };
-    
         fetchPosts();
-      }, []);
+        // Set up an interval to auto-refresh the data and scroll to top every 10 seconds
+        const intervalId = setInterval(() => {
+          fetchPosts();
+          scrollToTop();
+        }, 20000); // Every 10,000 milliseconds (10 seconds)
+    //TODO:Add more time
+    //TODO:Add refresh icon
+        // Clear the interval when the component unmounts
+        return () => clearInterval(intervalId);
+    }, []);
  
-  return (
-    <>
-    {user && <div className='flex'>
-        <div className="w-[15%] md:w-1/4 border-0 border-r-[1px] h-screen">
-        <ProfileSideBar/>
-        </div>
-        <div className="w-[50%] border-0 border-r-[1px] h-screen overflow-y-auto scrollbar-hide">
-            <div className="text-xl font-bold mx-10 my-5 text-center">Explore Posts</div>
-            {loading && 
-            <>
-            <PostSkeletonLoader/>
-            <PostSkeletonLoader/>
-            <PostSkeletonLoader/>
-            </>
+    return (
+        <>
+        {user && <div className='flex'>
+            <div className="w-[15%] md:w-1/4 border-0 border-r-[1px] h-screen">
+            <ProfileSideBar/>
+            </div>
+            <div className="w-[85%] md:w-[50%] border-0 border-r-[1px] h-screen overflow-y-auto scrollbar-hide" key="scrollable-content">
+                <div className="text-xl font-bold mx-10 my-5 text-center">Explore Posts</div>
+                {loading && 
+                <>
+                <PostSkeletonLoader/>
+                <PostSkeletonLoader/>
+                <PostSkeletonLoader/>
+                </>
+                }
+                
+                {!loading && posts.length === 0 && <div className="text-center mt-10">No posts to show, search or follow new content</div>}
+                {!loading && posts.length > 0 &&
+                posts.map((post:any) => (
+                    <OthersPostCard otherUser={post.createdBy} key={post._id} post={post}/>
+                ))}
 
-            }
-            
-            {!loading && posts.length === 0 && <div className="text-center mt-10">No posts to show, search or follow new content</div>}
-            {!loading && posts.length > 0 &&
-            posts.map((post:any) => (
-                <OthersPostCard otherUser={post.createdBy} key={post._id} post={post}/>
-            ))}
-
-        <FloatingActionButton/>
-        </div>
-        <div className="hidden lg:block w-[25%] h-screen">
-            <div className="text-xl font-semibold m-5 ml-2">Accounts to follow</div>
-
-            
-        </div>
-    </div>}
-    </>
-  )
+            <FloatingActionButton/>
+            </div>
+            <div className="hidden lg:block w-[25%] h-screen">
+                <div className="text-xl font-semibold m-5 ml-2">Accounts to follow</div>
+            </div>
+        </div>}
+        </>
+    )
 }
 
 export default ExplorePosts

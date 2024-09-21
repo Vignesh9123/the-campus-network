@@ -227,7 +227,7 @@ const Profile = () => {
               }
             {
               posts.map((post:PostInterface, index) => (
-                <PostCard key={index} user={user} title={post.title} createdOn={post.createdOn} content={post.content}/>
+                <PostCard key={index} user={user} post={post}/>
               ))
             }
           

@@ -25,7 +25,7 @@ function PostComments() {
     
     const { postId } = useParams();
     const { user } = useAuth();
-    
+    //TODO: Delete comment should be visible only if comment.user._id matches user._id
 
     const handleAddComment = async () => {
         if (!comment.trim()) return;

@@ -13,8 +13,8 @@ const ProfileSideBar = () => {
         <Home className='mx-auto md:mx-0'/>
         <div className='hidden md:block'>Home</div>
       </Link>
-      <Link to='/explore' className='hover:bg-muted flex gap-2 items-center text-lg p-3'>
-        <Compass className='mx-auto md:mx-0'/>
+      <Link to='/explore' className={`hover:bg-muted flex gap-2 items-center text-lg p-3 ${pathname === '/explore' ? 'bg-muted text-xl font-bold' : ''}`}>
+        <Compass strokeWidth={pathname=='/explore'?4:2} className='mx-auto md:mx-0'/>
         <div className='hidden md:block'>Explore</div>
       </Link>
       <Link to='/search' className={`hover:bg-muted flex gap-2 items-center text-lg p-3 ${pathname === '/search' ? 'bg-muted text-xl font-bold' : ''}`}>
