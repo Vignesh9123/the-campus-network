@@ -21,8 +21,8 @@ const ProfileSideBar = () => {
         <Search strokeWidth={pathname=='/search'?4:3} className='mx-auto md:mx-0'/>
         <div className='hidden md:block'>Search</div>
       </Link>
-      <Link to='/groups' className='hover:bg-muted flex gap-2 items-center text-lg p-3'>
-        <FaUsers className='text-2xl mx-auto md:mx-0'/>
+      <Link to='/groups' className={`hover:bg-muted flex gap-2 items-center text-lg p-3 ${pathname === '/groups' ? 'bg-muted text-xl font-bold' : ''}`}>
+        <FaUsers strokeWidth={pathname=='/groups'?4:2} className='text-2xl mx-auto md:mx-0'/>
         <div className='hidden md:block'>Groups</div>
       </Link>
       <Link to='/profile' className={`hover:bg-muted flex gap-2 items-center text-lg p-3 ${pathname === '/profile' ? 'bg-muted text-xl font-bold' : ''}`}>

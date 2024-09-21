@@ -12,6 +12,7 @@ import SearchPage from './pages/SearchPage'
 import OtherUserProfile from './pages/OtherUserProfile'
 import AddPersonalDetails from './pages/AddPersonalDetails'
 import PostComments from './pages/PostComments'
+import Groups from './pages/Groups'
 function App() {
   return (
     <div>
@@ -33,6 +34,7 @@ function App() {
         <Route path='/user/:username' element={<OtherUserProfile/>}/>
         <Route path='/add-personal-details' element={<AddPersonalDetails/>}/>
         <Route path='/post/:postId' element={<PostComments/>}/>
+        <Route path='/groups' element={<Groups/>}/>
         
         
         </Route>

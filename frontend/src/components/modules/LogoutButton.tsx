@@ -11,6 +11,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
   } from "@/components/ui/alert-dialog"
+import {LogOut} from 'lucide-react'
 const LogoutButton = ({className, variant}:{className?:string, variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | null | undefined}) => {
     const navigate = useNavigate();
     const {logout} = useAuth();
@@ -21,7 +22,13 @@ const LogoutButton = ({className, variant}:{className?:string, variant?: "defaul
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-    <Button className={className} variant={variant} >Logout</Button>
+    <Button className={className} variant={variant}>
+      <div className='flex justify-center items-center'>
+
+    <LogOut className='w-4 h-4 mr-2' />
+    <div className='hidden md:block'>Logout</div>
+      </div>
+    </Button>
     </AlertDialogTrigger>
     <AlertDialogContent>
       <AlertDialogHeader>

@@ -25,7 +25,6 @@ function PostComments() {
     
     const { postId } = useParams();
     const { user } = useAuth();
-    //TODO: Delete comment should be visible only if comment.user._id matches user._id
 
     const handleAddComment = async () => {
         if (!comment.trim()) return;
@@ -111,13 +110,15 @@ function PostComments() {
                                 </div>
                                 <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button className="w-fit" variant="ghost">
+              <Button className={`w-fit  ${
+                comment?.user?._id === user?._id ? '' : 'hidden'}
+              `} variant="ghost">
                 <EllipsisVertical size={20}/>
                 <span className="sr-only">Toggle user menu</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <Button className="w-full" variant={"destructive"}
+              <Button className={`w-full`} variant={"destructive"}
               onClick={() => handleDeleteComment(comment._id) }               
               >Delete Comment</Button>
             </DropdownMenuContent>
@@ -136,7 +137,9 @@ function PostComments() {
                             className="flex-1 lg:w-[350px] xl:w-[500px]" 
                             placeholder="Add a comment..." 
                         />
-                        <Button onClick={handleAddComment} disabled={commentLoading}>
+                        <Button onClick={handleAddComment} disabled={commentLoading
+                            || !comment.trim()
+                        }>
                             {commentLoading ? 'Posting...' : 'Post'}
                         </Button>
                     </div>

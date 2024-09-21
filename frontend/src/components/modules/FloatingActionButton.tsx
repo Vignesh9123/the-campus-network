@@ -8,6 +8,7 @@ import {
   DialogTrigger,
   DialogTitle} from '@/components/ui/dialog'
 import CreatePostModule from './Posts/CreatePostModal';
+import LogoutButton from './LogoutButton';
 const FloatingActionButton: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -37,6 +38,7 @@ const FloatingActionButton: React.FC = () => {
         </Dialog>
          
           <ModeToggle/>
+          <LogoutButton className='md:hidden'/>
         </>
       )}
 
