@@ -1,16 +1,19 @@
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useRef} from 'react'
 import ProfileSideBar from '@/components/sections/ProfileSideBar'
 import FloatingActionButton from '@/components/modules/FloatingActionButton'
 import OthersPostCard from '@/components/modules/Posts/OthersPostCard'
 import { useAuth } from '@/context/AuthContext'
 import { getUserFeed } from '@/api'
 import PostSkeletonLoader from '@/components/modules/Posts/PostSkeletonLoader'
+import { usePullToRefresh } from '@/components/modules/usePullRefreshHook'
+
 
 function ExplorePosts() {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const {user} = useAuth();
-
+    const contentDivRef = useRef<HTMLDivElement>(null);
+    
     const fetchPosts = async () => {
       setLoading(true);
       try {
@@ -21,6 +24,7 @@ function ExplorePosts() {
       }
       setLoading(false);
     };
+    usePullToRefresh(contentDivRef, fetchPosts);
 
     const scrollToTop = () => {
       const contentDiv = document.querySelector('.scrollbar-hide');
@@ -35,10 +39,8 @@ function ExplorePosts() {
         const intervalId = setInterval(() => {
           fetchPosts();
           scrollToTop();
-        }, 20000); // Every 10,000 milliseconds (10 seconds)
-    //TODO:Add more time
+        }, 100000); 
     //TODO:Add refresh icon
-        // Clear the interval when the component unmounts
         return () => clearInterval(intervalId);
     }, []);
  
@@ -48,7 +50,7 @@ function ExplorePosts() {
             <div className="w-[15%] md:w-1/4 border-0 border-r-[1px] h-screen">
             <ProfileSideBar/>
             </div>
-            <div className="w-[85%] md:w-[50%] border-0 border-r-[1px] h-screen overflow-y-auto scrollbar-hide" key="scrollable-content">
+            <div ref={contentDivRef} className="w-[85%] md:w-[50%] border-0 border-r-[1px] h-screen overflow-y-auto scrollbar-hide" key="scrollable-content">
                 <div className="text-xl font-bold mx-10 my-5 text-center">Explore Posts</div>
                 {loading && 
                 <>
@@ -64,11 +66,11 @@ function ExplorePosts() {
                     <OthersPostCard otherUser={post.createdBy} key={post._id} post={post}/>
                 ))}
 
-            <FloatingActionButton/>
             </div>
             <div className="hidden lg:block w-[25%] h-screen">
                 <div className="text-xl font-semibold m-5 ml-2">Accounts to follow</div>
             </div>
+            <FloatingActionButton/>
         </div>}
         </>
     )

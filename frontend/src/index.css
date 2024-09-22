@@ -1,6 +1,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+.pull-indicator {
+  position: absolute;
+  top: 30px;
+  left: 55%;
+  transform: translateX(-50%);
+  transition: all 0.3s ease;
+}
+
+@media (min-width: 768px) {
+  .pull-indicator {
+    left: 50%;
+  }
+}
+
+.pull-indicator.flip {
+  transform: translateX(-50%) rotate(180deg);
+}
 
 @layer base {
   :root {
