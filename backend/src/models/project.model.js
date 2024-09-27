@@ -66,7 +66,7 @@ projectSchema.pre(/^find/, function (next) {
       path:"group"
       ,populate:{
         path:"members"
-        ,select:"username"
+        ,select:"username profilePicture emal"
       }
     }
   )

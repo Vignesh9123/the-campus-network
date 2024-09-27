@@ -6,11 +6,11 @@ import { Project } from '../models/project.model.js'
 import {Group} from '../models/group.model.js'
 
 const createTask = asyncHandler(async (req, res) => {
-    const {title, description, dueDate, priority, assignedTo, projectId} = req.body
+    const {title, description, dueDate, priority, assignedTo, projectId, status} = req.body
     const userId = req.user._id
 
-    if (!title || !description || !projectId) {
-        throw new ApiError(400, 'Title, description and projectId are required')
+    if (!title || !projectId) {
+        throw new ApiError(400, 'Title and projectId are required')
     }
     const project = await Project.findById(projectId)
     if (!project) {
@@ -35,6 +35,7 @@ const createTask = asyncHandler(async (req, res) => {
         description,
         dueDate,
         priority,
+        status,
         assignedTo,
         project: projectId,
         
@@ -140,10 +141,38 @@ const deleteTask = asyncHandler(async (req, res) => {
     )
 })
 
+const getMyTasks = asyncHandler(async(req, res)=>{
+    const {projectId} = req.params
+    const userId = req.user._id
+    const tasks = await Task.find({
+        project: projectId,
+        assignedTo:{$in:[userId]}
+    }).populate('assignedTo', 'username profilePicture email')
+
+    return res.status(200).json(
+        new ApiResponse(200, tasks, 'Tasks fetched successfully')
+    )
+})
+
+const getOthersTasks = asyncHandler(async(req, res)=>{
+    const {projectId} = req.params
+    const userId = req.user._id
+    const tasks = await Task.find({
+        project: projectId,
+        assignedTo:{$nin:[userId]}
+    }).populate('assignedTo', 'username profilePicture email')
+
+    return res.status(200).json(
+        new ApiResponse(200, tasks, 'Tasks fetched successfully')
+    )
+})
+
 export {
     createTask,
     getTask,
     updateTask,
     updateTaskStatus,
-    deleteTask
+    deleteTask,
+    getMyTasks,
+    getOthersTasks
 }

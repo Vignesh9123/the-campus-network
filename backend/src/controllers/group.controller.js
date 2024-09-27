@@ -38,6 +38,15 @@ const getGroup = asyncHandler(async (req, res) => {
     const group = await Group.findById(groupId)
         .populate('admin', 'username email profilePicture') //TODO:Check if required
         .populate('members', 'username email profilePicture')
+        .populate('projects', '')
+    //populate joinRequests only req.user._id == group.admin._id
+
+    if (req.user._id.equals(group.admin._id)) {
+        group.joinRequests = await User.find({_id: {$in: group.joinRequests}}, 'username email profilePicture')
+    } else {
+        group.joinRequests = []
+    }
+    
     if (!group) {
         throw new ApiError(404, "Group not found")
     }
@@ -196,6 +205,13 @@ const deleteGroup = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, null, "Group deleted successfully"))
 })
 
+const getMyGroups = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id)
+        .populate('groups', 'name description')
+        .select('groups')
+    return res.status(200).json(new ApiResponse(200, user.groups, "Groups found"))
+})
+
 export {
     createGroup,
     isGroupNameUnique,
@@ -206,5 +222,6 @@ export {
     acceptRequest,
     rejectRequest,
     removeFromGroup,
-    deleteGroup
+    deleteGroup,
+    getMyGroups
 }

@@ -7,11 +7,9 @@ const taskSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    required: true,
   },
   dueDate: {
     type: Date,
-    required: true,
   },
   priority: {
     type: String,
@@ -28,11 +26,14 @@ const taskSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     }
+    
   ],
   project: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Project",
   },
   
+},{
+  timestamps:true
 });
 export const Task = mongoose.model("Task", taskSchema);

@@ -175,7 +175,8 @@ const searchPosts = asyncHandler(async (req, res) => {
     .populate({
         path: "createdBy",
         select: "username email profilePicture"
-    });
+    })
+    .sort({createdAt: -1});
     if(!posts){
         throw new ApiError(404, "No posts found");
     }

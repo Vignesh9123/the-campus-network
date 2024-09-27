@@ -102,4 +102,105 @@ const deleteComment = (data:{commentId:string|undefined})=>{
 const getPost = (data:{postId:string|undefined})=>{
   return apiClient.get(`/posts/post/${data.postId}`)
 }
-export {refreshToken, loginUser,checkToken, registerUser, logoutUser , getCurrentUser, checkUsernameUnique, createPost, updateAccountDetails,addPersonalDetails, updateProfilePicture,getUserPosts,searchUser, getUserProfile,followOrUnfollow, searchPost,getFollowers, getFollowing, likePost, getUserFeed, addComment,deleteComment,getCommentsbyPost,getPost};
+const createGroup = (data: { groupData: any }) => {
+  return apiClient.post(`/groups/create-group`, data.groupData);
+}
+
+const getGroup = (data: { groupId: string | undefined }) => {
+  return apiClient.get(`/groups/get-group/${data.groupId}`);
+}
+
+const acceptRequest = (data: { userId: string | undefined, groupId: string | undefined }) => {
+  return apiClient.post(`/groups/accept-request/${data.userId}/${data.groupId}`);
+}
+
+const addToGroup = (data: { userId: string | undefined, groupId: string | undefined }) => {
+  return apiClient.post(`/groups/add-to-group/${data.userId}/${data.groupId}`);
+}
+
+const deleteGroup = (data: { groupId: string | undefined }) => {
+  return apiClient.delete(`/groups/delete-group/${data.groupId}`);
+}
+
+const exitFromGroup = (data: { groupId: string | undefined }) => {
+  return apiClient.post(`/groups/exit-from-group/${data.groupId}`);
+}
+
+const isGroupNameUnique = (data: { groupName: string }) => {
+  return apiClient.post(`/groups/is-group-name-unique`, { groupName: data.groupName });
+}
+
+const rejectRequest = (data: { userId: string | undefined, groupId: string | undefined }) => {
+  return apiClient.post(`/groups/reject-request/${data.userId}/${data.groupId}`);
+}
+
+const removeFromGroup = (data: { userId: string | undefined, groupId: string | undefined }) => {
+  return apiClient.post(`/groups/remove-from-group/${data.userId}/${data.groupId}`);
+}
+
+const requestToJoinGroup = (data: { groupId: string | undefined }) => {
+  return apiClient.post(`/groups/request-to-join-group/${data.groupId}`);
+}
+
+const addProject = (data: { projectData: any }) => {
+  return apiClient.post(`/projects/add-project`, data.projectData);
+}
+
+const getGroupProjects = (data: { groupId: string | undefined }) => {
+  return apiClient.get(`/projects/get-group-projects/${data.groupId}`);
+}
+
+const getMyProjects = () => {
+  return apiClient.get(`/projects/get-my-projects`);
+}
+
+const getProject = (data: { projectId: string | undefined }) => {
+  return apiClient.get(`/projects/get-project/${data.projectId}`);
+}
+
+const updateProject = (data: { projectId: string | undefined, updateData: any }) => {
+  return apiClient.patch(`/projects/update-project/${data.projectId}`, data.updateData);
+}
+
+const updateProjectStatus = (data: { projectId: string | undefined, status: string }) => {
+  return apiClient.patch(`/projects/update-project-status/${data.projectId}`, { status: data.status });
+}
+
+const deleteProject = (data: { projectId: string | undefined }) => {
+  return apiClient.delete(`/projects/delete-project/${data.projectId}`);
+}
+
+const createTask = (data: { taskData: any }) => {
+  return apiClient.post(`/tasks/create-task`, data.taskData);
+}
+
+const getTask = (data: { taskId: string | undefined }) => {
+  return apiClient.get(`/tasks/get-task/${data.taskId}`);
+}
+
+const updateTask = (data: { taskId: string | undefined, updateData: any }) => {
+  return apiClient.patch(`/tasks/update-task/${data.taskId}`, data.updateData);
+}
+
+const updateTaskStatus = (data: { taskId: string | undefined, status: string }) => {
+  return apiClient.patch(`/tasks/update-task-status/${data.taskId}`, { status: data.status });
+}
+
+const deleteTask = (data: { taskId: string | undefined }) => {
+  return apiClient.delete(`/tasks/delete-task/${data.taskId}`);
+}
+const getMyGroups = ()=>{
+  return apiClient.get('/groups/get-my-groups')
+}
+const getMyTasks = (data:{projectId:string |undefined})=>{
+  return apiClient.get(`/tasks/get-my-tasks/${data.projectId}`)
+}
+const getOthersTasks = (data:{projectId: string | undefined})=>{
+  return apiClient.get(`/tasks/get-others-tasks/${data.projectId}`)
+}
+
+export {refreshToken, loginUser,checkToken, registerUser, logoutUser , getCurrentUser, checkUsernameUnique, createPost, updateAccountDetails,addPersonalDetails, updateProfilePicture,getUserPosts,searchUser, getUserProfile,followOrUnfollow, searchPost,getFollowers, getFollowing, likePost, getUserFeed, addComment,deleteComment,getCommentsbyPost,getPost,
+  createGroup, getGroup, acceptRequest, addToGroup, deleteGroup, exitFromGroup, isGroupNameUnique, rejectRequest, removeFromGroup, requestToJoinGroup,
+  addProject, getGroupProjects, getMyProjects, getProject, updateProject, updateProjectStatus, deleteProject,
+  createTask, getTask, updateTask, updateTaskStatus, deleteTask,getMyGroups,getMyTasks,getOthersTasks
+  }
