@@ -9,8 +9,12 @@ import { useAuth } from '@/context/AuthContext'
 const NavBar = ({className}:any) => {
   const {user} = useAuth()
   return (
-    <div className={'flex items-center  bg-white dark:bg-black px-5 py-5 ' + className || ''}>
-      <Link to='/' className='title cursor-pointer text-black font-bold text-2xl md:text-xl xl:text-2xl dark:text-white'>The Campus Network</Link>
+    <div className={'flex items-center justify-around  bg-white dark:bg-black px-5 py-5 ' + className || ''}>
+      {/* <Link to='/' className='title cursor-pointer text-black font-bold text-2xl md:text-xl xl:text-2xl dark:text-white'>The Campus Network</Link> */}
+     
+     <Link to={"/"} className='flex items-center'> <img src="/TCN%20Logo%20WO%20BG.png" className='w-16 h-16' alt="" />
+     <div className='font-bold'>The Campus Network</div>
+     </Link>
       <div className='menus hidden lg:block lg:ml-10'>
         <ul className='flex gap-10 text-black dark:text-white'>
           <Link to='/' className='cursor-pointer hover:underline'>Home</Link>

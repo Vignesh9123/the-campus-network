@@ -223,7 +223,7 @@ function GroupIdPage() {
 
     </div>}
         </div>
-        <div className="md:w-[25%]  h-screen">
+        <div className="md:w-[25%] hidden md:block  h-screen">
         {admin &&
         <div> 
         <div className="m-3 text-lg font-bold">

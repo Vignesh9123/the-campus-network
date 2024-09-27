@@ -124,7 +124,7 @@ function Groups() {
       </div>
     </div>
         </div>
-        <div className="md:w-[25%] h-screen">
+        <div className="hidden md:block md:w-[25%] h-screen">
           <GroupRightSideBar/>
 
         </div>
