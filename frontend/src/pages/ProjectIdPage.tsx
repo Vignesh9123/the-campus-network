@@ -35,8 +35,34 @@ function ProjectIdPage() {
   const [myTasks, setMyTasks] = useState<any[]>([]);
   const [othersTasks, setOthersTasks] = useState<any[]>([]);
   const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [priorityFilter, setPriorityFilter] = useState("all");
   
-  
+  const filteredMyTasks = myTasks.filter((task) => {
+    const matchesSearch = task.title.toLowerCase().includes(search.toLowerCase());
+    const matchesStatus =
+      statusFilter === "all" || task.status === statusFilter;
+    const matchesPriority =
+      priorityFilter === "all" || task.priority === priorityFilter;
+    return matchesSearch && matchesStatus && matchesPriority;
+  });
+
+
+  const filteredOthersTasks = othersTasks.filter((task) => {
+    const matchesSearch = task.title.toLowerCase().includes(search.toLowerCase());
+    const matchesStatus =
+      statusFilter === "all" || task.status === statusFilter;
+    const matchesPriority =
+      priorityFilter === "all" || task.priority === priorityFilter;
+    return matchesSearch && matchesStatus && matchesPriority;
+  });
+
+
+
+
+
+
+
   
   
 
@@ -100,13 +126,13 @@ function ProjectIdPage() {
                   </div>
                 </div>
                 <div className="grid grid-cols-2">
-                  <div className="mx-10 flex items-center gap-1">
+                  <div className="mx-5 flex items-center gap-1">
                     <div className="text-muted-foreground">Start Date:</div>
                     <div className="text-lg font-bold">
                       {new Date(project.startDate).toDateString()}
                     </div>
                   </div>
-                  <div className="mx-10 flex items-center gap-1">
+                  <div className="mx-5 flex items-center gap-1">
                     <div className="text-muted-foreground">
                       Estimated End Date:
                     </div>
@@ -125,10 +151,18 @@ function ProjectIdPage() {
           <div className="flex justify-between">
 
          <div className="flex gap-5">
-            <Select>
+            <Select 
+            value={statusFilter}
+            onValueChange={
+              (value) => {
+                setStatusFilter(value);
+              }
+            }
+            >
   <SelectTrigger className="w-[180px] focus:ring-0 border-0 border-b-[1px] border-b-slate-300
   ">
-    <SelectValue placeholder="Status" />
+    <SelectValue placeholder="Status"
+    />
   </SelectTrigger>
   <SelectContent>
     <SelectItem value="all">All</SelectItem>
@@ -137,16 +171,22 @@ function ProjectIdPage() {
     <SelectItem value="completed">Completed</SelectItem>
   </SelectContent>
 </Select>
-            <Select>
+            <Select
+            value={priorityFilter}
+            onValueChange={
+              (value) => {
+                setPriorityFilter(value);
+              }}
+            >
   <SelectTrigger className="w-[180px] focus:ring-0 border-0 border-b-[1px] border-b-slate-300
   ">
     <SelectValue placeholder="Priority" />
   </SelectTrigger>
   <SelectContent>
     <SelectItem value="all">All</SelectItem>
-    <SelectItem value="todo">Low</SelectItem>
-    <SelectItem value="in progress">Medium</SelectItem>
-    <SelectItem value="completed">High</SelectItem>
+    <SelectItem value="low">Low</SelectItem>
+    <SelectItem value="medium">Medium</SelectItem>
+    <SelectItem value="high">High</SelectItem>
   </SelectContent>
 </Select>
          </div>
@@ -167,9 +207,11 @@ function ProjectIdPage() {
        <div>Due Date</div>
     </div>
     {
-      myTasks.map((task) => (
-        <TaskTableRow  admin={admin} task={task} key={task._id} />
-      ))}
+      filteredMyTasks.map((task) => (
+        <TaskTableRow admin={admin} task={task} key={task._id} />
+    ))}
+
+        
     
   
         </AccordionContent>
@@ -177,6 +219,59 @@ function ProjectIdPage() {
       <AccordionItem value="item-2">
         <AccordionTrigger  className="text-xl font-semibold">Others Tasks</AccordionTrigger>
         <AccordionContent>
+          {/* Filters */}
+          <div className="flex justify-between">
+
+         <div className="flex gap-5">
+            <Select
+            value={statusFilter}
+
+            onValueChange={
+              (value) => {
+                setStatusFilter(value);
+              }
+            }
+            >
+  <SelectTrigger className="w-[180px] focus:ring-0 border-0 border-b-[1px] border-b-slate-300
+  ">
+    <SelectValue placeholder="Status"
+    />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="all">All</SelectItem>
+    <SelectItem value="todo">To Do</SelectItem>
+    <SelectItem value="in progress">In Progress</SelectItem>
+    <SelectItem value="completed">Completed</SelectItem>
+  </SelectContent>
+</Select>
+            <Select
+            value={priorityFilter}
+            onValueChange={
+              (value) => {
+                setPriorityFilter(value);
+              }}
+            >
+  <SelectTrigger className="w-[180px] focus:ring-0 border-0 border-b-[1px] border-b-slate-300
+  ">
+    <SelectValue placeholder="Priority" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="all">All</SelectItem>
+    <SelectItem value="low">Low</SelectItem>
+    <SelectItem value="medium">Medium</SelectItem>
+    <SelectItem value="high">High</SelectItem>
+  </SelectContent>
+</Select>
+         </div>
+         <Input
+         placeholder="Search"
+         className="border-0 border-b-[1px] border-b-slate-300 focus:ring-0"
+         value={search}
+
+         onChange={(e) => setSearch(e.target.value)}
+         />
+    </div>
+          
         <div className="grid grid-cols-5 p-5 place-items-center">
        <div>Title</div>
        <div>Status</div>
@@ -185,9 +280,10 @@ function ProjectIdPage() {
        <div>Due Date</div>
     </div>
     {
-      othersTasks.map((task) => (
+      filteredOthersTasks.map((task) => (
         <TaskTableRow admin={admin} task={task} key={task._id} />
     ))}
+      
          
         </AccordionContent>
       </AccordionItem>
