@@ -79,7 +79,7 @@ export default function CreatePostModule() {
       value={content}
       onChange={handleContentChange}
       className="w-full p-4 max-h-[45vh] overflow-y-auto text-gray-800 dark:text-gray-100 bg-gray-100 dark:bg-gray-800 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-400 resize-none overflow-hidden"
-      placeholder="Write your long post here..."
+      placeholder="Write your post here..."
       required={true}
       minLength={10}
       maxLength={1000}

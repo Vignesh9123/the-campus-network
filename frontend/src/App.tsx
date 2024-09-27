@@ -13,6 +13,8 @@ import OtherUserProfile from './pages/OtherUserProfile'
 import AddPersonalDetails from './pages/AddPersonalDetails'
 import PostComments from './pages/PostComments'
 import Groups from './pages/Groups'
+import GroupIdPage from './pages/GroupIdPage'
+import ProjectIdPage from './pages/ProjectIdPage'
 function App() {
   return (
     <div>
@@ -35,9 +37,10 @@ function App() {
         <Route path='/add-personal-details' element={<AddPersonalDetails/>}/>
         <Route path='/post/:postId' element={<PostComments/>}/>
         <Route path='/groups' element={<Groups/>}/>
-        
-        
+        <Route path='/groups/:groupId' element={<GroupIdPage/>}/>
+        <Route path='/projects/:projectId' element={<ProjectIdPage/>}/>
         </Route>
+        <Route path='*' element={<div>Not Found</div>}/>
         
       </Routes>
       

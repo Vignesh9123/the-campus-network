@@ -45,6 +45,18 @@ const userSchema = new mongoose.Schema({
             ref:"Post"
         }
     ] ,
+    groups:[
+        {
+            type:mongoose.Types.ObjectId,
+            ref:"Group"
+        }
+    ],
+    pendingGroupRequests:[
+        {
+            type:mongoose.Types.ObjectId,
+            ref:"Group"
+        }
+    ],
     engineeringDomain:{
         type:String,
         enum:["CSE","ISE", "ECE", "MECH", "CST", "EEE"]
