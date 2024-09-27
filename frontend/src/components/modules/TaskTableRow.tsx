@@ -20,7 +20,7 @@ function TaskTableRow({ task, admin }: { task: any, admin:boolean }) {
   const taskDueDate = new Date(task.dueDate)
   return (
     <Dialog 
-    open={open} onOpenChange={setOpen}>
+    open={(usernames.includes("You") || admin )?open:false} onOpenChange={setOpen}>
       <DialogTrigger className="w-full">   
     <div className="grid grid-cols-5 p-5 items-center bg-muted my-2 place-items-center hover:bg-gray-900 duration-100 cursor-pointer" >
       <div>{task.title}</div>

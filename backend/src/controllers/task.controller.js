@@ -148,7 +148,9 @@ const getMyTasks = asyncHandler(async(req, res)=>{
         project: projectId,
         assignedTo:{$in:[userId]}
     }).populate('assignedTo', 'username profilePicture email')
-
+    .sort({
+       createdAt: -1
+    })
     return res.status(200).json(
         new ApiResponse(200, tasks, 'Tasks fetched successfully')
     )
@@ -161,6 +163,9 @@ const getOthersTasks = asyncHandler(async(req, res)=>{
         project: projectId,
         assignedTo:{$nin:[userId]}
     }).populate('assignedTo', 'username profilePicture email')
+    .sort({
+       createdAt: -1
+    })
 
     return res.status(200).json(
         new ApiResponse(200, tasks, 'Tasks fetched successfully')

@@ -19,7 +19,14 @@ import {
     AccordionTrigger,
   } from "@/components/ui/accordion"
   import AddTasksModule from "@/components/modules/AddTasksModule";
-  
+  // import { Button } from "@/components/ui/button";
+  import { Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+   } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 function ProjectIdPage() {
   const { projectId } = useParams();
   const [project, setProject] = useState<any>(null);
@@ -27,6 +34,9 @@ function ProjectIdPage() {
   const [admin, setAdmin] = useState(false)
   const [myTasks, setMyTasks] = useState<any[]>([]);
   const [othersTasks, setOthersTasks] = useState<any[]>([]);
+  const [search, setSearch] = useState("");
+  
+  
   
   
 
@@ -111,8 +121,45 @@ function ProjectIdPage() {
       <AccordionItem value="yourTasks">
         <AccordionTrigger className="text-xl font-semibold">Your Tasks</AccordionTrigger>
         <AccordionContent>
-         {/*A list of tasks like todos with round select option */}
-         <div className="grid grid-cols-5 p-5 place-items-center">
+          {/* Filters */}
+          <div className="flex justify-between">
+
+         <div className="flex gap-5">
+            <Select>
+  <SelectTrigger className="w-[180px] focus:ring-0 border-0 border-b-[1px] border-b-slate-300
+  ">
+    <SelectValue placeholder="Status" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="all">All</SelectItem>
+    <SelectItem value="todo">To Do</SelectItem>
+    <SelectItem value="in progress">In Progress</SelectItem>
+    <SelectItem value="completed">Completed</SelectItem>
+  </SelectContent>
+</Select>
+            <Select>
+  <SelectTrigger className="w-[180px] focus:ring-0 border-0 border-b-[1px] border-b-slate-300
+  ">
+    <SelectValue placeholder="Priority" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="all">All</SelectItem>
+    <SelectItem value="todo">Low</SelectItem>
+    <SelectItem value="in progress">Medium</SelectItem>
+    <SelectItem value="completed">High</SelectItem>
+  </SelectContent>
+</Select>
+         </div>
+         <Input
+         placeholder="Search"
+         className="border-0 border-b-[1px] border-b-slate-300 focus:ring-0"
+         value={search}
+         onChange={(e) => setSearch(e.target.value)}
+         />
+    </div>
+          {/* Table */}
+
+               <div className="grid grid-cols-5 p-5 place-items-center">
        <div>Title</div>
        <div>Status</div>
        <div>Assigned to</div>
@@ -122,7 +169,7 @@ function ProjectIdPage() {
     {
       myTasks.map((task) => (
         <TaskTableRow  admin={admin} task={task} key={task._id} />
-    ))}
+      ))}
     
   
         </AccordionContent>
