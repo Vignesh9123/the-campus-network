@@ -127,7 +127,7 @@ const exitFromGroup = (data: { groupId: string | undefined }) => {
 }
 
 const isGroupNameUnique = (data: { groupName: string }) => {
-  return apiClient.post(`/groups/is-group-name-unique`, { groupName: data.groupName });
+  return apiClient.post(`/groups/is-group-name-unique`, { name: data.groupName });
 }
 
 const rejectRequest = (data: { userId: string | undefined, groupId: string | undefined }) => {

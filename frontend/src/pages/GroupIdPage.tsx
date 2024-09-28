@@ -135,8 +135,10 @@ function GroupIdPage() {
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction onClick={()=>{
-                  deleteGroup({groupId})
-                  navigate('/groups')
+                  deleteGroup({groupId}).then(()=>{
+                    navigate('/groups')
+                  })
+
                 
                 }}>Continue</AlertDialogAction>
               </AlertDialogFooter>
