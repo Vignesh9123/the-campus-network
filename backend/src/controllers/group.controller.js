@@ -3,7 +3,7 @@ import {asyncHandler} from '../utils/asyncHandler.js'
 import {ApiError} from '../utils/ApiError.js'
 import {ApiResponse} from '../utils/ApiResponse.js'
 import {User} from '../models/user.model.js'
-
+import { deleteUserTasks } from './task.controller.js'
 const createGroup = asyncHandler(async (req, res) => {
     const {name, description} = req.body
     if (!name) {
@@ -167,6 +167,7 @@ const removeFromGroup = asyncHandler(async (req, res) => {
     if(!group.members.includes(userId))
         throw new ApiError(400, "User is not a member of this group")
     if (group.members.includes(userId)) {
+        deleteUserTasks(req,res);
         group.members = group.members.filter(member => member.toString() !== userId.toString())
         await group.save()
     }

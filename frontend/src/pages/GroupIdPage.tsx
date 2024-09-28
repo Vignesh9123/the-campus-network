@@ -1,13 +1,25 @@
 import { useEffect, useState, useRef } from "react"
 import ProfileSideBar from "@/components/sections/ProfileSideBar"
 import { useAuth } from "@/context/AuthContext"
-import {acceptRequest, getGroup} from '@/api'
+import {acceptRequest, deleteGroup, getGroup,removeFromGroup} from '@/api'
 import { Link, useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import GroupAnnouncements from "./GroupAnnouncements";
 import PostSkeletonLoader from "@/components/modules/Posts/PostSkeletonLoader";
 import { Check, X } from "lucide-react";
 import AddProjectModule from "@/components/modules/AddProjectModule";
+import { 
+
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+ } from "@/components/ui/alert-dialog";
 
 function GroupIdPage() {
     const {groupId} = useParams()
@@ -100,10 +112,38 @@ function GroupIdPage() {
           <span>Posts: {group.posts.length}</span>
           <span>Projects: {group.projects.length}</span>
         </div>
+            <div className="flex justify-center gap-5">
 
         <Button variant={"destructive"} className="mt-6">
           Leave Group
         </Button>
+        {admin && <div>
+          {/*Delete Group */}
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant={"destructive"} className="mt-6 ml-2">
+                Delete Group
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete the group and all its data.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={()=>{
+                  deleteGroup({groupId})
+                  navigate('/groups')
+                
+                }}>Continue</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+          </div>}
+            </div>
       </div>
 
       {/* Group Tabs */}
@@ -208,7 +248,20 @@ function GroupIdPage() {
             <span className="text-green-500 px-2 py-1 rounded-full">Admin</span>
           )}
           {member._id !== group.admin._id && (
+            <div>
+              
             <span className="text-blue-500 px-2 py-1 rounded-full">Member</span>
+            <br/>
+            
+            <Button className="my-1" 
+            onClick={()=>{removeFromGroup({userId:member._id, groupId:group._id})
+            .then(()=>{
+              fetchGroup()
+            })
+            
+           }} variant={"destructive"}>Remove</Button>
+            </div>
+            
           )}
         </div>
       </div>
@@ -229,6 +282,9 @@ function GroupIdPage() {
         <div className="m-3 text-lg font-bold">
           Join Requests
           </div>
+          {joinRequests.length == 0 &&
+          <p className="text-center">No join requests</p>
+          }
           {
             joinRequests.map(
               (request:any)=>{
@@ -272,6 +328,7 @@ function GroupIdPage() {
           }
           {admin && <div className="m-3 text-lg font-bold">
           Add Members
+
           </div>}
         </div>
         

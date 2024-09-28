@@ -172,6 +172,17 @@ const getOthersTasks = asyncHandler(async(req, res)=>{
     )
 })
 
+const deleteUserTasks = asyncHandler(async(req, res)=>{
+    const {userId} = req.params
+    const tasks = await Task.updateMany(
+        {assignedTo:userId},
+        {$pull:{assignedTo:userId}}
+    )
+    return res.status(200).json(
+        new ApiResponse(200, tasks, 'Tasks deleted successfully')
+    )
+})
+
 export {
     createTask,
     getTask,
@@ -179,5 +190,6 @@ export {
     updateTaskStatus,
     deleteTask,
     getMyTasks,
-    getOthersTasks
+    getOthersTasks,
+    deleteUserTasks
 }
