@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/context/AuthContext";
+import { Ellipsis } from "lucide-react";
 import TaskTableRow from "@/components/modules/TaskTableRow";
 import {
     Accordion,
@@ -26,6 +27,13 @@ import {
     SelectValue,
    } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+  
+} from '@/components/ui/dropdown-menu'
 function ProjectIdPage() {
   const { projectId } = useParams();
   const [project, setProject] = useState<any>(null);
@@ -112,7 +120,24 @@ function ProjectIdPage() {
                   </BreadcrumbItem>
                 </BreadcrumbList>
               </Breadcrumb>
-              {admin && <AddTasksModule projectId={project._id} members={project.group.members}/>}
+              {admin && 
+              <div className="flex gap-2 items-center">
+                <AddTasksModule projectId={project._id} members={project.group.members}/>
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <Ellipsis size={25} className="cursor-pointer hover:bg-muted"/>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem>
+                      <Link to={`/projects/${project._id}/edit`}>Edit Project</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link to={`/projects/${project._id}/delete`}>Delete Project</Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              
+                </div>}
                 </div>
               <Separator className="mt-3" />
               <div className="header flex justify-between items-center">

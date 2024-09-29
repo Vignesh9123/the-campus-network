@@ -15,6 +15,7 @@ import PostComments from './pages/PostComments'
 import Groups from './pages/Groups'
 import GroupIdPage from './pages/GroupIdPage'
 import ProjectIdPage from './pages/ProjectIdPage'
+import ProjectEdit from './pages/ProjectEdit'
 function App() {
   return (
     <div>
@@ -39,6 +40,7 @@ function App() {
         <Route path='/groups' element={<Groups/>}/>
         <Route path='/groups/:groupId' element={<GroupIdPage/>}/>
         <Route path='/projects/:projectId' element={<ProjectIdPage/>}/>
+        <Route path='/projects/:projectId/edit' element={<ProjectEdit/>}/>
         </Route>
         <Route path='*' element={<div>Not Found</div>}/>
         
