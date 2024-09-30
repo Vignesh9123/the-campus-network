@@ -47,7 +47,7 @@ function GroupRightSideBar() {
                   <div className="text-gray-600 flex m-1 justify-end dark:text-gray-400">
                     <FaUserFriends className="w-6 h-6" />
                   </div>
-                  <Button className="text-xs">Send Request</Button>
+                  <Button variant="secondary" className="text-xs">Send Request</Button>
                 </div>
 
 

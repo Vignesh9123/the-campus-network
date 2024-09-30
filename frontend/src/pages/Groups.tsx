@@ -5,6 +5,7 @@ import {getMyGroups} from '@/api'
 import { Button } from "@/components/ui/button"
 import GroupRightSideBar from "@/components/sections/GroupRightSideBar"
 import { useNavigate } from "react-router-dom"
+import FloatingActionButton from "@/components/modules/FloatingActionButton"
 function Groups() {
     const { user } = useAuth();
     const navigate = useNavigate();
@@ -129,6 +130,7 @@ function Groups() {
 
         </div>
       </div>}
+      <FloatingActionButton/>
    </div>
   )
 }

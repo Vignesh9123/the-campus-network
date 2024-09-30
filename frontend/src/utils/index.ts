@@ -1,4 +1,7 @@
 import { AxiosResponse } from "axios";
+import { getToken } from "firebase/messaging";
+import { messaging } from "../firebase/firebaseConfig";
+import { storeDeviceToken } from "@/api";
 export const requestHandler = async (
     api: () => Promise<AxiosResponse<any>>,
     setLoading: ((loading: boolean) => void) | null,
@@ -35,6 +38,19 @@ export const requestHandler = async (
       return (num / 1_000).toFixed(1).replace(/\.0$/, '') + 'K';
     } else {
       return num.toString();
+    }
+  }
+  export async function requestPermission() {
+    const permission = await Notification.requestPermission();
+    if (permission === 'granted') {
+      const token =await getToken(messaging, {
+        vapidKey:import.meta.env.VITE_APP_VAPID_KEY
+      })
+      console.log("Token:",token);
+      await storeDeviceToken({token})
+      
+    } else {
+      alert('Notification permission denied.');
     }
   }
   
