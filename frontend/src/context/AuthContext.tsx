@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useContext, createContext} from "react";
 import {useNavigate, useLocation} from 'react-router-dom'
-import { requestHandler } from "@/utils";
-import { loginUser, registerUser, logoutUser,getCurrentUser,updateAccountDetails,addPersonalDetails , updateProfilePicture, refreshToken,followOrUnfollow,checkToken} from "@/api";
+import { requestHandler,requestPermission } from "@/utils";
+import { loginUser, registerUser, logoutUser,getCurrentUser,updateAccountDetails,addPersonalDetails , updateProfilePicture, refreshToken,followOrUnfollow,checkToken,sendNotificationToUser} from "@/api";
 import Loader from "@/components/Loader";
 export interface UserInterface {
     _id: string;
@@ -72,13 +72,15 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
                 localStorage.setItem("user", JSON.stringify(res.data.user));
                 localStorage.setItem("token", res.data.accessToken);
                 setAuthError(null);
+                requestPermission().then(()=>{
                 const currentUser = res.data.user
                 if(!currentUser?.college && !currentUser?.engineeringDomain){
                     return navigate("/add-personal-details");
                 
                 }
+               
                 const savedLocation = location.state?.from || '/profile';
-            navigate(savedLocation);
+            navigate(savedLocation);})
             },
             (err:any)=>{
                 if(err.status == 401){
@@ -144,6 +146,16 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
             (res)=>{
                 setUser(res.data.currentUser);
                 localStorage.setItem("user", JSON.stringify(res.data.currentUser));
+                if((res.data.currentUser.following.includes(userId))){
+                   sendNotificationToUser(
+                    {
+                        userId,
+                        body:`${res.data.currentUser.username} has started to follow you`,
+                        title:`Hey`
+                    
+                    }
+                   )
+                }
                 setFollowing(res.data.currentUser.following);
 
             },

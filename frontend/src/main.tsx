@@ -4,6 +4,9 @@ import './index.css'
 import { ThemeProvider } from './components/theme-provider.tsx'
 import { AuthProvider } from './context/AuthContext.tsx'
 import { BrowserRouter } from 'react-router-dom'
+import 'react-toastify/dist/ReactToastify.css'
+import { ToastContainer } from 'react-toastify'
+
 
 createRoot(document.getElementById('root')!).render(
 
@@ -11,6 +14,8 @@ createRoot(document.getElementById('root')!).render(
         <BrowserRouter>
       <AuthProvider>
         <App />
+        <ToastContainer/>
+
       </AuthProvider>
         </BrowserRouter>
     </ThemeProvider>

@@ -199,8 +199,29 @@ const getOthersTasks = (data:{projectId: string | undefined})=>{
   return apiClient.get(`/tasks/get-others-tasks/${data.projectId}`)
 }
 
+const sendNotification = (data:{
+  title:string,
+  body:string,
+  token:string;
+})=>{
+  return apiClient.post('/notifications/send-notification',data)
+}
+
+const storeDeviceToken = (
+  data: { token: string }
+) => {
+  return apiClient.post("/notifications/store-device-token", data);
+};
+
+const sendNotificationToUser = (
+  data: { userId: string, title: string, body: string }
+) => {
+  return apiClient.post("/notifications/send-notification-to-user", data);
+};
+
+
 export {refreshToken, loginUser,checkToken, registerUser, logoutUser , getCurrentUser, checkUsernameUnique, createPost, updateAccountDetails,addPersonalDetails, updateProfilePicture,getUserPosts,searchUser, getUserProfile,followOrUnfollow, searchPost,getFollowers, getFollowing, likePost, getUserFeed, addComment,deleteComment,getCommentsbyPost,getPost,
   createGroup, getGroup, acceptRequest, addToGroup, deleteGroup, exitFromGroup, isGroupNameUnique, rejectRequest, removeFromGroup, requestToJoinGroup,
   addProject, getGroupProjects, getMyProjects, getProject, updateProject, updateProjectStatus, deleteProject,
-  createTask, getTask, updateTask, updateTaskStatus, deleteTask,getMyGroups,getMyTasks,getOthersTasks
+  createTask, getTask, updateTask, updateTaskStatus, deleteTask,getMyGroups,getMyTasks,getOthersTasks,sendNotification,storeDeviceToken,sendNotificationToUser
   }
