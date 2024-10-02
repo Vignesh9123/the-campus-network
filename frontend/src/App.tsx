@@ -15,8 +15,26 @@ import PostComments from './pages/PostComments'
 import Groups from './pages/Groups'
 import GroupIdPage from './pages/GroupIdPage'
 import ProjectIdPage from './pages/ProjectIdPage'
-import ProjectEdit from './pages/ProjectEdit'
+import { messaging } from './firebase/firebaseConfig'
+import {onMessage } from 'firebase/messaging'
+import {toast} from 'react-toastify'
+
 function App() {
+  onMessage(messaging, (payload) => {
+    toast.info(
+      <div>
+        <p>{payload.notification?.title}</p>
+        <p>{payload.notification?.body}</p>
+
+      </div>,
+      {toastId:payload.notification?.title} 
+    )
+    // ...
+  });
+  
+  
+
+  
   return (
     <div>
       <Routes>

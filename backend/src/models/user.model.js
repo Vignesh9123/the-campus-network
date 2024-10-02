@@ -110,7 +110,12 @@ const userSchema = new mongoose.Schema({
         type:String,
         enum:["email", "google"],
         default:"email"
-    }
+    },
+    deviceTokens:[
+        {
+            type:String
+        }
+    ]
     
   
     
