@@ -35,7 +35,7 @@ const createTask = asyncHandler(async (req, res) => {
         description,
         dueDate,
         priority,
-        status,
+        status: status || "todo",
         assignedTo,
         project: projectId,
         

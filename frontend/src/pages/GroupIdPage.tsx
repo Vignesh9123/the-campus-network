@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react"
 import ProfileSideBar from "@/components/sections/ProfileSideBar"
 import { useAuth } from "@/context/AuthContext"
-import {acceptRequest, deleteGroup, getGroup,removeFromGroup} from '@/api'
+import {acceptRequest, deleteGroup, getGroup,removeFromGroup,getGroupSuggestedPeople, addToGroup,exitFromGroup, requestToJoinGroup} from '@/api'
 import { Link, useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import GroupAnnouncements from "./GroupAnnouncements";
@@ -20,6 +20,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
  } from "@/components/ui/alert-dialog";
+import { toast } from "react-toastify";
 
 function GroupIdPage() {
     const {groupId} = useParams()
@@ -36,6 +37,7 @@ function GroupIdPage() {
     const [selectedTab, setSelectedTab] = useState(urlTab || "Announcements");
     const [admin, setAdmin] = useState(false);
     const [joinRequests,setJoinRequests] = useState([]);
+    const [suggestedPeople, setSuggestedPeople] = useState([])
     
     const scrollableDivRef = useRef<HTMLDivElement>(null);
 
@@ -56,6 +58,7 @@ function GroupIdPage() {
           const data = await getGroup({groupId});
           const grp = data.data.data
           const members = data.data.data.members
+          
           if(members.find((member:any) => member._id === user?._id))
             {
               setGroup(data.data.data);
@@ -77,6 +80,13 @@ function GroupIdPage() {
           setLoading(false);
       }
   };
+  const fetchSuggestedPeople = async () => {
+    const suggestedPeopleRes = await getGroupSuggestedPeople({groupId})
+    if(suggestedPeopleRes.status == 200){
+      setSuggestedPeople(suggestedPeopleRes.data.data)
+    }
+    
+};
     useEffect(() => {
         fetchGroup();
         if(scroll == "true")
@@ -86,6 +96,8 @@ function GroupIdPage() {
           top: 500,
           behavior: "instant",
         });}
+        fetchSuggestedPeople()
+        
     }, [groupId, scrollableDivRef.current]);
   return (
    <div>
@@ -113,10 +125,55 @@ function GroupIdPage() {
           <span>Projects: {group.projects.length}</span>
         </div>
             <div className="flex justify-center gap-5">
-
-        <Button variant={"destructive"} className="mt-6">
+          {/* TODO:<AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button className="mt-6">Join Group</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure you want to join this group?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will send a request to the group admin to accept your request.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={()=>{
+                  requestToJoinGroup({groupId}).then(()=>{
+                    navigate('/groups')
+                  })
+                }}>Continue</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog> */}
+          <AlertDialog>
+            <AlertDialogTrigger >
+        <Button variant={"destructive"} className="mt-6">    
           Leave Group
         </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure you want to leave this group?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={()=>{
+                  exitFromGroup({groupId}).then(()=>{
+                    navigate('/groups')
+                  }).then(()=>{
+                    toast.success("Successfully left the group")
+                
+                  })
+                }}>Continue</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+         
+          {/* </AlertDialog> */}
         {admin && <div>
           {/*Delete Group */}
           <AlertDialog>
@@ -254,14 +311,14 @@ function GroupIdPage() {
               
             <span className="text-blue-500 px-2 py-1 rounded-full">Member</span>
             <br/>
-            
+          {  admin &&
             <Button className="my-1" 
             onClick={()=>{removeFromGroup({userId:member._id, groupId:group._id})
             .then(()=>{
               fetchGroup()
             })
             
-           }} variant={"destructive"}>Remove</Button>
+           }} variant={"destructive"}>Remove</Button>}
             </div>
             
           )}
@@ -280,7 +337,7 @@ function GroupIdPage() {
         </div>
         <div className="md:w-[25%] hidden md:block  h-screen">
         {admin &&
-        <div> 
+        <div className="min-h-[40vh] max-h-[40vh] overflow-y-auto"> 
         <div className="m-3 text-lg font-bold">
           Join Requests
           </div>
@@ -328,15 +385,60 @@ function GroupIdPage() {
           </div>
 
           }
-          {admin && <div className="m-3 text-lg font-bold">
-          Add Members
+          {admin && <div>
+            <div className="m-3 text-lg font-bold">
+          Suggested Members
 
-          </div>}
-        </div>
-        
-        
-      </div>}
+          </div>
+            <div className="max-h-[40vh] overflow-y-auto">
+
+          {suggestedPeople.length == 0 &&
+          <p className="text-center">No suggested members</p>
+          }
+          {
+            suggestedPeople.map(
+              (person:any)=>{
+                return(
+                  <div className="bg-muted p-2 m-2 cursor-pointer">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <img
+                          src={person.profilePicture}
+                          alt={person.username}
+                          className="w-5 h-5 rounded-full mr-2"
+                        />
+                        <div>
+                          <Link to={`/user/${person.username}`} className=" hover:underline block font-semibold my-1">{person.username}</Link>
+                          <span className="text-sm text-gray-500">{person.email.length>15?person.email.substring(0,15)+"...":person.email}</span>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="flex gap-2 justify-end">
+                          <Button
+                           onClick={()=>{addToGroup({userId:person._id, groupId:group._id})
+                           .then(()=>{
+                            fetchGroup()
+                           })
+                          }}
+                           className="my-2">
+                            <Check/>
+                          </Button>
+                          <Button className="my-2" variant={"destructive"}>
+                            <X/>
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+            )
+          }
+                      </div>
+
+        </div>}
    </div>
+    </div>}
+    </div>
   )
 }
 

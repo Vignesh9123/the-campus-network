@@ -1,7 +1,7 @@
-import { getMyTasks, getOthersTasks, getProject } from "@/api";
+import { getMyTasks, getOthersTasks, getProject,deleteProject } from "@/api";
 import ProfileSideBar from "@/components/sections/ProfileSideBar";
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -34,7 +34,21 @@ import {
     DropdownMenuTrigger,
   
 } from '@/components/ui/dropdown-menu'
+import { Button } from "@/components/ui/button";
+import { AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { toast } from "react-toastify";
+
 function ProjectIdPage() {
+  const navigate = useNavigate();
   const { projectId } = useParams();
   const [project, setProject] = useState<any>(null);
   const { user } = useAuth();
@@ -72,20 +86,20 @@ function ProjectIdPage() {
 
   
   
-
+const fetchProject = async () => {
+  const data = await getProject({ projectId });
+  const myTaskRes = await getMyTasks({ projectId });
+  setMyTasks(myTaskRes.data.data);
+  const othersTaskRes = await getOthersTasks({projectId});
+  setOthersTasks(othersTaskRes.data.data);
+  const proj = data.data.data
+  setProject(proj);
+  if(proj.createdBy._id.toString() == user?._id.toString())
+    setAdmin(true)
+  
+};
   useEffect(() => {
-    const fetchProject = async () => {
-      const data = await getProject({ projectId });
-      const myTaskRes = await getMyTasks({ projectId });
-      setMyTasks(myTaskRes.data.data);
-      const othersTaskRes = await getOthersTasks({projectId});
-      setOthersTasks(othersTaskRes.data.data);
-      const proj = data.data.data
-      setProject(proj);
-      if(proj.createdBy._id.toString() == user?._id.toString())
-        setAdmin(true)
-      
-    };
+   
     fetchProject();
   }, [projectId]);
   return (
@@ -123,6 +137,34 @@ function ProjectIdPage() {
               {admin && 
               <div className="flex gap-2 items-center">
                 <AddTasksModule projectId={project._id} members={project.group.members}/>
+                <AlertDialog>
+                  <AlertDialogTrigger>
+                    <Button variant="destructive" className="text-sm">Delete Project</Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently delete your project and
+                        remove your data from our servers.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={()=>{deleteProject({projectId:project._id})
+                        .then((res)=>{
+                          if(res.status == 200){
+                           navigate(`/groups/${project.group._id}?tab=Projects&scroll=true`)
+                           toast.success("Project deleted successfully")
+                          }
+
+                        })
+                    }}>Continue</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                  
+                </AlertDialog>
+
                 <DropdownMenu>
                   <DropdownMenuTrigger>
                     <Ellipsis size={25} className="cursor-pointer hover:bg-muted"/>
@@ -131,9 +173,7 @@ function ProjectIdPage() {
                     <DropdownMenuItem>
                       <Link to={`/projects/${project._id}/edit`}>Edit Project</Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <Link to={`/projects/${project._id}/delete`}>Delete Project</Link>
-                    </DropdownMenuItem>
+                    
                   </DropdownMenuContent>
                 </DropdownMenu>
               
@@ -232,7 +272,7 @@ function ProjectIdPage() {
     </div>
     {
       filteredMyTasks.map((task) => (
-        <TaskTableRow admin={admin} task={task} key={task._id} />
+        <TaskTableRow admin={admin} task={task} key={task._id} refreshFunction={fetchProject} />
     ))}
 
         
@@ -305,7 +345,7 @@ function ProjectIdPage() {
     </div>
     {
       filteredOthersTasks.map((task) => (
-        <TaskTableRow admin={admin} task={task} key={task._id} />
+        <TaskTableRow admin={admin} task={task} key={task._id} refreshFunction={fetchProject}/>
     ))}
       
          

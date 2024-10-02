@@ -22,7 +22,8 @@ import {
     DropdownMenuContent,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { createTask } from '@/api'
+import { createTask, sendNotificationToUser } from '@/api'
+import { toast } from 'react-toastify'
 
 
 function AddTasksModule({members,
@@ -66,7 +67,16 @@ function AddTasksModule({members,
             projectId
         }
         createTask({taskData}).then((res) => {
-            console.log(res)
+            toast.success('Task added successfully')
+            taskData.assignedTo.map(
+                (assignee:any) => {
+                    sendNotificationToUser({
+                        title: `New Task`,
+                        body: `You have been assigned a new task: ${taskData.title}`,
+                        userId: assignee
+                    })
+                }
+            )
         })
         setOpen(false)
     }

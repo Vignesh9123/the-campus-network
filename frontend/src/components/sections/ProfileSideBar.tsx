@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import {Home, Compass, Search, User,Settings} from 'lucide-react'
+import {Compass, Search, User,Settings} from 'lucide-react'
 import { FaUsers } from "react-icons/fa";
 import LogoutButton from '../modules/LogoutButton';
 
@@ -14,10 +14,7 @@ const ProfileSideBar = () => {
       </div>
       <hr />
 
-      <Link to='/' className='hover:bg-muted duration-150 flex gap-2 items-center text-lg p-3'>
-        <Home className='mx-auto md:mx-0'/>
-        <div className='hidden md:block'>Home</div>
-      </Link>
+      
       <Link to='/explore' className={`hover:bg-muted flex gap-2 items-center text-lg p-3 ${pathname === '/explore' ? 'bg-muted text-xl font-bold' : ''}`}>
         <Compass strokeWidth={pathname=='/explore'?4:2} className='mx-auto md:mx-0'/>
         <div className='hidden md:block'>Explore</div>

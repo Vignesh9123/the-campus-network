@@ -19,6 +19,9 @@ function CreateGroupModal() {
         if(name.length > 0) {
             checkGroupNameUnique()
         }
+        else {
+            setIsUnique(true)
+        }
     }, [name])
 
     const handleCreateGroup = async () => {
@@ -54,7 +57,7 @@ function CreateGroupModal() {
         <Input maxLength={100} placeholder='Description' value={description} onChange={(e) => setDescription(e.target.value)} />
         <p>{description.length}/100</p>
         </div>
-        <Button className='mt-2' disabled={!isUnique || loading} onClick={handleCreateGroup}>Create Group</Button>
+        <Button className='mt-2' disabled={!isUnique || name.length === 0 || loading} onClick={handleCreateGroup}>Create Group</Button>
       
     </div>
   )

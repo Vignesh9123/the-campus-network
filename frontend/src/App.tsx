@@ -18,6 +18,7 @@ import ProjectIdPage from './pages/ProjectIdPage'
 import { messaging } from './firebase/firebaseConfig'
 import {onMessage } from 'firebase/messaging'
 import {toast} from 'react-toastify'
+import ProjectEdit from './pages/ProjectEdit'
 
 function App() {
   onMessage(messaging, (payload) => {

@@ -22,7 +22,8 @@ import {
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import UpdateTaskModal from "./UpdateTaskModal"
-function TaskInfoDialog({task, admin, setOpen}:{task:any, admin:boolean, setOpen:(value: boolean)=>void}) 
+import { toast } from "react-toastify"
+function TaskInfoDialog({task, admin, setOpen, refreshFunction}:{task:any, admin:boolean, setOpen:(value: boolean)=>void, refreshFunction?:Function}) 
 {
     const [taskStatus, setTaskStatus] = useState(task.status)
     const handleUpdateStatus = async()=>{
@@ -103,6 +104,9 @@ function TaskInfoDialog({task, admin, setOpen}:{task:any, admin:boolean, setOpen
             <AlertDialogAction onClick={()=>deleteTask({taskId:task._id}).then(
                 ()=>{
                     setOpen(false)
+                    toast.success("Task deleted successfully")
+                    if(refreshFunction) refreshFunction()
+
                 }
             )}>Continue</AlertDialogAction>
             </AlertDialogFooter>

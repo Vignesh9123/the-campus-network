@@ -39,7 +39,7 @@ function Groups() {
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-200">Your Groups</h1>
       </div>
-        {loading && <div className="grid grid-cols-2 gap-2">
+        {loading && <div className="grid md:grid-cols-2 gap-2">
         <div
         className='bg-muted w-auto h-40 animate-pulse'
         ></div>
@@ -60,7 +60,7 @@ function Groups() {
         ></div>
         </div>
         }
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid md:grid-cols-2 gap-2">
      {!loading && groups[0] && groups.map(
 (group:any) => (
   <div className="group-item bg-gray-100 dark:bg-gray-800 p-6 rounded shadow">

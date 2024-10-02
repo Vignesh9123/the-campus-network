@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog"
 import TaskInfoDialog from "./TaskInfoDialog";
 import { useState } from "react";
-function TaskTableRow({ task, admin }: { task: any, admin:boolean }) {
+function TaskTableRow({ task, admin, refreshFunction }: { task: any, admin:boolean; refreshFunction?:Function }) {
   const { user } = useAuth();
 
   const [open, setOpen] = useState(false);
@@ -58,7 +58,8 @@ function TaskTableRow({ task, admin }: { task: any, admin:boolean }) {
           <DialogTitle>Task Details</DialogTitle>
           
         </DialogHeader>
-            <TaskInfoDialog task={task} setOpen={setOpen} admin={admin}/>
+            <TaskInfoDialog task={task} setOpen={setOpen} admin={admin} 
+            refreshFunction={refreshFunction}/>
         <DialogFooter>
         </DialogFooter>
       </DialogContent>

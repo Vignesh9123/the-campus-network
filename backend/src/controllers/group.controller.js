@@ -213,6 +213,37 @@ const getMyGroups = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, user.groups, "Groups found"))
 })
 
+const groupSuggestedPeople = asyncHandler(async (req, res) => {
+    const {groupId} = req.params
+    const group = await Group.findById(groupId)
+    if (!group) {
+        throw new ApiError(404, "Group not found")
+    }
+    const user = await User.findById(req.user._id)
+    if(!group.admin.equals(user._id)){
+        throw new ApiError(403, "You are not authorized to view suggested people")
+    }
+    const suggestedPeople = await User.aggregate([
+        {
+            $match: {
+                _id: {$nin: [user._id, ...group.members, ...group.joinRequests]}
+            }
+        },
+        {
+            $sample: {size: 5}
+        },
+        {
+            $project: {
+                _id: 1,
+                username: 1,
+                email: 1,
+                profilePicture: 1
+            }
+        }
+    ])
+    return res.status(200).json(new ApiResponse(200, suggestedPeople, "Suggested people found"))
+})
+
 export {
     createGroup,
     isGroupNameUnique,
@@ -224,5 +255,6 @@ export {
     rejectRequest,
     removeFromGroup,
     deleteGroup,
-    getMyGroups
+    getMyGroups,
+    groupSuggestedPeople
 }
