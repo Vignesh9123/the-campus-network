@@ -31,8 +31,8 @@ const ProfileSideBar = () => {
         <User className='mx-auto md:mx-0' strokeWidth={pathname=='/profile'?4:3}/>
         <div className='hidden md:block'>Profile</div>
       </Link>
-      <Link to='/settings' className='hover:bg-muted flex gap-2 items-center text-lg p-3'>
-        <Settings className='mx-auto md:mx-0'/>
+      <Link to='/settings' className={`hover:bg-muted flex gap-2 items-center text-lg p-3 ${pathname === '/settings' ? 'bg-muted text-xl font-bold' : ''}`}>
+        <Settings className='mx-auto md:mx-0' strokeWidth={pathname=='/settings'?3:2}/>
         <div className='hidden md:block'>Settings</div>
       </Link>
       <LogoutButton className='hidden md:block mt-16 mx-5'/>

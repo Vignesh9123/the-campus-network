@@ -59,7 +59,25 @@ const userSchema = new mongoose.Schema({
     ],
     engineeringDomain:{
         type:String,
-        enum:["CSE","ISE", "ECE", "MECH", "CST", "EEE"]
+        enum:["Agricultural Engineering (AG)",
+    "Aeronautical Engineering (AE)",
+    "Biomedical Engineering (BM)",
+    "Bio Technology (BT)",
+    "Biotechnology (BT)",
+    "Chemical Engineering (CH)",
+    "Chemical Science and Technology (CST)",
+    "Commputer Science and Business Systems (CSBS)",
+    "Computer Science Engineering (CSE)",
+    "Electrical Engineering (EE)",
+    "Electronics and Communication Engineering (ECE)",
+    "Food Technology (FT)",
+    "Information Technology (IT)",
+    "Marine Engineering (MAR)",
+    "Mechanical Engineering (ME)",
+    "Metallurgical and Materials Engineering (MME)",
+    "Mining Engineering (MIN)",
+    "Production Engineering (PE)",
+    "Textile Technology (TT)"]
     },
     college:{
         type:String,

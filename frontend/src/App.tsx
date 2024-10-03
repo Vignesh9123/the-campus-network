@@ -19,7 +19,8 @@ import { messaging } from './firebase/firebaseConfig'
 import {onMessage } from 'firebase/messaging'
 import {toast} from 'react-toastify'
 import ProjectEdit from './pages/ProjectEdit'
-
+import Settings from './pages/Settings'
+import GeneralLayout from './components/GeneralLayout'
 function App() {
   onMessage(messaging, (payload) => {
     toast.info(
@@ -60,6 +61,9 @@ function App() {
         <Route path='/groups/:groupId' element={<GroupIdPage/>}/>
         <Route path='/projects/:projectId' element={<ProjectIdPage/>}/>
         <Route path='/projects/:projectId/edit' element={<ProjectEdit/>}/>
+        <Route element={<GeneralLayout/>}>
+        <Route path='/settings' element={<Settings/>}/>
+        </Route>
         </Route>
         <Route path='*' element={<div>Not Found</div>}/>
         

@@ -52,6 +52,11 @@ const updateProfilePicture = (data:FormData)=>{
     }
   })
 }
+
+const changePassword = (data:{oldPassword:string, newPassword:string})=>{
+  return apiClient.post('/users/change-password', data)
+}
+
 const createPost = (data:{title:string;content:string;isPublic:boolean;tags:string[];onlyFollowers:boolean}) =>{
   return apiClient.post('/posts/create',data)
 }
@@ -222,7 +227,7 @@ const getGroupSuggestedPeople = (data:{groupId:string|undefined})=>{
   return apiClient.get(`/groups/group-suggested-people/${data.groupId}`)
 }
 
-export {refreshToken, loginUser,checkToken, registerUser, logoutUser , getCurrentUser, checkUsernameUnique, createPost, updateAccountDetails,addPersonalDetails, updateProfilePicture,getUserPosts,searchUser, getUserProfile,followOrUnfollow, searchPost,getFollowers, getFollowing, likePost, getUserFeed, addComment,deleteComment,getCommentsbyPost,getPost,
+export {refreshToken, loginUser,checkToken, registerUser, logoutUser ,changePassword, getCurrentUser, checkUsernameUnique, createPost, updateAccountDetails,addPersonalDetails, updateProfilePicture,getUserPosts,searchUser, getUserProfile,followOrUnfollow, searchPost,getFollowers, getFollowing, likePost, getUserFeed, addComment,deleteComment,getCommentsbyPost,getPost,
   createGroup, getGroup, acceptRequest, addToGroup, deleteGroup, exitFromGroup, isGroupNameUnique, rejectRequest, removeFromGroup, requestToJoinGroup,
   addProject, getGroupProjects, getMyProjects, getProject, updateProject, updateProjectStatus, deleteProject,
   createTask, getTask, updateTask, updateTaskStatus, deleteTask,getMyGroups,getMyTasks,getOthersTasks,sendNotification,storeDeviceToken,sendNotificationToUser,getGroupSuggestedPeople

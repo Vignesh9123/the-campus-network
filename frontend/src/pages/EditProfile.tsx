@@ -50,6 +50,11 @@ function EditProfile() {
       }
     };
     useEffect(() => {
+      if(username.length==0){
+        setIsUnique(false)
+        setError('Username cannot be empty')
+        return
+      }
       if(user?.username !== username){
         checkUsername()
       }
@@ -57,6 +62,7 @@ function EditProfile() {
         setIsUnique(true)
         setError('')
       }
+
       
     }, [username])
     
@@ -109,8 +115,8 @@ function EditProfile() {
           <div className="w-[15%] md:w-1/4 border-0 border-r-[1px] h-screen">
             <ProfileSideBar />
           </div>
-          <div className="w-full md:w-3/4 overflow-y-scroll scrollbar-hide border-0 border-r-[1px] h-screen">
-            <div className="flex">
+          <div className="w-[85%] md:w-3/4 overflow-y-scroll scrollbar-hide border-0 border-r-[1px] h-screen">
+            <div className="flex border-0 border-b">
               <Link to='/profile'
                 className={`w-1/2 py-5 text-center cursor-pointer ${
                   pathname == "/profile"

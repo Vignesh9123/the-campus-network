@@ -78,8 +78,8 @@ const Profile = () => {
           <div className="w-[15%] md:w-1/3 border-0 border-r-[1px] h-screen">
             <ProfileSideBar />
           </div>
-          <div className="md:w-2/3 w-full overflow-y-scroll scrollbar-hide border-0 border-r-[1px] h-screen">
-            <div className="flex">
+          <div className="md:w-2/3 w-[85%] overflow-y-scroll scrollbar-hide border-0 border-r-[1px] h-screen">
+            <div className="flex border-0 border-b">
               <div
                 className={`w-1/2 py-5 text-center cursor-pointer ${
                   pathname == "/profile"
