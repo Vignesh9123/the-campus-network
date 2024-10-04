@@ -26,7 +26,7 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel"
 import FollowButton from "@/components/modules/FollowButton";
-import { getUserPosts,getFollowers,getFollowing } from '@/api'
+import { getUserPosts,getFollowers,getFollowing,getAccountsToFollow } from '@/api'
 import { PostInterface } from "@/types";
 import DotLoader from "@/components/DotLoader";
 const Profile = () => {
@@ -42,12 +42,13 @@ const Profile = () => {
   const [followers, setFollowers] = useState([])
   const [following, setFollowing] = useState([])
   const [followLoading, setFollowLoading] = useState(false)
+  const [accountsToFollow, setAccountsToFollow] = useState([])
+  const [accountToFollowLoading, setAccountToFollowLoading] = useState(false)
   
 
   const getOwnFollowers = ()=>{
     if(followers[0]) return
     setFollowLoading(true)
-    console.log("Hey")
     getFollowers({username:user?.username}).then(
       (res)=>{
         setFollowers(res.data.data)
@@ -65,11 +66,22 @@ const Profile = () => {
       }
     )
   }
+  const getAccountRecommendations = async()=>{
+    if(accountsToFollow[0]) return
+    setAccountToFollowLoading(true)
+    const res = await getAccountsToFollow()
+    setAccountsToFollow(res.data.data)
+    setAccountToFollowLoading(false)
+
+    
+  }
   useEffect(()=>{
     document.title = "The Campus Network - Profile"
     getUserPosts({username:user?.username!}).then((res)=>{
       setPosts(res.data.data)
     })
+    getAccountRecommendations()
+    
   },[])
   return (
     <div>
@@ -237,97 +249,31 @@ const Profile = () => {
           <div className="hidden lg:block w-1/3 h-screen">
             <div className="text-xl font-semibold m-5 ml-2">Accounts to follow</div>
 
-            <div className="relative flex border-y-[1px] flex-col h-[30%] overflow-auto">
+            <div className="relative flex border-y-[] flex-col  overflow-auto">
             <div className="absolute top-0 left-0 right-0 h-[60px] bg-gradient-to-b from-slate-200 dark:from-slate-800 to-transparent"></div>
-              <div className="accountCard flex items-center justify-between gap-1 p-3 h-14 w-[95%] mx-auto border-y-[1px]">
+              {!accountToFollowLoading && accountsToFollow.map(
+                (user:any, index) => (
+                <div key={index} className="accountCard flex items-center justify-between gap-1 p-3 h-14 w-[95%] mx-auto border-y-[1px]">
                 <div className="flex items-center gap-1">
                     <div>
                       <img src={user.profilePicture} className="w-10 h-10 rounded-full " alt="" />
                     </div>
-                    <div className="font-semibold">
-                      Vignesh
-                    </div>
+                    <Link  to={`/user/${user.username}`} className="font-semibold hover:underline">
+                      {user.username}
+                    </Link>
                 </div>
-                    <FollowButton userIdToFollow="dummy" className="h-3/4"/>
+                    <FollowButton userIdToFollow={user._id} className="h-3/4"/>
               </div>
-              <div className="accountCard flex items-center justify-between gap-1 p-3 h-14 w-[95%] mx-auto border-y-[1px]">
-                <div className="flex items-center gap-1">
-                    <div>
-                      <img src={user.profilePicture} className="w-10 h-10 rounded-full " alt="" />
-                    </div>
-                    <div className="font-semibold">
-                      Vignesh
-                    </div>
-                </div>
-                    <FollowButton userIdToFollow="dummy" className="h-3/4"/>
-              </div>
-              <div className="accountCard flex items-center justify-between gap-1 p-3 h-14 w-[95%] mx-auto border-y-[1px]">
-                <div className="flex items-center gap-1">
-                    <div>
-                      <img src={user.profilePicture} className="w-10 h-10 rounded-full " alt="" />
-                    </div>
-                    <div className="font-semibold">
-                      Vignesh
-                    </div>
-                </div>
-                    <FollowButton userIdToFollow="dummy" className="h-3/4"/>
-              </div>
-              <div className="accountCard flex items-center justify-between gap-1 p-3 h-14 w-[95%] mx-auto border-y-[1px]">
-                <div className="flex items-center gap-1">
-                    <div>
-                      <img src={user.profilePicture} className="w-10 h-10 rounded-full " alt="" />
-                    </div>
-                    <div className="font-semibold">
-                      Vignesh
-                    </div>
-                </div>
-                    <FollowButton userIdToFollow="dummy" className="h-3/4"/>
-              </div>
-              <div className="accountCard flex items-center justify-between gap-1 p-3 h-14 w-[95%] mx-auto border-y-[1px]">
-                <div className="flex items-center gap-1">
-                    <div>
-                      <img src={user.profilePicture} className="w-10 h-10 rounded-full " alt="" />
-                    </div>
-                    <div className="font-semibold">
-                      Vignesh
-                    </div>
-                </div>
-                    <FollowButton userIdToFollow="dummy" className="h-3/4"/>
-              </div>
-              <div className="accountCard flex items-center justify-between gap-1 p-3 h-14 w-[95%] mx-auto border-y-[1px]">
-                <div className="flex items-center gap-1">
-                    <div>
-                      <img src={user.profilePicture} className="w-10 h-10 rounded-full " alt="" />
-                    </div>
-                    <div className="font-semibold">
-                      Vignesh
-                    </div>
-                </div>
-                    <FollowButton userIdToFollow="dummy" className="h-3/4"/>
-              </div>
+              ) )}
+              
+                
+              
               
 
               
             </div>
-            <div className="text-lg font-semibold m-5 mt-8 ml-2">Happening posts in your region</div>
-            <Carousel
-      plugins={[plugin.current]}
-      className="w-full max-w-xs"
-      onMouseEnter={plugin.current.stop}
-      onMouseLeave={plugin.current.reset}
-    >
-      <CarouselContent>
-       <CarouselItem>
-      <HappeningPostCard user={user} content={"Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum assumenda minima fugit. Commodi, debitis vero tempora quisquam optio eligendi enim, deserunt rerum, expedita similique vitae pariatur eos! Voluptatem quasi animi eos officia. Amet repellendus mollitia magni sequi provident. Totam, rerum itaque? Possimus officia, cumque sequi ab tempora tenetur quo maxime necessitatibus sint aliquam quibusdam facilis quidem molestiae architecto numquam expedita odio voluptates. Repellat et esse unde vel, sint blanditiis id. Consectetur voluptates molestias quae veritatis dignissimos, tenetur recusandae fuga nesciunt impedit sed, illo culpa qui aspernatur. Perferendis iure eos nulla iste, facere dolorem, velit doloremque mollitia totam veniam obcaecati repellendus minima placeat nesciunt praesentium vero sunt accusamus maiores aperiam. Sapiente distinctio labore voluptas necessitatibus maxime, ipsum quisquam praesentium quos est aliquid placeat illum!"}/>
-       </CarouselItem>
-       <CarouselItem>
-      <HappeningPostCard user={user} content={"Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum assumenda minima fugit. Commodi, debitis vero tempora quisquam optio eligendi enim, deserunt rerum, expedita similique vitae pariatur eos! Voluptatem quasi animi eos officia. Amet repellendus mollitia magni sequi provident. Totam, rerum itaque? Possimus officia, cumque sequi ab tempora tenetur quo maxime necessitatibus sint aliquam quibusdam facilis quidem molestiae architecto numquam expedita odio voluptates. Repellat et esse unde vel, sint blanditiis id. Consectetur voluptates molestias quae veritatis dignissimos, tenetur recusandae fuga nesciunt impedit sed, illo culpa qui aspernatur. Perferendis iure eos nulla iste, facere dolorem, velit doloremque mollitia totam veniam obcaecati repellendus minima placeat nesciunt praesentium vero sunt accusamus maiores aperiam. Sapiente distinctio labore voluptas necessitatibus maxime, ipsum quisquam praesentium quos est aliquid placeat illum!"}/>
-       </CarouselItem>
-       <CarouselItem>
-      <HappeningPostCard user={user} content={"Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum assumenda minima fugit. Commodi, debitis vero tempora quisquam optio eligendi enim, deserunt rerum, expedita similique vitae pariatur eos! Voluptatem quasi animi eos officia. Amet repellendus mollitia magni sequi provident. Totam, rerum itaque? Possimus officia, cumque sequi ab tempora tenetur quo maxime necessitatibus sint aliquam quibusdam facilis quidem molestiae architecto numquam expedita odio voluptates. Repellat et esse unde vel, sint blanditiis id. Consectetur voluptates molestias quae veritatis dignissimos, tenetur recusandae fuga nesciunt impedit sed, illo culpa qui aspernatur. Perferendis iure eos nulla iste, facere dolorem, velit doloremque mollitia totam veniam obcaecati repellendus minima placeat nesciunt praesentium vero sunt accusamus maiores aperiam. Sapiente distinctio labore voluptas necessitatibus maxime, ipsum quisquam praesentium quos est aliquid placeat illum!"}/>
-       </CarouselItem>
-      </CarouselContent>
-    </Carousel>
+     
+            
           </div>
         </div>
       )}

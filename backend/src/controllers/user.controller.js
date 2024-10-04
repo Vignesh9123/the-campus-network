@@ -334,6 +334,19 @@ const getUserFollowing = asyncHandler(async(req, res)=>{
 })
 
 
+const getAccountRecommendations = asyncHandler(async(req, res)=>{
+  const user = await User.findById(req.user?._id);
+  const followers = user?.followers || [];
+  const following = user?.following || [];
+  const users = await User.find({
+    _id: {$nin: [req.user?._id, ...followers, ...following]}
+  }).select("username email profilePicture")
+  .limit(5);
+  return res
+  .status(200)
+  .json(new ApiResponse(200, users, "Account recommendations fetched successfully"));
+})
+
 const addPersonalDetails = asyncHandler(async(req, res)=>{
     const { phone, engineeringDomain, college, yearOfGraduation } = req.body
     if(!phone && !engineeringDomain && !college && !yearOfGraduation){
@@ -596,4 +609,4 @@ const checkToken = asyncHandler(async(req, res)=>{
   .json(new ApiResponse(200, {}, "Token is valid"));
 })
 
-export { registerUser, loginUser, logoutUser, refreshAccessToken, changeCurrentPassword, getCurrentUser, updateAccountDetails, updateProfilePicture, getUserProfile, addPersonalDetails , followOrUnfollowUser, forgotPassword, resetPassword, searchUsers, sendVerificationEmail, verifyEmail, resendVerificationEmail, getUserFeed, getUserFollowers, getUserFollowing, handleSocialLogin, isUsernameUnique, checkToken};
+export { registerUser, loginUser, logoutUser, refreshAccessToken, changeCurrentPassword,getAccountRecommendations, getCurrentUser, updateAccountDetails, updateProfilePicture, getUserProfile, addPersonalDetails , followOrUnfollowUser, forgotPassword, resetPassword, searchUsers, sendVerificationEmail, verifyEmail, resendVerificationEmail, getUserFeed, getUserFollowers, getUserFollowing, handleSocialLogin, isUsernameUnique, checkToken};

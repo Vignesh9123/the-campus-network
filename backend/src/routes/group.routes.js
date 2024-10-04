@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {
     createGroup,
-    getGroup,acceptRequest,addToGroup,deleteGroup,exitFromGroup,isGroupNameUnique,rejectRequest,removeFromGroup,requestToJoinGroup,getMyGroups,groupSuggestedPeople
+    getGroup,acceptRequest,addToGroup,deleteGroup,exitFromGroup,isGroupNameUnique,rejectRequest,removeFromGroup,requestToJoinGroup,getMyGroups,groupSuggestedPeople,getGroupForVisitors
 } from '../controllers/group.controller.js'
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
@@ -20,5 +20,6 @@ router.route('/remove-from-group/:userId/:groupId').post(removeFromGroup)
 router.route('/request-to-join-group/:groupId').post(requestToJoinGroup)
 router.route('/get-my-groups').get(getMyGroups)
 router.route('/group-suggested-people/:groupId').get(groupSuggestedPeople)
+router.route('/get-group-for-visitors/:groupId').get(getGroupForVisitors)
 
 export default router;

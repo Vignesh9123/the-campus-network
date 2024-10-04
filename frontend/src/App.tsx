@@ -21,6 +21,7 @@ import {toast} from 'react-toastify'
 import ProjectEdit from './pages/ProjectEdit'
 import Settings from './pages/Settings'
 import GeneralLayout from './components/GeneralLayout'
+import GroupView from './pages/GroupView'
 function App() {
   onMessage(messaging, (payload) => {
     toast.info(
@@ -63,6 +64,7 @@ function App() {
         <Route path='/projects/:projectId/edit' element={<ProjectEdit/>}/>
         <Route element={<GeneralLayout/>}>
         <Route path='/settings' element={<Settings/>}/>
+        <Route path='/groupview/:groupId/' element={<GroupView/>}/>
         </Route>
         </Route>
         <Route path='*' element={<div>Not Found</div>}/>

@@ -40,7 +40,11 @@ const getGroup = asyncHandler(async (req, res) => {
         .populate('members', 'username email profilePicture')
         .populate('projects', '')
     //populate joinRequests only req.user._id == group.admin._id
-
+    if(!group.members.
+        some(member => member._id.equals(req.user._id)) 
+    ){
+        throw new ApiError(403, "User is not a member of this group")
+    }
     if (req.user._id.equals(group.admin._id)) {
         group.joinRequests = await User.find({_id: {$in: group.joinRequests}}, 'username email profilePicture')
     } else {
@@ -49,6 +53,30 @@ const getGroup = asyncHandler(async (req, res) => {
     
     if (!group) {
         throw new ApiError(404, "Group not found")
+    }
+    return res.status(200).json(new ApiResponse(200, group, "Group found"))
+})
+
+const getGroupForVisitors = asyncHandler(async (req, res) => {
+    const {groupId} = req.params
+    const group = await Group.findById(groupId)
+    .populate('admin', 'username email profilePicture')
+    .populate('members', 'username email profilePicture')
+    .populate('projects', '')
+    
+    if (!group) {
+        throw new ApiError(404, "Group not found")
+    }
+    if(group.members.some(
+        member => member._id.equals(req.user._id)
+    )){
+        throw new ApiError(403, "User is already a member of this group")
+    }
+    if(group.joinRequests.includes(req.user._id)){
+        group.joinRequests = [req.user._id]
+    }
+    else{
+    group.joinRequests = []
     }
     return res.status(200).json(new ApiResponse(200, group, "Group found"))
 })
@@ -248,6 +276,7 @@ export {
     createGroup,
     isGroupNameUnique,
     getGroup,
+    getGroupForVisitors,
     addToGroup,
     exitFromGroup,
     requestToJoinGroup,

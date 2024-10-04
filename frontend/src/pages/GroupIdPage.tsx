@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react"
 import ProfileSideBar from "@/components/sections/ProfileSideBar"
 import { useAuth } from "@/context/AuthContext"
-import {acceptRequest, deleteGroup, getGroup,removeFromGroup,getGroupSuggestedPeople, addToGroup,exitFromGroup} from '@/api'
+import {acceptRequest, deleteGroup, getGroup,removeFromGroup,getGroupSuggestedPeople, addToGroup,exitFromGroup, rejectRequest} from '@/api'
 import { Link, useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import GroupAnnouncements from "./GroupAnnouncements";
@@ -21,6 +21,7 @@ import {
     AlertDialogTrigger,
  } from "@/components/ui/alert-dialog";
 import { toast } from "react-toastify";
+import {RWebShare} from 'react-web-share'
 
 function GroupIdPage() {
     const {groupId} = useParams()
@@ -63,7 +64,7 @@ function GroupIdPage() {
             {
               setGroup(data.data.data);
               }else{
-                  navigate('/groups')
+                  
             }
             if(user?._id == grp.admin._id){
               setAdmin(true)
@@ -75,15 +76,20 @@ function GroupIdPage() {
 
             }             
       } catch (err:any) {
+          if(err.status == 403){
+           navigate(`/groupview/${groupId}`)
+            
+          }
           setError(err.message);
       } finally {
           setLoading(false);
       }
   };
   const fetchSuggestedPeople = async () => {
-    const suggestedPeopleRes = await getGroupSuggestedPeople({groupId})
+    if(admin)
+    {const suggestedPeopleRes = await getGroupSuggestedPeople({groupId})
     if(suggestedPeopleRes.status == 200){
-      setSuggestedPeople(suggestedPeopleRes.data.data)
+      setSuggestedPeople(suggestedPeopleRes.data.data)}
     }
     
 };
@@ -124,7 +130,7 @@ function GroupIdPage() {
           <span>Posts: {group.posts.length}</span>
           <span>Projects: {group.projects.length}</span>
         </div>
-            <div className="flex justify-center gap-5">
+            <div className="flex justify-center items-center gap-5">
           {/* TODO:<AlertDialog>
             <AlertDialogTrigger asChild>
               <Button className="mt-6">Join Group</Button>
@@ -202,6 +208,23 @@ function GroupIdPage() {
             </AlertDialogContent>
           </AlertDialog>
           </div>}
+          <RWebShare
+
+            data={{
+              text:  `
+              Check out this group: ${group.name}`,
+              url: `${window.location.origin}/groups/${group._id}`,
+              title: "Share Group",
+
+            }}
+
+          >
+            <Button variant={"default"} className="mt-6 ml-2">
+              Share Group
+            </Button>
+          </RWebShare>
+
+        
             </div>
       </div>
 
@@ -372,7 +395,15 @@ function GroupIdPage() {
                            className="my-2">
                             <Check/>
                           </Button>
-                          <Button className="my-2" variant={"destructive"}>
+                          <Button className="my-2" variant={"destructive"}
+                             onClick={()=>{
+                              rejectRequest({userId:request._id, groupId:group._id})
+                              .then(()=>{
+                                
+                                fetchGroup()
+                              })
+                            }}>
+                            
                             <X/>
                           </Button>
                         </div>
@@ -423,7 +454,10 @@ function GroupIdPage() {
                            className="my-2">
                             <Check/>
                           </Button>
-                          <Button className="my-2" variant={"destructive"}>
+                          <Button className="my-2" variant={"destructive"}
+                       
+                          >
+                            
                             <X/>
                           </Button>
                         </div>
