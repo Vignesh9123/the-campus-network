@@ -26,7 +26,7 @@ const LogoutButton = ({className, variant}:{className?:string, variant?: "defaul
       <div className='flex justify-center items-center'>
 
     <LogOut className='w-4 h-4 mr-2' />
-    <div className='hidden md:block'>Logout</div>
+    <div className={` md:block ${className?.includes('sm-show-text')?"block":"hidden"}`}>Logout</div>
       </div>
     </Button>
     </AlertDialogTrigger>

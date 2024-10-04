@@ -56,7 +56,9 @@ const updateProfilePicture = (data:FormData)=>{
 const changePassword = (data:{oldPassword:string, newPassword:string})=>{
   return apiClient.post('/users/change-password', data)
 }
-
+const forgotPassword = (data:{email:string})=>{
+  return apiClient.post('/users/forgot-password', data)
+}
 const getAccountsToFollow = ()=>{
   return apiClient.get('/users/recommendations')
 }
@@ -235,7 +237,7 @@ const getGroupForVisitors = (data:{groupId:string|undefined})=>{
   return apiClient.get(`/groups/get-group-for-visitors/${data.groupId}`)
 }
 
-export {refreshToken, loginUser,checkToken, registerUser, logoutUser ,getAccountsToFollow,changePassword, getCurrentUser, checkUsernameUnique, createPost, updateAccountDetails,addPersonalDetails, updateProfilePicture,getUserPosts,searchUser, getUserProfile,followOrUnfollow, searchPost,getFollowers, getFollowing, likePost, getUserFeed, addComment,deleteComment,getCommentsbyPost,getPost,
+export {refreshToken, loginUser,checkToken, registerUser, logoutUser ,getAccountsToFollow,changePassword,forgotPassword, getCurrentUser, checkUsernameUnique, createPost, updateAccountDetails,addPersonalDetails, updateProfilePicture,getUserPosts,searchUser, getUserProfile,followOrUnfollow, searchPost,getFollowers, getFollowing, likePost, getUserFeed, addComment,deleteComment,getCommentsbyPost,getPost,
   createGroup, getGroup, acceptRequest, addToGroup, deleteGroup, exitFromGroup, isGroupNameUnique, rejectRequest, removeFromGroup, requestToJoinGroup,
   addProject, getGroupProjects, getMyProjects, getProject, updateProject, updateProjectStatus, deleteProject,
   createTask, getTask, updateTask, updateTaskStatus, deleteTask,getMyGroups,getMyTasks,getOthersTasks,sendNotification,storeDeviceToken,sendNotificationToUser,getGroupSuggestedPeople,getGroupForVisitors

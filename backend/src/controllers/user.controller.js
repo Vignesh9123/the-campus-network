@@ -424,7 +424,8 @@ const forgotPassword = asyncHandler(async(req, res)=>{
   const resetToken = await user.generatePasswordResetToken();
   user.passwordResetToken = resetToken;
   await user.save({validateBeforeSave: false});
-  const resetPasswordURL = `${req.protocol}://${req.get("host")}/api/v1/users/reset-password/${resetToken}`;
+  console.log(req)
+  const resetPasswordURL = `${req.get("origin")}/reset-password/${resetToken}`;
   const message = `You have requested to reset your password. Please click on the link to reset your password: ${resetPasswordURL}. If you did not request this, please ignore this email.`;
   await sendEmail({
     email: user.email,

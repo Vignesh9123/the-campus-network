@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import ProfileSideBar from "@/components/sections/ProfileSideBar";
 import PostCard from "@/components/modules/Posts/PostCard";
@@ -6,7 +6,6 @@ import {
   ExternalLink,
   Mail,
 } from "lucide-react";
-import HappeningPostCard from "@/components/modules/Posts/HappeningPostCard";
 import FloatingActionButton from "@/components/modules/FloatingActionButton";
 import {Link, useNavigate} from 'react-router-dom'
 import { formatNumber } from "@/utils";
@@ -18,22 +17,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import Autoplay from "embla-carousel-autoplay"
 
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel"
 import FollowButton from "@/components/modules/FollowButton";
 import { getUserPosts,getFollowers,getFollowing,getAccountsToFollow } from '@/api'
 import { PostInterface } from "@/types";
 import DotLoader from "@/components/DotLoader";
 const Profile = () => {
   const navigate = useNavigate()
-  const plugin = useRef(
-    Autoplay({ stopOnMouseEnter:true, stopOnInteraction:false,stopOnFocusIn:false, delay: 3000 })
-  )
   const { user } = useAuth();
   const pathname = window.location.pathname;
   const [showPreview, setShowPreview] = useState(false);

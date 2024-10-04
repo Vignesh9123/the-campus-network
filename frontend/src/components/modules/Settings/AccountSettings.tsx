@@ -14,8 +14,9 @@ import {
     EyeOff,
     
 } from 'lucide-react'
-import { changePassword } from "@/api"
+import { changePassword,/*forgotPassword*/} from "@/api"
 import { toast } from "react-toastify"
+import LogoutButton from "../LogoutButton"
 function AccountSettings() {
     
     const [showPassword, setShowPassword] = useState(false)
@@ -66,6 +67,27 @@ function AccountSettings() {
             }
         })
     }
+
+    // const handleForgotPasswordSubmit = () => { 
+    //     if(!resetPasswordEmail){
+    //         setCperror("Email is required")
+    //         return
+    //     }
+    //     forgotPassword({email:resetPasswordEmail}).then(
+    //         (res)=>{
+    //             if(res.status == 200){
+    //                 toast.success("Check your email for reset password link")
+    //                 setResetPasswordEmail("")
+    //             }
+    //         }
+    //     ).catch((err)=>{
+    //       console.log(err)
+    //         if(err.status == 400){
+    //             setCperror("Invalid Email")
+                
+    //         }
+    //     })
+    // }
 
   return (
     <div className="grid gap-6 h-[80vh] md:h-[90vh] scrollbar-hide overflow-y-auto">
@@ -121,7 +143,7 @@ function AccountSettings() {
         </form>
       </CardContent>
       <CardFooter className="border-t px-6 py-4">
-        <Button>Reset</Button>
+        <Button onClick={()=>{}}>Reset</Button>
       </CardFooter>
     </Card>
     <Card x-chunk="dashboard-04-chunk-2">
@@ -134,12 +156,27 @@ function AccountSettings() {
       <CardContent>
         <form className="flex flex-col gap-4">
           <Input value={verifyEmail} onChange={(e) => setVerifyEmail(e.target.value)} placeholder="Email" />
+          
         </form>
       </CardContent>
       <CardFooter className="border-t px-6 py-4">
         <Button>Verify</Button>
       </CardFooter>
     </Card>
+    <Card>
+        <CardHeader>
+            <CardTitle>Logout</CardTitle>
+            <CardDescription>
+                Logout from your account on this device
+            </CardDescription>
+        </CardHeader>
+
+        <CardContent>
+
+    <LogoutButton className="sm-show-text w-full mx-auto my-2"/>
+        </CardContent>
+    </Card>
+  
 
        
   </div>

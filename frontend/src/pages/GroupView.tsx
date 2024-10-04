@@ -74,7 +74,7 @@ function GroupView() {
         })
     }, [groupId])
   return (
-    <div ref={scrollableDivRef} className="w-3/4 overflow-y-scroll scrollbar-hide border-0 border-r-[1px] h-screen">
+    <div ref={scrollableDivRef} className="w-[85%] md:w-3/4 overflow-y-scroll scrollbar-hide border-0 border-r-[1px] h-screen">
     {loading && <div>
       <PostSkeletonLoader/>
       <PostSkeletonLoader/>
