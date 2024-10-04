@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { User } from "../models/user.model.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { uploadOnCloudinary,deleteFromCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { sendEmail } from "../utils/sendMail.js";
 import { Post } from '../models/post.model.js';
@@ -258,6 +258,20 @@ const updateAccountDetails = asyncHandler(async(req,res)=>{
 })
 
 const updateProfilePicture = asyncHandler(async(req, res)=>{
+  const user = await User.findByIdAndUpdate(
+    req.user?._id,
+    
+  ).select("-password");
+  const oldProfilePicture = user?.profilePicture;
+  const oldPublicId = oldProfilePicture?.split("/").pop().split(".")[0];
+  const defaultProfilePicture = process.env.DEFAULT_USER_IMAGE_URL
+  if(oldProfilePicture != defaultProfilePicture){
+    const res = await deleteFromCloudinary(oldPublicId);
+    if(!res){
+      throw new ApiError(400, "Error while deleting old profile picture");
+    }
+  }
+
   const profilePictureLocalPath = req.file?.path;
   if(!profilePictureLocalPath){
     throw new ApiError(400, "Profile picture is required");
@@ -266,16 +280,9 @@ const updateProfilePicture = asyncHandler(async(req, res)=>{
   if(!profilePicture.url){
     throw new ApiError(400, "Error while uploading profile picture");
   }
-  const user = await User.findByIdAndUpdate(
-    req.user?._id,
-    {
-      $set: {
-        profilePicture: profilePicture.url
-      }
-    },
-    {new: true}
-  ).select("-password");
-  //TODO: Delete old profilePicture
+  user.profilePicture = profilePicture.url;
+  await user.save({validateBeforeSave: false});
+  
   return res
   .status(200)
   .json(new ApiResponse(200, user, "Profile picture updated successfully"));
@@ -424,7 +431,6 @@ const forgotPassword = asyncHandler(async(req, res)=>{
   const resetToken = await user.generatePasswordResetToken();
   user.passwordResetToken = resetToken;
   await user.save({validateBeforeSave: false});
-  console.log(req)
   const resetPasswordURL = `${req.get("origin")}/reset-password/${resetToken}`;
   const message = `You have requested to reset your password. Please click on the link to reset your password: ${resetPasswordURL}. If you did not request this, please ignore this email.`;
   await sendEmail({

@@ -16,7 +16,6 @@ function Groups() {
       const fetchGroups = async () => {
           setLoading(true);
           const data = await getMyGroups();
-          console.log(data.data.data)
           setGroups(data.data.data);
           //setLoading(false) after a delay
           //TODO: Check this in deployment

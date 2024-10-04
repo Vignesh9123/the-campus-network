@@ -105,7 +105,6 @@ function EditProfile() {
         data.append('profilePicture', profilePicture)
         await updatePFP(data)
 
-        window.location.reload()
       }
     }
   return (
