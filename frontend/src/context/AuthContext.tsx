@@ -294,7 +294,6 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
      useEffect(() => {
         const initializeAuth = async () => {
             setIsLoading(true);
-
             const _token = localStorage.getItem("token");
             const _user: any = localStorage.getItem("user");
             if (_token && _user) {

@@ -22,6 +22,9 @@ import ProjectEdit from './pages/ProjectEdit'
 import Settings from './pages/Settings'
 import GeneralLayout from './components/GeneralLayout'
 import GroupView from './pages/GroupView'
+import TermsOfService from './pages/TermsOfService'
+import AboutTheSite from './pages/AboutTheSite'
+import PrivacyPolicy from './pages/PrivacyPolicy'
 function App() {
   onMessage(messaging, (payload) => {
     toast.info(
@@ -47,6 +50,10 @@ function App() {
         <Route path='/login' element={<Login/>}/>
         <Route path='/setLogin' element={<SetLogin/>}/>
         <Route path='/register' element={<RegisterForm/>}/>
+        <Route path='/terms-of-service' element={<TermsOfService/>}/>
+        <Route path='/privacy-policy' element={<PrivacyPolicy/>}/>
+        <Route path='/about-the-site' element={<AboutTheSite/>}/>
+
         </Route>
         <Route element={<PrivateRoute>
           

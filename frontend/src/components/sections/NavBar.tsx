@@ -1,10 +1,13 @@
 import LoginButton from '../modules/LoginButton'
 import AccountDropdown from '../modules/AccountDropdown'
 import SearchBar from '../modules/SearchBar'
-import { Menu } from 'lucide-react'
+import { Contact, Edit, Home, Info, Users,Menu } from 'lucide-react'
 import { ModeToggle } from '../mode-toggle'
 import { Link } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
+import { Button } from '../ui/button'
+import {Sheet, SheetContent, SheetTrigger } from '../ui/sheet'
+
 
 const NavBar = ({className}:any) => {
   const {user} = useAuth()
@@ -18,10 +21,10 @@ const NavBar = ({className}:any) => {
       <div className='menus hidden lg:block lg:ml-10'>
         <ul className='flex gap-10 text-black dark:text-white'>
           <Link to='/' className='cursor-pointer hover:underline'>Home</Link>
-          <Link to='/' className='cursor-pointer hover:underline'>Groups</Link>
-          <Link to='/' className='cursor-pointer hover:underline'>Posts</Link>
-          <Link to='/' className='cursor-pointer hover:underline'>About</Link>
-          <Link to='/' className='cursor-pointer hover:underline'>Contact</Link>
+          <Link to='/login' className='cursor-pointer hover:underline'>Groups</Link>
+          <Link to='/login' className='cursor-pointer hover:underline'>Posts</Link>
+          <Link to='/about-the-site' className='cursor-pointer hover:underline'>About</Link>
+          <Link to='/contact' className='cursor-pointer hover:underline'>Contact</Link>
         </ul>
 
       </div>
@@ -36,7 +39,55 @@ const NavBar = ({className}:any) => {
       <SearchBar />
     </div>
     <div className='ml-auto cursor-pointer hover:bg-muted p-2 rounded-md lg:hidden'>
-      <Menu />{/*TODO: Implement slider */}
+
+    <Sheet>
+            <SheetTrigger asChild>
+              <Button size="icon" variant="outline" className="md:hidden">
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Toggle Menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="sm:max-w-xs">
+              <nav className="grid gap-6 text-lg font-medium">
+               
+                <Link
+                  to="#"
+                  className="flex items-center gap-4 px-2.5 text-foreground hover:text-foreground"
+                >
+                  <Home className="h-5 w-5" />
+                  Home
+                </Link>
+                <Link
+                  to="#"
+                  className="flex text-muted-foreground hover:text-foreground items-center gap-4 px-2.5"
+                >
+                  <Users className="h-5 w-5" />
+                  Groups
+                </Link>
+                <Link
+                  to="#"
+                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                >
+                  <Edit className="h-5 w-5" />
+                  Posts
+                </Link>
+                <Link
+                  to="#"
+                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                >
+                  <Info className="h-5 w-5" />
+                  About
+                </Link>
+                <Link
+                  to="#"
+                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                >
+                  <Contact className="h-5 w-5" />
+                  Contact
+                </Link>
+              </nav>
+            </SheetContent>
+    </Sheet>{/*TODO: Implement slider */}
     </div>
     <div className='ml-2 hidden lg:block'>
       <ModeToggle />

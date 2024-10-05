@@ -1,6 +1,8 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
+import { requestPermission } from '@/utils'
+
 
 const SetLogin = () => {
   const navigate = useNavigate()
@@ -12,7 +14,9 @@ const SetLogin = () => {
     console.log(refreshToken)
     if (accessToken) {
       getGoogleSignedInUser({accessToken})
-      navigate('/')
+      requestPermission().then(() => {
+        navigate('/profile')
+      })
     }
   }, [])
   // eslint-disable-next-line react/jsx-no-useless-fragment

@@ -20,16 +20,13 @@ function PrivateRoute() {
     }, [isLoading]);
 
     if (!isReady) {
-        return <Loader/>; // or a loading spinner
+        return <Loader/>; 
     }
 
     if (!user) {
-        // Redirect to login, but save the current location
         return <Navigate to='/login' state={{ from: location }} replace />;
     }
-    // if(!user.engineeringDomain || !user.college){
-    //     return <Navigate to='/add-personal-details' state={{ from: location }} replace />;
-    // }
+    
 
     return <Outlet />;
 }
