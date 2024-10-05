@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { type } from "os";
 
 const projectSchema = new mongoose.Schema({
   title: {
@@ -17,10 +18,20 @@ const projectSchema = new mongoose.Schema({
   githubLink: {
     type: String,
   },
+  type:{
+    type:String,
+    enum:["group","individual"],
+    required:true,
+  },
+  visibilityType:{
+    type:String,
+    enum:["public","private"],
+    required:true,
+    default:"public"
+  },
   group: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Group",
-    required: true,
   },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,

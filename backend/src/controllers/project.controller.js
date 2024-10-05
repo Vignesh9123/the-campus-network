@@ -7,9 +7,28 @@ import { Task } from '../models/task.model.js'
 import { User } from '../models/user.model.js'
 
 const addProject = asyncHandler(async (req, res) => {
-    const {title, description, startDate, estimatedEndDate, group} = req.body
-    if(!title || !description || !startDate || !estimatedEndDate || !group) 
+    const {title, description, startDate, estimatedEndDate, group, type} = req.body
+    
+    if(!title || !description || !startDate || !estimatedEndDate) 
         throw new ApiError(400, "All fields are required")
+    if(!type) throw new ApiError(400, "Type is required")
+    if(type != "individual" && type !== "group"){
+        throw new ApiError(400, "Invalid type")
+    }
+    if(type == "individual"){
+        const project = await Project.create({
+            title,
+            description,
+            startDate,
+            estimatedEndDate,
+            createdBy: req.user._id,
+            type: "individual"
+        })
+        if(!project) throw new ApiError(500, "Something went wrong while creating the project")
+        return res.status(201).json(new ApiResponse(201, project, "Personal Project added successfully"))
+    }
+    else{
+        if(!group) throw new ApiError(400, "Group is required")
     const groupExists = await Group.findById(group)
     if(!groupExists) 
         throw new ApiError(404, "Group not found")
@@ -30,7 +49,8 @@ const addProject = asyncHandler(async (req, res) => {
     if(!project) throw new ApiError(500, "Something went wrong while creating the project")
     groupExists.projects.push(project._id)
     await groupExists.save()
-    return res.status(201).json(new ApiResponse(201, project, "Project added successfully"))
+    return res.status(201).json(new ApiResponse(201, project, "Group Project added successfully"))
+}
 })
 
 const getGroupProjects = asyncHandler(async (req, res) => {
@@ -44,22 +64,38 @@ const getGroupProjects = asyncHandler(async (req, res) => {
     if(!projects) throw new ApiError(404, "No projects found")
     return res.status(200).json(new ApiResponse(200, projects, "Projects fetched successfully"))    
 })
-const getMyProjects = asyncHandler(async (req, res) => {
+
+const getMyGroupProjects = asyncHandler(async (req, res) => {
     const groups = await Group.find({members: req.user._id})
 
     if(!groups) throw new ApiError(404, "You are not a member of any groups")
 
     const projects = await Project.find({group: {$in: groups.map(group => group._id)}}).select('-tasks')
     if(!projects) throw new ApiError(404, "No projects found")
-    return res.status(200).json(new ApiResponse(200, projects, "Projects fetched successfully"))
+    return res.status(200).json(new ApiResponse(200, projects, "Group Projects fetched successfully"))
 })
+
+const getMyIndividualProjects = asyncHandler(async (req, res) => {
+    const projects = await Project.find({
+        $and: [
+            {createdBy: req.user._id},
+            {type: "individual"}
+        ]
+    }).select('-tasks')
+    if(!projects) throw new ApiError(404, "No projects found")
+    return res.status(200).json(new ApiResponse(200, projects, "Individual Projects fetched successfully"))
+})
+
 const getProject = asyncHandler(async (req, res) => {
     const {projectId} = req.params
     if(!projectId) throw new ApiError(400, "Project id is required")
     const project = await Project.findById(projectId)
     if(!project) throw new ApiError(404, "Project not found")
-    if(!req.user.groups.includes(project.group._id))
-        throw new ApiError(403, "You are not a member of the group the project is part of")
+    
+    if(project.type == "individual" && project.createdBy._id.toString() !== req.user._id.toString())
+        throw new ApiError(403, "You are not the creator of this project")
+    if(project.type == "group" && !req.user.groups.includes(project.group._id))
+        throw new ApiError(403, "You are not a member of the group this project belongs to")
     return res.status(200).json(new ApiResponse(200, project, "Project fetched successfully"))
 })
 
@@ -68,13 +104,14 @@ const updateProject = asyncHandler(async (req, res) => {
     if(!projectId) throw new ApiError(400, "Project id is required")
     
     const project = await Project.findById(projectId)
-    if(
-        !req.user.groups.includes(project.group._id) ||
-        project.createdBy._id.toString() !== req.user._id.toString()
 
-    ){
+    if(!project) throw new ApiError(404, "Project not found")
+
+    if(project.type == "individual" && project.createdBy._id.toString() !== req.user._id.toString())
+        throw new ApiError(403, "You are not the creator of this project")
+
+    if(project.type == "group" && (!req.user.groups.includes(project.group._id) || project.createdBy._id.toString() !== req.user._id.toString()))
         throw new ApiError(403, "You are not authorized to update this project")
-    }
 
     const {title, description, estimatedEndDate} = req.body
     const updatedProject = await Project.findByIdAndUpdate(projectId, {
@@ -92,15 +129,18 @@ const deleteProject = asyncHandler(async (req, res) => {
     const {projectId} = req.params
     if(!projectId) throw new ApiError(400, "Project id is required")     
     const project = await Project.findById(projectId)
+    if(!project) throw new ApiError(404, "Project not found")
+
+    if(project.type == "individual" && project.createdBy._id.toString() !== req.user._id.toString())
+        throw new ApiError(403, "You are not the creator of this project")
     if(
-        !req.user.groups.includes(project.group._id) ||
-        project.createdBy._id.toString() !== req.user._id.toString()
+        project.type == "group" && (!req.user.groups.includes(project.group._id) ||
+        project.createdBy._id.toString() !== req.user._id.toString())
     
     ){
         throw new ApiError(403, "You are not authorized to delete this project")
     }
     await Project.findByIdAndDelete(projectId)
-    if(!project) throw new ApiError(404, "Project not found")
     return res.status(200).json(new ApiResponse(200, null, "Project deleted successfully"))
 })
 
@@ -108,8 +148,12 @@ const updateProjectStatus = asyncHandler(async (req, res) => {
     const {projectId} = req.params
     if(!projectId) throw new ApiError(400, "Project id is required")
     const project = await Project.findById(projectId)
+    if(!project) throw new ApiError(404, "Project not found")
+
+    if(project.type == "individual" && project.createdBy._id.toString() !== req.user._id.toString())
+        throw new ApiError(403, "You are not the creator of this project")
     if(
-        !req.user.groups.includes(project.group._id)
+       project.type == "group" && !req.user.groups.includes(project.group._id)
     ){
         throw new ApiError(403, "You are not authorized to update the status of this project")
     }
@@ -117,7 +161,6 @@ const updateProjectStatus = asyncHandler(async (req, res) => {
     const updatedProject = await Project.findByIdAndUpdate(projectId, {
         status:status || project.status
     }, {new: true})
-    if(!project) throw new ApiError(404, "Project not found")
     return res.status(200).json(new ApiResponse(200, updatedProject, "Project status updated successfully"))
 })
 
@@ -125,9 +168,10 @@ const updateProjectStatus = asyncHandler(async (req, res) => {
 export {
     addProject,
     getGroupProjects,
-    getMyProjects,
+    getMyGroupProjects,
     getProject,
     updateProject,
     deleteProject,
-    updateProjectStatus
+    updateProjectStatus,
+    getMyIndividualProjects
 }

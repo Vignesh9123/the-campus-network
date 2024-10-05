@@ -29,6 +29,9 @@ const createTask = asyncHandler(async (req, res) => {
         }
     }
 }
+    if(project.type == "individual"){
+        assignedTo = [userId]
+    }
        
     const task = await Task.create({
         title,
@@ -65,8 +68,10 @@ const getTask = asyncHandler(async (req, res) => {
     if (!project) {
         throw new ApiError(404, 'Project not found')
     }
-    if((!task.assignedTo.includes(userId))
+    if(project.type == "group" &&(!task.assignedTo.includes(userId))
      && (project.createdBy._id.toString() !== userId.toString()) )
+        throw new ApiError(403, 'You are not authorized to view this task')
+    if(project.type == "individual" && project.createdBy._id.toString() !== userId.toString())
         throw new ApiError(403, 'You are not authorized to view this task')
     return res.status(200).json(
         new ApiResponse(200, task, 'Task fetched successfully')
@@ -173,10 +178,12 @@ const getOthersTasks = asyncHandler(async(req, res)=>{
 })
 
 const deleteUserTasks = asyncHandler(async(req, res)=>{
-    const {userId} = req.params
+    const {userId, projectId} = req.params
     const tasks = await Task.updateMany(
-        {assignedTo:userId},
-        {$pull:{assignedTo:userId}}
+        {project: projectId, assignedTo:
+            {$in: [userId]}
+        },
+        {$pull: {assignedTo: userId}}
     )
     return res.status(200).json(
         new ApiResponse(200, tasks, 'Tasks deleted successfully')

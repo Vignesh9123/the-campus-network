@@ -6,7 +6,9 @@ import {
     updateTaskStatus,
     deleteTask,
     getMyTasks,
-    getOthersTasks
+    getOthersTasks,
+    deleteUserTasks
+
 } from '../controllers/task.controller.js'
 import {verifyJWT} from '../middlewares/auth.middleware.js'
 
@@ -20,5 +22,6 @@ router.route('/update-task-status/:taskId').patch(updateTaskStatus);
 router.route('/delete-task/:taskId').delete(deleteTask);
 router.route('/get-my-tasks/:projectId').get(getMyTasks);
 router.route('/get-others-tasks/:projectId').get(getOthersTasks);
+router.route('/delete-user-tasks/:userId/:projectId').delete(deleteUserTasks); //if user leaves group
 
 export default router;
