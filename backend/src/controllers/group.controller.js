@@ -4,6 +4,7 @@ import {ApiError} from '../utils/ApiError.js'
 import {ApiResponse} from '../utils/ApiResponse.js'
 import {User} from '../models/user.model.js'
 import { deleteUserTasks } from './task.controller.js'
+import { Project } from '../models/project.model.js'
 const createGroup = asyncHandler(async (req, res) => {
     const {name, description} = req.body
     if (!name) {
@@ -272,6 +273,46 @@ const groupSuggestedPeople = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, suggestedPeople, "Suggested people found"))
 })
 
+const updateGroupDetails = asyncHandler(async (req, res) => {
+    const {groupId} = req.params
+    const {name, description} = req.body
+    const group = await Group.findById(groupId)
+    if (!group) {
+        throw new ApiError(404, "Group not found")
+    }
+    if (!group.admin.equals(req.user._id)) {
+        throw new ApiError(403, "You are not authorized to update this group")
+    }
+    if (name) {
+        group.name = name
+    }
+    if (description) {
+        group.description = description
+    }
+    await group.save()
+    return res.status(200).json(new ApiResponse(200, group, "Group details updated"))
+})
+
+const changeGroupAdmin = asyncHandler(async (req, res) => {
+    const {groupId, userId} = req.params
+    const group = await Group.findById(groupId)
+    if (!group) {
+        throw new ApiError(404, "Group not found")
+    }
+    if (!group.admin.equals(req.user._id)) {
+        throw new ApiError(403, "You are not authorized to change the admin of this group")
+    }
+    if (!group.members.includes(userId)) {
+        throw new ApiError(400, "User is not a member of this group")
+    }
+    group.admin = userId
+    for( let projects of group.projects){
+        await Project.findByIdAndUpdate(projects, {createdBy: userId})
+    }
+    await group.save()
+    return res.status(200).json(new ApiResponse(200, group, "Group admin changed"))
+})
+
 export {
     createGroup,
     isGroupNameUnique,
@@ -285,5 +326,7 @@ export {
     removeFromGroup,
     deleteGroup,
     getMyGroups,
-    groupSuggestedPeople
+    groupSuggestedPeople,
+    updateGroupDetails,
+    changeGroupAdmin
 }

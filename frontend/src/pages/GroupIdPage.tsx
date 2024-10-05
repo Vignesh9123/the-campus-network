@@ -4,7 +4,7 @@ import { useAuth } from "@/context/AuthContext"
 import {acceptRequest, deleteGroup, getGroup,removeFromGroup,getGroupSuggestedPeople, addToGroup,exitFromGroup, rejectRequest} from '@/api'
 import { Link, useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import GroupAnnouncements from "./GroupAnnouncements";
+import GroupAnnouncements from "../components/sections/GroupAnnouncements";
 import PostSkeletonLoader from "@/components/modules/Posts/PostSkeletonLoader";
 import { Check, X } from "lucide-react";
 import AddProjectModule from "@/components/modules/AddProjectModule";
@@ -22,6 +22,7 @@ import {
  } from "@/components/ui/alert-dialog";
 import { toast } from "react-toastify";
 import {RWebShare} from 'react-web-share'
+import GroupSettings from "@/components/sections/GroupSettings";
 
 function GroupIdPage() {
     const {groupId} = useParams()
@@ -340,6 +341,7 @@ function GroupIdPage() {
       </div>}
       {selectedTab === "Settings" && <div className="group-settings p-4">
         {/* Settings Form */}
+        <GroupSettings group={group} refreshFunc={fetchGroup}/>
       </div>}
 
     </div>}

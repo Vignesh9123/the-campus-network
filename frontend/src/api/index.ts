@@ -241,8 +241,24 @@ const getMyIndividualProjects = ()=>{
   return apiClient.get('/projects/get-my-individual-projects')
 }
 
+const updateGroupDetails = (
+  data: { groupId: string | undefined, updateData: {
+    name?:string,
+    description?:string
+  } }
+)=>{
+  return apiClient.patch(`/groups/update-group-details/${data.groupId}`, data.updateData)
+}
+
+const changeGroupAdmin = (
+  data:{groupId:string | undefined, userId:string |undefined}
+) =>{
+  return apiClient.patch(`/groups/change-group-admin/${data.groupId}/${data.userId}`)
+
+}
+
 export {refreshToken, loginUser,checkToken, registerUser, logoutUser ,getAccountsToFollow,changePassword,forgotPassword, getCurrentUser, checkUsernameUnique, createPost, updateAccountDetails,addPersonalDetails, updateProfilePicture,getUserPosts,searchUser, getUserProfile,followOrUnfollow, searchPost,getFollowers, getFollowing, likePost, getUserFeed, addComment,deleteComment,getCommentsbyPost,getPost,
   createGroup, getGroup, acceptRequest, addToGroup, deleteGroup, exitFromGroup, isGroupNameUnique, rejectRequest, removeFromGroup, requestToJoinGroup,
   addProject, getGroupProjects, getMyProjects, getProject, updateProject, updateProjectStatus, deleteProject,
-  createTask, getTask, updateTask, updateTaskStatus, deleteTask,getMyGroups,getMyTasks,getOthersTasks,sendNotification,storeDeviceToken,sendNotificationToUser,getGroupSuggestedPeople,getGroupForVisitors,getMyIndividualProjects
+  createTask, getTask, updateTask, updateTaskStatus, deleteTask,getMyGroups,getMyTasks,getOthersTasks,sendNotification,storeDeviceToken,sendNotificationToUser,getGroupSuggestedPeople,getGroupForVisitors,getMyIndividualProjects, updateGroupDetails, changeGroupAdmin
   }
