@@ -13,7 +13,6 @@ import {
     CardTitle,
     CardContent,
     CardDescription,
-    CardFooter
 } from '@/components/ui/card'
 import {
     AlertDialog,
@@ -140,7 +139,7 @@ function GroupSettings({group, refreshFunc}:{group:any, refreshFunc:()=>void}) {
                                 {member._id.toString() === group.admin._id.toString() ? <Button disabled variant={"ghost"}>Current Admin</Button>: 
                                 <AlertDialog>
                                     <AlertDialogTrigger asChild>
-                                        <Button variant={"default"}>Change Admin</Button>
+                                        <Button variant={"default"}>Make Admin</Button>
                                     </AlertDialogTrigger>
                                     <AlertDialogContent>
                                         <AlertDialogHeader>

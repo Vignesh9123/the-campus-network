@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button"
 import GroupRightSideBar from "@/components/sections/GroupRightSideBar"
 import { useNavigate } from "react-router-dom"
 import FloatingActionButton from "@/components/modules/FloatingActionButton"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import CreateGroupModal from "@/components/modules/CreateGroupModal"
 function Groups() {
     const { user } = useAuth();
     const navigate = useNavigate();
@@ -59,6 +61,27 @@ function Groups() {
         ></div>
         </div>
         }
+        {!loading && groups.length == 0 && <div className="text-center text-gray-500">
+          You have not joined any Group
+          <div>
+            Join a Group or <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="link" className="p-0 m-0 text-blue-500">
+                  Create a new Group
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Create a New Group</DialogTitle>
+                  <DialogDescription>
+                    Enter the name and description for your new group.
+                  </DialogDescription>
+                </DialogHeader>
+                <CreateGroupModal/>
+               </DialogContent>
+            </Dialog>
+          </div>
+          </div>}
       <div className="grid md:grid-cols-2 gap-2">
      {!loading && groups[0] && groups.map(
 (group:any) => (
