@@ -24,11 +24,12 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { createTask, sendNotificationToUser } from '@/api'
 import { toast } from 'react-toastify'
-
+import { useAuth } from '@/context/AuthContext'
 
 function AddTasksModule({members,
-    projectId
-}:{members:any[], projectId:string}) {
+    projectId, type, refreshFunc
+}:{members?:any[], projectId:string, type:string, refreshFunc:()=>void}) {
+    const { user } = useAuth()
     const [open, setOpen] = useState(false)
     const [taskName, setTaskName] = useState('')
     const [taskDescription, setTaskDescription] = useState('')
@@ -46,7 +47,7 @@ function AddTasksModule({members,
         if(taskName == '')
             error.push('Task name is required')
         
-        if(taskAssignees.length == 0)
+        if(type != "individual" && taskAssignees.length == 0)
             error.push('At least one assignee is required')
         if(taskPriority == '')
             error.push('Task priority is required')
@@ -55,6 +56,8 @@ function AddTasksModule({members,
             setErrors(error)
             return
         }
+       
+        
 
 
         const taskData = {
@@ -63,18 +66,22 @@ function AddTasksModule({members,
             dueDate: taskDueDate,
             status:taskStatus,
             priority: taskPriority,
-            assignedTo: taskAssignees,
+            assignedTo: type == "individual" ? [user?._id] : taskAssignees,
             projectId
         }
-        createTask({taskData}).then(() => {
+        createTask({taskData}).then((res) => {
+            console.log(res)
             toast.success('Task added successfully')
+            refreshFunc()
             taskData.assignedTo.map(
                 (assignee:any) => {
+                    if(type == "group")
                     sendNotificationToUser({
                         title: `New Task`,
                         body: `You have been assigned a new task: ${taskData.title}`,
                         userId: assignee
                     })
+
                 }
             )
         })
@@ -85,7 +92,7 @@ function AddTasksModule({members,
             setFilteredMembers(members)
             return
         }
-        const filtered = members.filter((member) =>
+        const filtered = members?.filter((member) =>
             member.username.toLowerCase().includes(taskAssigneeSearch.toLowerCase())
         )
         setFilteredMembers(filtered)
@@ -146,7 +153,7 @@ function AddTasksModule({members,
                             />
                             </div>
                     </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
+                  {type != "individual" &&  <div className="grid grid-cols-4 items-center gap-4">
                         <label htmlFor="assignee" className="text-right">
                             Task Assigned to     <span className='text-red-500'>*</span>
                         
@@ -168,7 +175,7 @@ function AddTasksModule({members,
                                     />
                                 <div className="col-span-3 flex flex-col gap-2 max-h-[30vh] overflow-y-auto">
                             {
-                                filteredMembers.map((member) =>{ return(
+                                filteredMembers?.map((member) =>{ return(
                                     <div className='flex items-center gap-2'>
                                     <Checkbox
                                         key={member._id}
@@ -198,7 +205,7 @@ function AddTasksModule({members,
 
 
                         
-                    </div>
+                    </div>}
                     <div className="grid grid-cols-4 items-center gap-4">
                         <label htmlFor="dueDate" className="text-right">
                             Task Due Date

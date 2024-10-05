@@ -87,7 +87,9 @@ function GroupIdPage() {
   };
   const fetchSuggestedPeople = async () => {
     if(admin)
-    {const suggestedPeopleRes = await getGroupSuggestedPeople({groupId})
+    {
+      const suggestedPeopleRes = await getGroupSuggestedPeople({groupId})
+
     if(suggestedPeopleRes.status == 200){
       setSuggestedPeople(suggestedPeopleRes.data.data)}
     }
@@ -102,9 +104,12 @@ function GroupIdPage() {
           top: 500,
           behavior: "instant",
         });}
-        fetchSuggestedPeople()
+        
         
     }, [groupId, scrollableDivRef.current]);
+    useEffect(()=>{
+      fetchSuggestedPeople()
+    },[admin])
   return (
    <div>
       {user && <div className='flex'>
@@ -131,27 +136,7 @@ function GroupIdPage() {
           <span>Projects: {group.projects.length}</span>
         </div>
             <div className="flex justify-center items-center gap-5">
-          {/* TODO:<AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button className="mt-6">Join Group</Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you sure you want to join this group?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This action cannot be undone. This will send a request to the group admin to accept your request.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={()=>{
-                  requestToJoinGroup({groupId}).then(()=>{
-                    navigate('/groups')
-                  })
-                }}>Continue</AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog> */}
+          
           <AlertDialog>
             <AlertDialogTrigger >
         <Button variant={"destructive"} className="mt-6">    
@@ -280,7 +265,7 @@ function GroupIdPage() {
         {group.projects.length == 0 && 
       <p className="text-center">No projects found</p>}
       {admin && 
-      <AddProjectModule groupId={group._id} refreshFunc={fetchGroup}/>
+      <AddProjectModule type="group" groupId={group._id} refreshFunc={fetchGroup}/>
       } 
         {group.projects
           .map((project:any) => (
@@ -337,7 +322,8 @@ function GroupIdPage() {
           {  admin &&
             <Button className="my-1" 
             onClick={()=>{removeFromGroup({userId:member._id, groupId:group._id})
-            .then(()=>{
+            .then((res)=>{
+              console.log(res)
               fetchGroup()
             })
             
@@ -449,6 +435,7 @@ function GroupIdPage() {
                            onClick={()=>{addToGroup({userId:person._id, groupId:group._id})
                            .then(()=>{
                             fetchGroup()
+                            fetchSuggestedPeople()
                            })
                           }}
                            className="my-2">

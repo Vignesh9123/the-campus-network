@@ -195,12 +195,12 @@ const removeFromGroup = asyncHandler(async (req, res) => {
     if(!group.members.includes(userId))
         throw new ApiError(400, "User is not a member of this group")
     if (group.members.includes(userId)) {
-        deleteUserTasks(req,res);
         group.members = group.members.filter(member => member.toString() !== userId.toString())
         await group.save()
+        deleteUserTasks(req,res);
+        
     }
     await User.findByIdAndUpdate(userId, {$pull: {groups: group._id}}, {new: true})
-    return res.status(200).json(new ApiResponse(200, group, "User removed from group"))
 })
 
 const deleteGroup = asyncHandler(async (req, res) => {

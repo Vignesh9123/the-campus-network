@@ -23,13 +23,15 @@ import {
 } from '@/components/ui/alert-dialog'
 import UpdateTaskModal from "./UpdateTaskModal"
 import { toast } from "react-toastify"
-function TaskInfoDialog({task, admin, setOpen, refreshFunction}:{task:any, admin:boolean, setOpen:(value: boolean)=>void, refreshFunction?:Function}) 
+function TaskInfoDialog({task, admin, setOpen, refreshFunction}:{task:any, admin:boolean, setOpen:(value: boolean)=>void, refreshFunction:()=>void}) 
 {
     const [taskStatus, setTaskStatus] = useState(task.status)
     const handleUpdateStatus = async()=>{
         updateTaskStatus({taskId:task._id, status:taskStatus})
         .then(()=>{
             setOpen(false)
+            refreshFunction()
+            toast.success("Task status updated successfully")
         })
         
     }
@@ -83,7 +85,7 @@ function TaskInfoDialog({task, admin, setOpen, refreshFunction}:{task:any, admin
 
         {admin &&
         <div>
-            <UpdateTaskModal closeOtherModal={setOpen}  task={task}/>
+            <UpdateTaskModal refreshFunc={refreshFunction} closeOtherModal={setOpen}  task={task}/>
         </div>
         }
         {admin && 

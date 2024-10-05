@@ -19,7 +19,7 @@ const createTask = asyncHandler(async (req, res) => {
     if (project.createdBy._id.toString() !== userId.toString()) {
         throw new ApiError(403, 'You are not authorized to create task for this project')
     }
-    if(assignedTo && assignedTo.length > 0){
+    if(project.type == "group" && assignedTo && assignedTo.length > 0){
     const group = await Group.findById(project.group)
     for(
         let i of assignedTo
@@ -29,9 +29,7 @@ const createTask = asyncHandler(async (req, res) => {
         }
     }
 }
-    if(project.type == "individual"){
-        assignedTo = [userId]
-    }
+  
        
     const task = await Task.create({
         title,

@@ -112,7 +112,7 @@ const fetchProject = async () => {
           {project && (
             <div>
                 <div className="flex items-center m-5 mb-2 mx-10 justify-between">                    
-              <Breadcrumb className="">
+              {project.type == "group" && <Breadcrumb className="">
                 <BreadcrumbList>
                   <BreadcrumbItem>
                     <Link className="hover:text-white" to="/groups">
@@ -121,22 +121,38 @@ const fetchProject = async () => {
                   </BreadcrumbItem>
                   <BreadcrumbSeparator />
                   <BreadcrumbItem>
-                    <Link
+                   {project.type == "group" && <Link
                       className="hover:text-white"
                       to={`/groups/${project.group._id}?tab=Projects&scroll=true`}
                     >
                       {project.group.name}
-                    </Link>
+                    </Link>}
                   </BreadcrumbItem>
                   <BreadcrumbSeparator />
                   <BreadcrumbItem>
                     <BreadcrumbPage>{project.title}</BreadcrumbPage>
                   </BreadcrumbItem>
                 </BreadcrumbList>
-              </Breadcrumb>
+              </Breadcrumb>}
+              {project.type == "individual" && <Breadcrumb className="">
+                <BreadcrumbList>
+                  <BreadcrumbItem>
+                    <Link className="hover:text-white" to="/profile">
+                      Profile
+                    </Link>
+                  </BreadcrumbItem>
+    
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <BreadcrumbPage>{project.title}</BreadcrumbPage>
+                  </BreadcrumbItem>
+                </BreadcrumbList>
+              </Breadcrumb>}
               {admin && 
               <div className="flex gap-2 items-center">
-                <AddTasksModule projectId={project._id} members={project.group.members}/>
+               <AddTasksModule refreshFunc={fetchProject} type={project.type} members={
+                project.group?.members}
+               projectId={project._id}/>
                 <AlertDialog>
                   <AlertDialogTrigger>
                     <Button variant="destructive" className="text-sm">Delete Project</Button>
@@ -154,7 +170,11 @@ const fetchProject = async () => {
                       <AlertDialogAction onClick={()=>{deleteProject({projectId:project._id})
                         .then((res)=>{
                           if(res.status == 200){
-                           navigate(`/groups/${project.group._id}?tab=Projects&scroll=true`)
+                            if(project.type == "group")
+                              navigate(`/groups/${project.group._id}?tab=Projects&scroll=true`)
+
+                            else
+                              navigate("/profile")
                            toast.success("Project deleted successfully")
                           }
 
@@ -270,17 +290,18 @@ const fetchProject = async () => {
        <div>Priority</div>
        <div>Due Date</div>
     </div>
+    <div className="max-h-[50vh] overflow-y-auto">
     {
       filteredMyTasks.map((task) => (
         <TaskTableRow admin={admin} task={task} key={task._id} refreshFunction={fetchProject} />
     ))}
-
+     </div>
         
     
   
         </AccordionContent>
       </AccordionItem>
-      <AccordionItem value="item-2">
+     {project.type != "individual" &&<AccordionItem value="item-2">
         <AccordionTrigger  className="text-xl font-semibold">Others Tasks</AccordionTrigger>
         <AccordionContent>
           {/* Filters */}
@@ -343,14 +364,16 @@ const fetchProject = async () => {
        <div>Priority</div>
        <div>Due Date</div>
     </div>
+    <div className="max-h-[50vh] overflow-y-auto">
     {
       filteredOthersTasks.map((task) => (
         <TaskTableRow admin={admin} task={task} key={task._id} refreshFunction={fetchProject}/>
     ))}
+    </div>
       
          
         </AccordionContent>
-      </AccordionItem>
+      </AccordionItem>}
     </Accordion>
 
             </div>

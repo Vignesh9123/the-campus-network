@@ -19,21 +19,29 @@ import {
 } from "@/components/ui/dialog";
 
 import FollowButton from "@/components/modules/FollowButton";
-import { getUserPosts,getFollowers,getFollowing,getAccountsToFollow } from '@/api'
+import { getUserPosts,getFollowers,getFollowing,getAccountsToFollow,getMyIndividualProjects } from '@/api'
 import { PostInterface } from "@/types";
 import DotLoader from "@/components/DotLoader";
+import AddProjectModule from "@/components/modules/AddProjectModule";
+import { Button } from "@/components/ui/button";
 const Profile = () => {
   const navigate = useNavigate()
   const { user } = useAuth();
   const pathname = window.location.pathname;
   const [showPreview, setShowPreview] = useState(false);
   const [posts, setPosts] = useState([])
-
+  // const [loading, setLoading] = useState(false)
+  const [projects, setProjects] = useState([])
   const [followers, setFollowers] = useState([])
   const [following, setFollowing] = useState([])
   const [followLoading, setFollowLoading] = useState(false)
   const [accountsToFollow, setAccountsToFollow] = useState([])
   const [accountToFollowLoading, setAccountToFollowLoading] = useState(false)
+  const [selectedTab, setSelectedTab] = useState("Posts");
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
   
 
   const getOwnFollowers = ()=>{
@@ -62,8 +70,11 @@ const Profile = () => {
     const res = await getAccountsToFollow()
     setAccountsToFollow(res.data.data)
     setAccountToFollowLoading(false)
+  }
 
-    
+  const getMyProjects = async()=>{
+    const res = await getMyIndividualProjects()
+    setProjects(res.data.data)
   }
   useEffect(()=>{
     document.title = "The Campus Network - Profile"
@@ -71,6 +82,9 @@ const Profile = () => {
       setPosts(res.data.data)
     })
     getAccountRecommendations()
+
+    getMyProjects()
+    
     
   },[])
   return (
@@ -221,8 +235,36 @@ const Profile = () => {
               </div>
             </div>
             <div className="w-full h-[2px] bg-muted mt-5"></div>
-            <div className="posts">
-              <div className="text-center font-bold text-lg mt-3">Posts</div>
+            <div className="group-tabs bg-gray-200 sticky top-0 z-[9999] dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+        <ul className="flex justify-center md:gap-6">
+          <li className={`cursor-pointer hover:text-blue-500 duration-150 p-2 md:px-4 m-2 ${
+            selectedTab === "Posts" && "bg-muted  font-bold hover:text-gray-500"
+          }`}
+          onClick={() =>{
+            if(selectedTab != "Posts") 
+            setSelectedTab("Posts")
+            else{
+              scrollToTop()
+            }
+          }
+          }
+          >Posts</li>
+          <li className={`cursor-pointer hover:text-blue-500 duration-150 p-2  md:px-4 m-2
+            ${selectedTab === "Projects" && "bg-muted hover:text-gray-500 font-bold"}
+          `}
+          onClick={()=>{
+            if(selectedTab != "Projects") 
+              setSelectedTab("Projects")
+              else{
+                scrollToTop()
+              }
+          }}
+          >Projects</li>
+          
+          
+        </ul>
+      </div>
+            {selectedTab == "Posts" && <div className="posts">
               {
                 posts.length == 0 &&
                 <div className="text-center text-muted-foreground mt-3">No posts yet</div>
@@ -234,7 +276,45 @@ const Profile = () => {
             }
           
  
+            </div>}
+            {selectedTab === "Projects" && <div className="group-projects p-4">
+        {/* Project Cards */}
+        {projects.length == 0 && 
+      <p className="text-center">No projects found</p>}
+      
+      <AddProjectModule type={'individual'} refreshFunc={getMyProjects}/>
+      <div className="min-h-[70vh]">
+
+        {projects
+          .map((project:any) => (
+            <div key={project._id} className="bg-muted p-4 m-2">
+              <div className="flex items-center justify-between">
+                <div>
+
+              <h2 className="
+              text-xl font-semibold my-1
+              ">{project.title}</h2>
+              <p className="my-2">{project.description}</p>
+              </div>
+              <div>
+                <div className="flex justify-end">
+                {project.status == 'active' &&<span className="text-green-500 px-2 py-1 rounded-full">Active</span>}
+                {project.status == 'completed' &&<span className="text-blue-500 px-2 py-1 rounded-full">Completed</span>}
+                {project.status == 'pending' &&<span className="text-yellow-500 px-2 py-1 rounded-full">Pending</span>}<br/>
+                </div>
+                <Button className="my-2"
+                onClick={()=>{
+                  navigate(`/projects/${project._id}`)
+                }}
+                >View Project</Button>
+              </div>
+              </div>
             </div>
+          ))}
+                </div>
+
+      </div>}
+            
           </div>
           <div className="hidden lg:block w-1/3 h-screen">
             <div className="text-xl font-semibold m-5 ml-2">Accounts to follow</div>

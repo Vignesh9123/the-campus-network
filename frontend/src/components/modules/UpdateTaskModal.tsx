@@ -25,9 +25,11 @@ import {
 import { updateTask, getProject } from '@/api'
 
 
-function UpdateTaskModal({task, closeOtherModal
+function UpdateTaskModal({task, closeOtherModal, refreshFunc
 }:{task:any, 
-    closeOtherModal?:(value:boolean)=>void
+    closeOtherModal?:(value:boolean)=>void,
+    refreshFunc:()=>void
+
 }) {
     const [open, setOpen] = useState(false)
     const [taskName, setTaskName] = useState(task.title)
@@ -75,10 +77,10 @@ function UpdateTaskModal({task, closeOtherModal
             assignedTo: taskAssignees,
             projectId:task.project
         }
-        updateTask({taskId:task._id, updateData:taskData}).then((res) => {
-            console.log(res)
+        updateTask({taskId:task._id, updateData:taskData}).then(() => {
             closeOtherModal && closeOtherModal(false)
             clearAllValues()
+            refreshFunc()
             setOpen(false)
         })
     }
@@ -95,12 +97,10 @@ function UpdateTaskModal({task, closeOtherModal
     useEffect(() => {
         
         getProject({projectId:task.project}).then((res) => {
-            setMembers(res.data.data.group.members)     
+            if(res.data.data.type == "group") setMembers(res.data.data.group.members)     
         })
     }, [])
-    useEffect(() => {
-        console.log(taskAssignees)
-    }, [taskAssignees])
+   
     const clearAllValues = () => {
         setTaskName('')
         setTaskDescription('')
@@ -157,12 +157,13 @@ function UpdateTaskModal({task, closeOtherModal
                             />
                             </div>
                     </div>
+                    {members[0] &&
                     <div className="grid grid-cols-4 items-center gap-4">
                         <label htmlFor="assignee" className="text-right">
                             Task Assigned to     <span className='text-red-500'>*</span>
                         
                         </label>
-                        <div className="col-span-3">
+                         <div className="col-span-3">
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button variant="secondary" className='w-full'>Select Assignees</Button>
@@ -209,7 +210,7 @@ function UpdateTaskModal({task, closeOtherModal
 
 
                         
-                    </div>
+                    </div>}
                     <div className="grid grid-cols-4 items-center gap-4">
                         <label htmlFor="dueDate" className="text-right">
                             Task Due Date

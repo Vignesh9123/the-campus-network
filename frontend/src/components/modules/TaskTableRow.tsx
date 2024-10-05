@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog"
 import TaskInfoDialog from "./TaskInfoDialog";
 import { useState } from "react";
-function TaskTableRow({ task, admin, refreshFunction }: { task: any, admin:boolean; refreshFunction?:Function }) {
+function TaskTableRow({ task, admin, refreshFunction }: { task: any, admin:boolean; refreshFunction: () => void }) {
   const { user } = useAuth();
 
   const [open, setOpen] = useState(false);

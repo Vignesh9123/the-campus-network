@@ -9,8 +9,8 @@ import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { useState } from 'react'
 import { addProject } from '@/api'
-function AddProjectModule({groupId, refreshFunc}: {groupId:string;
-    refreshFunc: ()=>void
+function AddProjectModule({groupId, refreshFunc, type}: {groupId?:string;
+    refreshFunc: ()=>void, type?:string
 }) {
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
@@ -26,7 +26,8 @@ function AddProjectModule({groupId, refreshFunc}: {groupId:string;
             description,
             startDate,
             estimatedEndDate: endDate,
-            group: groupId
+            group: type == "group" ? groupId : undefined,
+            type
            
            }   
         }).then(()=>{
