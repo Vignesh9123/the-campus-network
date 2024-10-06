@@ -51,7 +51,7 @@ const PostCard = ({postedUser, post, refreshFunc}:{postedUser:UserInterface;post
    const handleRepostClick = async() => {
     try {
       if(post.createdBy?._id === user?._id) return
-      const res = await createRepost({postId:post._id})
+      await createRepost({postId:post._id})
       setReposted(!reposted)
       refreshFunc()
     } catch (error) {
