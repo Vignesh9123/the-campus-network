@@ -24,6 +24,8 @@ import { PostInterface } from "@/types";
 import DotLoader from "@/components/DotLoader";
 import AddProjectModule from "@/components/modules/AddProjectModule";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { formatDistanceToNow } from "date-fns";
 const Profile = () => {
   const navigate = useNavigate()
   const { user } = useAuth();
@@ -235,7 +237,7 @@ const Profile = () => {
               </div>
             </div>
             <div className="w-full h-[2px] bg-muted mt-5"></div>
-            <div className="group-tabs bg-gray-200 sticky top-0 z-[9999] dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+            <div className="group-tabs bg-gray-200 sticky top-0 z-[9999] dark:bg-gray-700 text-gray-800 dark:text-gray-200 my-3">
         <ul className="flex justify-center md:gap-6">
           <li className={`cursor-pointer hover:text-blue-500 duration-150 p-2 md:px-4 m-2 ${
             selectedTab === "Posts" && "bg-muted  font-bold hover:text-gray-500"
@@ -270,9 +272,25 @@ const Profile = () => {
                 <div className="text-center text-muted-foreground mt-3">No posts yet</div>
               }
             {
-              posts.map((post:PostInterface, index) => (
-                <PostCard key={index} user={user} post={post}/>
-              ))
+              posts.map((post:PostInterface, index) => {
+                return(
+                  <>
+                   {post.isRepost && <div className=' mx-10 w-fit bg-muted p-2 flex gap-3'>
+                        Reposted by <Link className='flex gap-2 items-center' to={`/user/${user.username}`}  onClick={()=>navigate(`/user/${user.username}/`)}>
+                        <img src={user.profilePicture} className='w-6 h-6 rounded-full' alt="" />
+                        <div>{user.username}</div>
+                        <Separator className='bg-muted-foreground' orientation='vertical'/>
+                        <div>{formatDistanceToNow(post.createdAt!, { addSuffix: true })}</div>
+                        </Link>
+                    </div>}
+                <PostCard refreshFunc={()=>{
+                  getUserPosts({username:user?.username!}).then((res)=>{
+                    setPosts(res.data.data)
+                  })
+                }} key={index} postedUser={post.isRepost && post.repostedPost?.createdBy?post.repostedPost?.createdBy:user} post={post.isRepost && post.repostedPost?post.repostedPost:post}/>
+                  </>
+              )
+              })
             }
           
  

@@ -2,23 +2,26 @@ import {useState} from 'react'
 import {Globe, ThumbsUpIcon, MessageSquare, Repeat2}  from 'lucide-react'
 import { UserInterface } from '@/context/AuthContext'
 import FollowButton from '../FollowButton'
-import { Link, useNavigate } from 'react-router-dom'
-import { likePost } from '@/api'
+import { useNavigate } from 'react-router-dom'
+import { createRepost, likePost } from '@/api'
 import { useAuth } from '@/context/AuthContext'
 import { formatDistanceToNow } from 'date-fns';
 
 const PostCard = ({otherUser, post, followCallback }:{otherUser:UserInterface|undefined;post:any;
   followCallback?: () => void
 }) => {
+  console.log("Post", post)
    const navigate = useNavigate()
    const [readMore, setReadMore] = useState(false)
    const {user} = useAuth()
     const postCreationTime = new Date(post.createdAt)
     const [likes, setLikes] = useState(post.likes.length)
     const [comments, _] = useState(post.comments.length)
+    const [reposts, setReposts] = useState(post.repostedBy?.length || 0)
     const [liked, setLiked] = useState(post.likes.includes(user?._id))
-    const [likeLoading, 
-        setLikeLoading] = useState(false)
+    const [reposted, setReposted] = useState(post.repostedBy?.includes(user?._id))
+    const [likeLoading, setLikeLoading] = useState(false)
+    const [repostLoading, setRepostLoading] = useState(false)
     const handleLike = async () => {
        try {
         if(likeLoading) return
@@ -30,6 +33,17 @@ const PostCard = ({otherUser, post, followCallback }:{otherUser:UserInterface|un
        } catch (error) {
         
        }
+    }
+
+    const handleRepost = async()=>{
+      if(repostLoading) return
+      setRepostLoading(true)
+    const res = await createRepost({postId:post._id})
+      console.log(res.data)
+      setReposts(res.data.data.repostLength)
+      setReposted(!reposted)
+      //TODO:Work
+      setRepostLoading(false)
     }
   return (
     <div>
@@ -44,7 +58,11 @@ const PostCard = ({otherUser, post, followCallback }:{otherUser:UserInterface|un
                       />
                     </div>
                     <div className="flex-col">
-                      <Link to={`/user/${otherUser && otherUser.username}`} className="pl-1 cursor-pointer font-semibold hover:underline">{otherUser && otherUser.username}</Link>
+                      <div onClick={() =>{ 
+                        navigate(`/user/${otherUser && otherUser.username}`)
+                        window.location.reload()
+                      }
+                        } className="pl-1 cursor-pointer font-semibold hover:underline">{otherUser && otherUser.username}</div>
                       <div className="text-muted-foreground text-sm flex gap-1 items-center">
                         <Globe className="w-4 h-4" />
                         <div>
@@ -83,9 +101,9 @@ const PostCard = ({otherUser, post, followCallback }:{otherUser:UserInterface|un
                     <MessageSquare className="w-5 h-5" />
                     <div className="text-sm">{comments}</div>
                   </div>
-                  <div className="flex hover:bg-muted cursor-pointer p-2  items-center gap-3">
-                    <Repeat2 className="w-5 h-5" />
-                    <div className="text-sm">0</div>
+                  <div onClick={handleRepost}  className="flex hover:bg-muted cursor-pointer p-2  items-center gap-3">
+                    <Repeat2 className={`w-5 h-5 ${reposted && !repostLoading?"text-green-500":"" } ${repostLoading?"text-gray-500":""}`} />
+                    <div className="text-sm">{reposts}</div>
                   </div>
                 </div>
                 <div className="w-full h-[2px] bg-muted"></div>

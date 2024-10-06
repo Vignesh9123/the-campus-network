@@ -1,13 +1,17 @@
 import { UserInterface } from "@/context/AuthContext";
 export interface PostInterface {
-    _id: number;
+    _id: string;
     title: string;
     content: string;
     createdBy?: UserInterface;
     createdOn: Date;
     createdAt?:Date;
     comments?:CommentInterface[];
-    likes?:any[]
+    likes?:string[];
+    isRepost?:boolean;
+    repostedPost?:PostInterface;
+    repostedBy?: string[];
+    repostedFrom?:UserInterface;
 }
 
 export interface CommentInterface{

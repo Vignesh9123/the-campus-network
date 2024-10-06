@@ -4,11 +4,28 @@ import { UserInterface } from '@/context/AuthContext'
 import { formatDistanceToNow } from 'date-fns'
 import { PostInterface } from '@/types'
 import { useNavigate } from 'react-router-dom'
-const PostCard = ({user, post}:{user:UserInterface;post:PostInterface}) => {
+import { useAuth } from '@/context/AuthContext'
+import { createRepost } from '@/api'
+const PostCard = ({postedUser, post, refreshFunc}:{postedUser:UserInterface;post:PostInterface, refreshFunc:()=>void}) => {
 
   const navigate = useNavigate()
+  const {user} = useAuth()
   
    const [readMore, setReadMore] = useState(false)
+   const [reposted, setReposted] = useState(post.repostedBy?.includes(user?._id!))
+
+   const handleRepostClick = async() => {
+    try {
+      if(post.createdBy?._id === user?._id) return
+      const res = await createRepost({postId:post._id})
+      console.log(res.data)
+      setReposted(!reposted)
+      refreshFunc()
+    } catch (error) {
+      console.log(error)
+    }
+   }
+   
     const postCreationTime = new Date(post.createdAt!)
   return (
     <div>
@@ -17,13 +34,13 @@ const PostCard = ({user, post}:{user:UserInterface;post:PostInterface}) => {
                   <div className="flex gap-2 items-center">
                     <div>
                       <img
-                        src={user.profilePicture}
+                        src={postedUser.profilePicture}
                         className="w-10 h-10 rounded-full"
                         alt=""
                       />
                     </div>
                     <div className="flex-col">
-                      <div className="pl-1 font-semibold">{user.username}</div>
+                      <div className="pl-1 font-semibold">{postedUser.username}</div>
                       <div className="text-muted-foreground text-sm flex gap-1 items-center">
                         <Globe className="w-4 h-4" />
                         <div>
@@ -38,7 +55,7 @@ const PostCard = ({user, post}:{user:UserInterface;post:PostInterface}) => {
                     </div>
                   </div>
                   <div className="ml-auto pr-10">
-                    <EllipsisVertical className="h-8 cursor-pointer hover:bg-muted" />
+                  {!reposted && <EllipsisVertical className="h-8 cursor-pointer hover:bg-muted" />}
                   </div>
                 </div>
                 <div className="w-3/4 h-[2px] mx-auto m-4 bg-muted"></div>
@@ -51,19 +68,26 @@ const PostCard = ({user, post}:{user:UserInterface;post:PostInterface}) => {
                 </div>
                 <div className="w-full h-[2px] m-2 bg-muted"></div>
                 <div className="flex items-center justify-around gap-2 m-3">
+                  <div className='flex flex-col justify-center items-center'>
+
                   <div className="flex hover:bg-muted cursor-pointer p-2 items-center gap-3">
                     <ThumbsUpIcon className="w-5 h-5" />
                     <div className="text-sm">{post.likes?.length}</div>
                   </div>
+                  <div className='text-xs cursor-pointer hover:bg-muted hover:underline'>See Liked Users</div>
+                  </div>
                   <div 
                     onClick={()=>navigate(`/post/${post._id}`)}
-                  className="flex hover:bg-muted cursor-pointer p-2  items-center gap-3">
+                    className="flex hover:bg-muted cursor-pointer p-2  items-center gap-3">
                     <MessageSquare className="w-5 h-5" />
                     <div className="text-sm">{post.comments?.length}</div>
                   </div>
-                  <div className="flex hover:bg-muted cursor-pointer p-2  items-center gap-3">
-                    <Repeat2 className="w-5 h-5" />
-                    <div className="text-sm">0</div>
+                  <div className="flex flex-col justify-center items-center">
+                  <div onClick={handleRepostClick} className="flex hover:bg-muted cursor-pointer p-2  items-center gap-3">
+                  <Repeat2  className={`w-5 h-5 ${reposted?"text-green-500":""}`} />
+                    <div className="text-sm">{post.repostedBy?.length || 0}</div>
+                  </div>
+                  <div className='text-xs cursor-pointer hover:bg-muted hover:underline'>See Reposted Users</div>
                   </div>
                 </div>
                 <div className="w-full h-[2px] bg-muted"></div>

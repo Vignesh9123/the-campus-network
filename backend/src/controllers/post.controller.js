@@ -119,22 +119,91 @@ const updatePost = asyncHandler(async (req, res) => {
     //return the response
     return res.status(200).json(new ApiResponse(200, updatedPost, "Post updated successfully"));
 })
-const getUserPosts = asyncHandler(async(req, res)=>{
-    const {username} = req.params;
-    if(!username?.trim()){
+const getUserPosts = asyncHandler(async (req, res) => {
+    const { username } = req.params;
+  
+    // Ensure the username is provided
+    if (!username?.trim()) {
       throw new ApiError(400, "Username is required");
     }
-    const user = await User.findOne({username}).select("_id");
-    const posts = await Post.find({createdBy: user?._id}).populate({
-      path: "createdBy",
-      select: "username email profilePicture"
-    }).sort(
-        {createdAt: -1}
-    );
+  
+    // Find the user by their username
+    const user = await User.findOne({ username }).select("_id");
+    if (!user) {
+      throw new ApiError(404, "User not found");
+    }
+  
+    // Aggregate posts created by or reposted by the user
+    const posts = await Post.aggregate([
+      {
+        $match: {
+          $or: [
+            { createdBy: user._id },  // Original posts
+            // { repostedBy: user._id }, // Reposts
+          ]
+        }
+      },
+      {
+        $lookup: {
+          from: "posts",              // Join with the same Post collection
+          localField: "repostedFrom", // Use repostedFrom as the join key
+          foreignField: "_id",        // Match the _id of the original post
+          as: "repostedPost",         // Alias the result as repostedPost
+        }
+      },
+      { $unwind: { path: "$repostedPost", preserveNullAndEmptyArrays: true } }, // Unwind to make repostedPost a single object
+      {
+        $lookup: {
+          from: "users",               // Join with User collection for post creators
+          localField: "createdBy",
+          foreignField: "_id",
+          as: "createdBy"
+        }
+      },
+      { $unwind: "$createdBy" },       // Unwind createdBy to make it a single object
+      {
+        $lookup: {
+          from: "users",               // Join with User collection for the reposted post's creator
+          localField: "repostedPost.createdBy",
+          foreignField: "_id",
+          as: "repostedPost.createdBy"
+        }
+      },
+      { $unwind: { path: "$repostedPost.createdBy", preserveNullAndEmptyArrays: true } }, // Unwind repostedPost's createdBy
+      {
+        $project: {
+          // Project only the necessary fields
+          title: 1,
+          content: 1,
+          createdAt: 1,
+          createdBy: { _id: 1, username: 1, email: 1, profilePicture: 1 }, // Original post creator
+          repostedPost: {
+            _id: 1,
+            title: 1,
+            content: 1,
+            createdBy: { _id: 1, username: 1, email: 1, profilePicture: 1 }, // Reposted post creator
+            createdAt: 1,
+            likes: 1,
+            comments: 1,
+            repostedBy:1
+          },
+          isRepost: 1,
+          repostedFrom: 1, // Optionally include repostedFrom ID
+          comments: 1,
+          likes: 1,
+          tags: 1,
+          public: 1,
+          repostedBy:1
+        }
+      },
+      { $sort: { createdAt: -1 } } // Sort by creation date (newest first)
+    ]);
+  
     return res
-    .status(200)
-    .json(new ApiResponse(200, posts, "User posts fetched successfully"));
-  })
+      .status(200)
+      .json(new ApiResponse(200, posts, "User posts fetched successfully"));
+  });
+  
   
 
 
@@ -221,6 +290,95 @@ const likeorUnlikePost = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, updatedLikesCount, "Post liked/disliked successfully"));
 })
 
+const createRePost = asyncHandler(async (req, res) => {
+    const {postId} = req.params;
+    //validate the input fields
+    if(!postId){
+        throw new ApiError(400, "Post id is required");
+    }
+    //find the post
+    const post = await Post.findById(postId);
+    if(!post){
+        throw new ApiError(404, "Post not found");
+    }
+
+    if(post.repostedBy.includes(req.user._id)){
+        // throw new ApiError(400, "You have already re-posted this post");
+        
+        const repostedPost = await Post.find({isRepost: true, repostedFrom: postId, createdBy: req.user._id});
+        await post.updateOne({$pull: {repostedBy: req.user._id}});
+        await Post.deleteMany({isRepost: true, repostedFrom: postId, createdBy: req.user._id});
+        await User.updateOne({_id: req.user._id}, {$pull: {posts: repostedPost[0]._id}});
+        post.repostedBy = post.repostedBy.filter((id) => id.toString() !== req.user._id.toString());
+        const repostLength = post.repostedBy.length;
+        return res.status(200).json(new ApiResponse(200, {repostLength}, "Re-post removed successfully"));
+    }
+    //create a new post
+    const rePost = await Post.create({
+        isRepost: true,
+        repostedFrom: postId,
+        createdBy: req.user._id
+    });
+    if(!rePost){
+        throw new ApiError(500, "Something went wrong while creating the re-post");
+    }
+    //add the post to the user's posts array
+    const user = await User.findById(req.user._id);
+    user.posts.push(rePost._id);
+    await user.save({validateBeforeSave:false});
+
+    post.repostedBy.push(req.user._id);
+    const repostLength = post.repostedBy.length;
+    await post.save({validateBeforeSave:false});
+
+    //return the response
+    return res.status(200).json(new ApiResponse(200, {rePost, repostLength}, "Re-post created successfully"));
+
+})
+
+
+const getLikedUsers = asyncHandler(async (req, res) => {
+    const {postId} = req.params;
+    if(!postId){
+        throw new ApiError(400, "Post id is required");
+    }
+    const likedUsers = await Post.aggregate([
+        {
+            $match: {
+                _id: new mongoose.Types.ObjectId(postId)
+            }
+        },
+        {
+            $project: {
+                likes: 1
+            }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "likes",
+                foreignField: "_id",
+                as: "likedUsers"
+            }
+        },
+        {
+            $unwind: "$likedUsers"
+        },
+        {
+            $project: {
+                _id: 1,
+                likedUsers: {
+                    _id: 1,
+                    username: 1,
+                    email: 1,
+                    profilePicture: 1
+                }
+            }
+        }
+    ]);
+    return res.status(200).json(new ApiResponse(200, likedUsers, "Liked users fetched successfully"));
+})
+
 export {
     createPost,
     getPost,
@@ -228,5 +386,7 @@ export {
     deletePost,
     getUserPosts,
     searchPosts,
-    likeorUnlikePost
+    likeorUnlikePost,
+    createRePost,
+    getLikedUsers
 }

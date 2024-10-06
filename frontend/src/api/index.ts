@@ -257,8 +257,16 @@ const changeGroupAdmin = (
 
 }
 
-export {refreshToken, loginUser,checkToken, registerUser, logoutUser ,getAccountsToFollow,changePassword,forgotPassword, getCurrentUser, checkUsernameUnique, createPost, updateAccountDetails,addPersonalDetails, updateProfilePicture,getUserPosts,searchUser, getUserProfile,followOrUnfollow, searchPost,getFollowers, getFollowing, likePost, getUserFeed, addComment,deleteComment,getCommentsbyPost,getPost,
+const createRepost = (data:{postId:string | undefined})=>{
+  return apiClient.post(`/posts/repost/${data.postId}`);
+}
+
+const getLikedUsers = (data:{postId:string | undefined})=>{
+  return apiClient.get(`/posts/likes/${data.postId}`);
+}
+
+export {refreshToken, loginUser,checkToken, registerUser, logoutUser ,getAccountsToFollow,changePassword,forgotPassword, getCurrentUser, checkUsernameUnique, createPost,createRepost ,updateAccountDetails,addPersonalDetails, updateProfilePicture,getUserPosts,searchUser, getUserProfile,followOrUnfollow, searchPost,getFollowers, getFollowing, likePost, getUserFeed, addComment,deleteComment,getCommentsbyPost,getPost,
   createGroup, getGroup, acceptRequest, addToGroup, deleteGroup, exitFromGroup, isGroupNameUnique, rejectRequest, removeFromGroup, requestToJoinGroup,
   addProject, getGroupProjects, getMyProjects, getProject, updateProject, updateProjectStatus, deleteProject,
-  createTask, getTask, updateTask, updateTaskStatus, deleteTask,getMyGroups,getMyTasks,getOthersTasks,sendNotification,storeDeviceToken,sendNotificationToUser,getGroupSuggestedPeople,getGroupForVisitors,getMyIndividualProjects, updateGroupDetails, changeGroupAdmin
+  createTask, getTask, updateTask, updateTaskStatus, deleteTask,getMyGroups,getMyTasks,getOthersTasks,sendNotification,storeDeviceToken,sendNotificationToUser,getGroupSuggestedPeople,getGroupForVisitors,getMyIndividualProjects, updateGroupDetails, changeGroupAdmin, getLikedUsers
   }

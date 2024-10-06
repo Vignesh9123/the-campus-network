@@ -2,7 +2,7 @@ import {useState,useEffect} from 'react'
 import ProfileSideBar from '@/components/sections/ProfileSideBar'
 import { getUserProfile } from '@/api'
 import { getUserPosts,getFollowers,getFollowing } from '@/api'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import Loader from '@/components/Loader'
 import { PostInterface } from '@/types'
 import { formatNumber } from '@/utils'
@@ -20,6 +20,8 @@ import PostCard from '@/components/modules/Posts/OthersPostCard'
 import FollowButton from '@/components/modules/FollowButton'
 import { useNavigate } from 'react-router-dom'
 import DotLoader from '@/components/DotLoader'
+import { formatDistanceToNow } from 'date-fns'
+import { Separator } from '@/components/ui/separator'
 function OtherUserProfile() {
     const navigate = useNavigate()
     const {username} = useParams()
@@ -65,6 +67,8 @@ function OtherUserProfile() {
       setFollowers([])
       setFollowing([])
       const posts = await getUserPosts({username:username||''})
+
+      console.log(posts.data.data)
       setPosts(posts.data.data)
   }
     useEffect(()=>{
@@ -224,16 +228,27 @@ function OtherUserProfile() {
             </div>
             <div className="w-full h-[2px] bg-muted mt-5"></div>
             <div className="posts">
-              <div className="text-center font-bold text-lg mt-3">Posts</div>
+              <div className="text-center font-bold text-lg my-3">Posts</div>
               {
             posts.length==0 && <div className="text-center text-sm m-3 text-muted-foreground">
               No posts yet
             </div>
             }
             {
-              posts.map((post:PostInterface, index:any) => (
-                <PostCard key={index} otherUser={otherUser} post={post} followCallback={fetchUserProfile}/>
-              ))
+              posts.map((post:PostInterface, index:any) =>{ 
+                return(
+                  <>
+                   {post.isRepost && <div className=' mx-10 w-fit bg-muted p-2 flex gap-3'>
+                        Reposted by <Link className='flex gap-2 items-center' to={`/user/${otherUser.username}`}  onClick={()=>navigate(`/user/${otherUser.username}/`)}>
+                        <img src={otherUser.profilePicture} className='w-6 h-6 rounded-full' alt="" />
+                        <div>{otherUser.username}</div>
+                        <Separator className='bg-muted-foreground' orientation='vertical'/>
+                        <div>{formatDistanceToNow(post.createdAt!, { addSuffix: true })}</div>
+                        </Link>
+                    </div>}
+                <PostCard key={index} otherUser={post.isRepost?(post.repostedPost?.createdBy):otherUser} post={post.isRepost?post.repostedPost:post} followCallback={fetchUserProfile}/>
+                  </>
+              )})
             }
           
  

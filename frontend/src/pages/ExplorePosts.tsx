@@ -6,6 +6,9 @@ import { useAuth } from '@/context/AuthContext'
 import { getUserFeed } from '@/api'
 import PostSkeletonLoader from '@/components/modules/Posts/PostSkeletonLoader'
 import { usePullToRefresh } from '@/components/modules/usePullRefreshHook'
+import { Link } from 'react-router-dom'
+import { Separator } from '@/components/ui/separator'
+import { formatDistanceToNow } from 'date-fns'
 
 
 function ExplorePosts() {
@@ -19,6 +22,7 @@ function ExplorePosts() {
       try {
         const data = await getUserFeed();
         setPosts(data.data.data);
+        console.log(data.data.data);
       } catch (error) {
         console.error('Error fetching posts:', error);
       }
@@ -62,9 +66,20 @@ function ExplorePosts() {
                 
                 {!loading && posts.length === 0 && <div className="text-center mt-10">No posts to show, search or follow new content</div>}
                 {!loading && posts.length > 0 &&
-                posts.map((post:any) => (
-                    <OthersPostCard otherUser={post.createdBy} key={post._id} post={post}/>
-                ))}
+               posts.map((post:any, index:any) =>{ 
+                return(
+                  <>
+                  {post.isRepost && <div className=' mx-10 w-fit bg-muted p-2 flex gap-3'>
+                        Reposted by <Link className='flex gap-2 items-center' to={`/user/${post.createdBy.username}`}>
+                        <img src={post.createdBy.profilePicture} className='w-6 h-6 rounded-full' alt="" />
+                        <div>{post.createdBy.username}</div>
+                        <Separator className='bg-muted-foreground' orientation='vertical'/>
+                        <div>{formatDistanceToNow(post.createdAt, { addSuffix: true })}</div>
+                        </Link>
+                    </div>}
+                <OthersPostCard key={index} otherUser={post.isRepost?post.repostedPost.createdBy:post.createdBy} post={post.isRepost?post.repostedPost:post}/>
+                  </>
+              )})}
 
             </div>
             <div className="hidden lg:block w-[25%] h-screen">

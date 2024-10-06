@@ -501,22 +501,23 @@ const resendVerificationEmail = asyncHandler(async(req, res)=>{
 })
 
 
-const getUserFeed = asyncHandler(async(req, res)=>{
+const getUserFeed = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user?._id);
   const following = user.following;
+
   const feed = await Post.aggregate([
     {
       $match: {
         $and: [
           {
             $or: [
-              { createdBy: { $in: following } },
-              { tags: { $in: [user.engineeringDomain, user.college] } },
-              { tags: { $in: user.preferences } }
+              { createdBy: { $in: following } }, // Posts by followed users
+              { tags: { $in: [user.engineeringDomain, user.college] } }, // Posts matching user's domain or college
+              { tags: { $in: user.preferences } } // Posts matching user's preferences
             ]
           },
-          { createdAt: { $gte: new Date(Date.now() - 48 * 60 * 60 * 1000) } },// 48 hours ago
-          { createdBy: { $ne: user._id } }
+          { createdAt: { $gte: new Date(Date.now() - 48 * 60 * 60 * 1000) } }, // Posts from the last 48 hours
+          { createdBy: { $ne: user._id } } // Exclude user's own posts
         ]
       }
     },
@@ -526,7 +527,7 @@ const getUserFeed = asyncHandler(async(req, res)=>{
       }
     },
     {
-      $sort: { isFollowedUser: -1, createdAt: -1 } // Sort followed users first, then by createdAt
+      $sort: { isFollowedUser: -1, createdAt: -1 } // Sort followed users first, then by creation time
     },
     {
       $lookup: {
@@ -537,29 +538,71 @@ const getUserFeed = asyncHandler(async(req, res)=>{
       }
     },
     {
-      $unwind: '$createdBy' // Unwind the array so that createdByUser is a single object
+      $unwind: '$createdBy' // Unwind the array so that createdBy is a single object
+    },
+    {
+      $lookup: {
+        from: 'posts', // Collection for reposts
+        localField: 'repostedFrom', // Field to match for reposted content
+        foreignField: '_id', // Match with the original post
+        as: 'repostedPost' // Output field for reposted post data
+      }
+    },
+    {
+      $unwind: {
+        path: '$repostedPost',
+        preserveNullAndEmptyArrays: true // In case it's not a repost
+      }
+    },
+    // Lookup the creator of the repostedPost
+    {
+      $lookup: {
+        from: 'users', // Collection where users are stored
+        localField: 'repostedPost.createdBy', // Field in repostedPost to match
+        foreignField: '_id', // Field in User collection to match
+        as: 'repostedPost.createdBy' // Output field for original user data
+      }
+    },
+    {
+      $unwind: {
+        path: '$repostedPost.createdBy', // Unwind original post creator data
+        preserveNullAndEmptyArrays: true // In case it's not a repost
+      }
     },
     {
       $project: {
         // Select the fields you want to include
-        createdBy: {_id:1, username: 1, email: 1, profilePicture: 1 },
+        createdBy: { _id: 1, username: 1, email: 1, profilePicture: 1 }, // User details for original post
         tags: 1,
         createdAt: 1,
         isFollowedUser: 1,
-        title:1,
-        content:1,
-        likes:1,
-        comments:1,
-        public:1,
-        createdAt:1
+        title: { $cond: { if: "$isRepost", then: "$repostedPost.title", else: "$title" } }, // Use reposted title if applicable
+        content: { $cond: { if: "$isRepost", then: "$repostedPost.content", else: "$content" } }, // Use reposted content if applicable
+        likes: 1,
+        comments: 1,
+        public: 1,
+        repostedFrom: 1, // Show repostedFrom field
+        repostedPost: {
+          _id: 1,
+          title: 1,
+          content: 1,
+          createdBy: { _id: 1, username: 1, profilePicture: 1 } ,// Show original post's creator
+          createdAt: 1,
+          likes: 1,
+          comments: 1,
+          repostedBy:1
+        },
+        isRepost: 1 ,// Indicate if it's a repost
+        repostedBy:1
       }
     }
   ]);
-  
+
   return res
-  .status(200)
-  .json(new ApiResponse(200, feed, "User feed fetched successfully"));
-})
+    .status(200)
+    .json(new ApiResponse(200, feed, "User feed fetched successfully"));
+});
+
 
 
 const searchUsers = asyncHandler(async(req, res)=>{
