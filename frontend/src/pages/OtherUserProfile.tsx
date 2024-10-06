@@ -62,13 +62,10 @@ function OtherUserProfile() {
         navigate('/profile')
       }
       const response = await getUserProfile({username})
-      console.log(response.data.data.user)
       setOtherUser(response.data.data.user)
       setFollowers([])
       setFollowing([])
       const posts = await getUserPosts({username:username||''})
-
-      console.log(posts.data.data)
       setPosts(posts.data.data)
   }
     useEffect(()=>{
@@ -238,7 +235,7 @@ function OtherUserProfile() {
               posts.map((post:PostInterface, index:any) =>{ 
                 return(
                   <>
-                   {post.isRepost && <div className=' mx-10 w-fit bg-muted p-2 flex gap-3'>
+                   {post.isRepost && <div key={post._id} className=' mx-10 w-fit bg-muted p-2 flex gap-3'>
                         Reposted by <Link className='flex gap-2 items-center' to={`/user/${otherUser.username}`}  onClick={()=>navigate(`/user/${otherUser.username}/`)}>
                         <img src={otherUser.profilePicture} className='w-6 h-6 rounded-full' alt="" />
                         <div>{otherUser.username}</div>

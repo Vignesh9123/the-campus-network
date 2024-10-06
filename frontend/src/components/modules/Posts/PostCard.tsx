@@ -5,7 +5,9 @@ import { formatDistanceToNow } from 'date-fns'
 import { PostInterface } from '@/types'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
-import { createRepost } from '@/api'
+import { createRepost, getLikedUsers, getRepostedUsers } from '@/api'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import DotLoader from '@/components/DotLoader'
 const PostCard = ({postedUser, post, refreshFunc}:{postedUser:UserInterface;post:PostInterface, refreshFunc:()=>void}) => {
 
   const navigate = useNavigate()
@@ -14,11 +16,42 @@ const PostCard = ({postedUser, post, refreshFunc}:{postedUser:UserInterface;post
    const [readMore, setReadMore] = useState(false)
    const [reposted, setReposted] = useState(post.repostedBy?.includes(user?._id!))
 
+   const [likedUsers, setLikedUsers] = useState([])
+   const [repostedUsers, setRepostedUsers] = useState([])
+
+   const [likedUsersLoading, setLikedUsersLoading] = useState(false)
+   const [repostedUsersLoading, setRepostedUsersLoading] = useState(false)
+
+   const handleRepostedUsersClick = async() => {
+    setRepostedUsersLoading(true)
+    setLikedUsersLoading(false)
+    try {
+      const res = await getRepostedUsers({postId:post._id})
+      setRepostedUsers(res.data.data)
+    } catch (error) {
+      console.log(error)
+    }
+    finally{
+      setRepostedUsersLoading(false)
+    }
+   }
+
+   const handleLikedUsersClick = async() => {
+    setLikedUsersLoading(true)
+    try {
+      const res = await getLikedUsers({postId:post._id})
+      setLikedUsers(res.data.data)
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setLikedUsersLoading(false)
+    }
+   }
+
    const handleRepostClick = async() => {
     try {
       if(post.createdBy?._id === user?._id) return
       const res = await createRepost({postId:post._id})
-      console.log(res.data)
       setReposted(!reposted)
       refreshFunc()
     } catch (error) {
@@ -74,7 +107,26 @@ const PostCard = ({postedUser, post, refreshFunc}:{postedUser:UserInterface;post
                     <ThumbsUpIcon className="w-5 h-5" />
                     <div className="text-sm">{post.likes?.length}</div>
                   </div>
-                  <div className='text-xs cursor-pointer hover:bg-muted hover:underline'>See Liked Users</div>
+                  <Dialog>
+                    <DialogTrigger>
+
+                  <div onClick={handleLikedUsersClick} className='text-xs cursor-pointer hover:bg-muted hover:underline'>See Liked Users</div>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Liked Users</DialogTitle>
+                      </DialogHeader>
+                      <div className="flex flex-col gap-2 max-h-[200px] overflow-y-auto">
+                        {likedUsersLoading && <DotLoader/>}
+                        {likedUsers.map((user:UserInterface)=>(
+                          <div onClick={()=>navigate(`/user/${user.username}`)} key={user._id} className="flex gap-2 items-center cursor-pointer hover:bg-muted p-2">
+                            <img src={user.profilePicture} className="w-10 h-10 rounded-full" alt="" />
+                            <div>{user.username}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                   </div>
                   <div 
                     onClick={()=>navigate(`/post/${post._id}`)}
@@ -87,7 +139,26 @@ const PostCard = ({postedUser, post, refreshFunc}:{postedUser:UserInterface;post
                   <Repeat2  className={`w-5 h-5 ${reposted?"text-green-500":""}`} />
                     <div className="text-sm">{post.repostedBy?.length || 0}</div>
                   </div>
-                  <div className='text-xs cursor-pointer hover:bg-muted hover:underline'>See Reposted Users</div>
+                  <Dialog>
+                    <DialogTrigger>
+
+                  <div onClick={handleRepostedUsersClick} className='text-xs cursor-pointer hover:bg-muted hover:underline'>See Reposted Users</div>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Reposted Users</DialogTitle>
+                      </DialogHeader>
+                      <div className="flex flex-col gap-2 max-h-[200px] overflow-y-auto">
+                        {repostedUsersLoading && <DotLoader/>}
+                        {repostedUsers.map((user:UserInterface)=>(
+                          <div onClick={()=>navigate(`/user/${user.username}`)} key={user._id} className="flex gap-2 items-center cursor-pointer hover:bg-muted p-2">
+                            <img src={user.profilePicture} className="w-10 h-10 rounded-full" alt="" />
+                            <div>{user.username}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                   </div>
                 </div>
                 <div className="w-full h-[2px] bg-muted"></div>

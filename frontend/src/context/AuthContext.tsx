@@ -34,6 +34,7 @@ const AuthContext = createContext<{
     setIsLoading:(isLoading:boolean)=>void;
     followOrUnfollowUser:(userId:string)=>Promise<void>;
     following:string[];
+    setUser:(user:UserInterface | null)=>void
 }>({
     user:null,
     token:null,
@@ -48,7 +49,8 @@ const AuthContext = createContext<{
     isLoading:false,
     setIsLoading:()=>{},
     followOrUnfollowUser:async()=>{},
-    following:[]
+    following:[],
+    setUser:()=>{}
 
 });
 
@@ -213,10 +215,10 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
             async()=>await getCurrentUser(),
             setIsLoading,
             (res)=>{
-                console.log(res);
+                console.log(res)
                 setUser(res.data);
                 setToken(accessToken);
-                localStorage.setItem("user", JSON.stringify(res.data));
+                localStorage.setItem("user", JSON.stringify(res.data.data));
                 localStorage.setItem("token", accessToken);
             },
             alert
@@ -308,7 +310,7 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
         checkTokenValidity();
     }, []);
   return (
-    <AuthContext.Provider value={{ user,following, login, register, logout, token, getGoogleSignedInUser,updateAccDetails,updatePersonalDetails,updatePFP, authError,isLoading,setIsLoading,followOrUnfollowUser}}>
+    <AuthContext.Provider value={{ user,following, login, register, logout, token, getGoogleSignedInUser,updateAccDetails,updatePersonalDetails,updatePFP, authError,isLoading,setIsLoading,followOrUnfollowUser,setUser}}>
       {isLoading ? <Loader /> : children} {/* Display a loader while loading */}
     </AuthContext.Provider>
   );

@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dialog";
 
 import FollowButton from "@/components/modules/FollowButton";
-import { getUserPosts,getFollowers,getFollowing,getAccountsToFollow,getMyIndividualProjects } from '@/api'
+import { getUserPosts,getFollowers,getFollowing,getAccountsToFollow,getMyIndividualProjects,getCurrentUser } from '@/api'
 import { PostInterface } from "@/types";
 import DotLoader from "@/components/DotLoader";
 import AddProjectModule from "@/components/modules/AddProjectModule";
@@ -28,7 +28,7 @@ import { Separator } from "@/components/ui/separator";
 import { formatDistanceToNow } from "date-fns";
 const Profile = () => {
   const navigate = useNavigate()
-  const { user } = useAuth();
+  const { user,setUser } = useAuth();
   const pathname = window.location.pathname;
   const [showPreview, setShowPreview] = useState(false);
   const [posts, setPosts] = useState([])
@@ -52,6 +52,7 @@ const Profile = () => {
     getFollowers({username:user?.username}).then(
       (res)=>{
         setFollowers(res.data.data)
+        
         setFollowLoading(false)
       }
     )
@@ -62,7 +63,9 @@ const Profile = () => {
     getFollowing({username:user?.username}).then(
       (res)=>{
         setFollowing(res.data.data)
+        
         setFollowLoading(false)
+
       }
     )
   }
@@ -84,7 +87,9 @@ const Profile = () => {
       setPosts(res.data.data)
     })
     getAccountRecommendations()
-
+    getCurrentUser().then((res)=>{
+      setUser(res.data.data)
+    })
     getMyProjects()
     
     

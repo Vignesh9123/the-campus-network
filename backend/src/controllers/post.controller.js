@@ -358,25 +358,61 @@ const getLikedUsers = asyncHandler(async (req, res) => {
                 from: "users",
                 localField: "likes",
                 foreignField: "_id",
-                as: "likedUsers"
+                as: "likedUser"
             }
         },
         {
-            $unwind: "$likedUsers"
+            $unwind: "$likedUser"
         },
         {
             $project: {
-                _id: 1,
-                likedUsers: {
-                    _id: 1,
-                    username: 1,
-                    email: 1,
-                    profilePicture: 1
-                }
+                _id: "$likedUser._id",
+                username: "$likedUser.username",
+                email: "$likedUser.email",
+                profilePicture: "$likedUser.profilePicture"
             }
         }
     ]);
     return res.status(200).json(new ApiResponse(200, likedUsers, "Liked users fetched successfully"));
+})
+
+const getRepostedUsers = asyncHandler(async (req, res) => {
+    const {postId} = req.params;
+    if(!postId){
+        throw new ApiError(400, "Post id is required");
+    }
+    const repostedUsers = await Post.aggregate([
+        {
+            $match: {
+                _id: new mongoose.Types.ObjectId(postId)
+            }
+        },
+        {
+            $project: {
+                repostedBy: 1
+            }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "repostedBy",
+                foreignField: "_id",
+                as: "repostedUser"
+            }
+        },
+        {
+            $unwind: "$repostedUser"
+        },
+        {
+            $project: {
+                _id: "$repostedUser._id",
+                username: "$repostedUser.username",
+                email: "$repostedUser.email",
+                profilePicture: "$repostedUser.profilePicture"
+            }
+        }
+    ]);
+    return res.status(200).json(new ApiResponse(200, repostedUsers, "Reposted users fetched successfully"));
 })
 
 export {
@@ -388,5 +424,6 @@ export {
     searchPosts,
     likeorUnlikePost,
     createRePost,
-    getLikedUsers
+    getLikedUsers,
+    getRepostedUsers
 }

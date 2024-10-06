@@ -10,7 +10,6 @@ import { formatDistanceToNow } from 'date-fns';
 const PostCard = ({otherUser, post, followCallback }:{otherUser:UserInterface|undefined;post:any;
   followCallback?: () => void
 }) => {
-  console.log("Post", post)
    const navigate = useNavigate()
    const [readMore, setReadMore] = useState(false)
    const {user} = useAuth()
@@ -39,7 +38,6 @@ const PostCard = ({otherUser, post, followCallback }:{otherUser:UserInterface|un
       if(repostLoading) return
       setRepostLoading(true)
     const res = await createRepost({postId:post._id})
-      console.log(res.data)
       setReposts(res.data.data.repostLength)
       setReposted(!reposted)
       //TODO:Work
