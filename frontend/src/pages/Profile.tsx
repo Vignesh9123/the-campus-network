@@ -280,12 +280,12 @@ const Profile = () => {
               posts.map((post:PostInterface, index) => {
                 return(
                   <>
-                   {post.isRepost && <div className=' mx-10 w-fit bg-muted p-2 flex gap-3'>
-                        Reposted by <Link className='flex gap-2 items-center' to={`/user/${user.username}`}  onClick={()=>navigate(`/user/${user.username}/`)}>
+                   {post.isRepost && <div className='mx-10 w-fit bg-muted p-1 md:p-2 gap-1 text-sm md:text-md flex md:gap-3'>
+                        Reposted by <Link className='flex  gap-1 md:gap-2 items-center' to={`/profile`}  onClick={()=>navigate(`/user/${user.username}/`)}>
                         <img src={user.profilePicture} className='w-6 h-6 rounded-full' alt="" />
                         <div>{user.username}</div>
                         <Separator className='bg-muted-foreground' orientation='vertical'/>
-                        <div>{formatDistanceToNow(post.createdAt!, { addSuffix: true })}</div>
+                        <div className="text-xs md:text-sm">{formatDistanceToNow(post.createdAt!, { addSuffix: true })}</div>
                         </Link>
                     </div>}
                 <PostCard refreshFunc={()=>{

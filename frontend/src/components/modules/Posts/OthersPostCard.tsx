@@ -40,7 +40,6 @@ const PostCard = ({otherUser, post, followCallback }:{otherUser:UserInterface|un
     const res = await createRepost({postId:post._id})
       setReposts(res.data.data.repostLength)
       setReposted(!reposted)
-      //TODO:Work
       setRepostLoading(false)
     }
   return (

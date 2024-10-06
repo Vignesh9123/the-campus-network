@@ -73,7 +73,10 @@ const PostCard = ({postedUser, post, refreshFunc}:{postedUser:UserInterface;post
                       />
                     </div>
                     <div className="flex-col">
-                      <div className="pl-1 font-semibold">{postedUser.username}</div>
+                      <div onClick={()=>{
+                        if(reposted)
+                          navigate(`/user/${postedUser.username}`)
+                        }} className={`pl-1 font-semibold ${reposted && "hover:underline cursor-pointer"}`}>{postedUser.username}</div>
                       <div className="text-muted-foreground text-sm flex gap-1 items-center">
                         <Globe className="w-4 h-4" />
                         <div>
@@ -112,7 +115,7 @@ const PostCard = ({postedUser, post, refreshFunc}:{postedUser:UserInterface;post
 
                   <div onClick={handleLikedUsersClick} className='text-xs cursor-pointer hover:bg-muted hover:underline'>See Liked Users</div>
                     </DialogTrigger>
-                    <DialogContent>
+                    <DialogContent className='max-w-[400px]'>
                       <DialogHeader>
                         <DialogTitle>Liked Users</DialogTitle>
                       </DialogHeader>
@@ -144,7 +147,7 @@ const PostCard = ({postedUser, post, refreshFunc}:{postedUser:UserInterface;post
 
                   <div onClick={handleRepostedUsersClick} className='text-xs cursor-pointer hover:bg-muted hover:underline'>See Reposted Users</div>
                     </DialogTrigger>
-                    <DialogContent>
+                    <DialogContent className='max-w-[400px]'>
                       <DialogHeader>
                         <DialogTitle>Reposted Users</DialogTitle>
                       </DialogHeader>

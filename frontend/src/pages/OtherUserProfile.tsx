@@ -235,12 +235,12 @@ function OtherUserProfile() {
               posts.map((post:PostInterface, index:any) =>{ 
                 return(
                   <>
-                   {post.isRepost && <div key={post._id} className=' mx-10 w-fit bg-muted p-2 flex gap-3'>
-                        Reposted by <Link className='flex gap-2 items-center' to={`/user/${otherUser.username}`}  onClick={()=>navigate(`/user/${otherUser.username}/`)}>
+                   {post.isRepost && <div key={post._id} className='mx-10 w-fit bg-muted p-1 md:p-2 gap-1 text-sm md:text-md flex md:gap-3'>
+                        Reposted by <Link className='flex gap-1 md:gap-2 items-center' to={`/user/${otherUser.username}`}  onClick={()=>navigate(`/user/${otherUser.username}/`)}>
                         <img src={otherUser.profilePicture} className='w-6 h-6 rounded-full' alt="" />
                         <div>{otherUser.username}</div>
                         <Separator className='bg-muted-foreground' orientation='vertical'/>
-                        <div>{formatDistanceToNow(post.createdAt!, { addSuffix: true })}</div>
+                        <div className='text-xs md:text-sm'>{formatDistanceToNow(post.createdAt!, { addSuffix: true })}</div>
                         </Link>
                     </div>}
                 <PostCard key={index} otherUser={post.isRepost?(post.repostedPost?.createdBy):otherUser} post={post.isRepost?post.repostedPost:post} followCallback={fetchUserProfile}/>
