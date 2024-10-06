@@ -110,7 +110,7 @@ const PostCard = ({postedUser, post, refreshFunc}:{postedUser:UserInterface;post
                     <ThumbsUpIcon className="w-5 h-5" />
                     <div className="text-sm">{post.likes?.length}</div>
                   </div>
-                  <Dialog>
+                 {!reposted && <Dialog>
                     <DialogTrigger>
 
                   <div onClick={handleLikedUsersClick} className='text-xs cursor-pointer hover:bg-muted hover:underline'>See Liked Users</div>
@@ -129,7 +129,7 @@ const PostCard = ({postedUser, post, refreshFunc}:{postedUser:UserInterface;post
                         ))}
                       </div>
                     </DialogContent>
-                  </Dialog>
+                  </Dialog>}
                   </div>
                   <div 
                     onClick={()=>navigate(`/post/${post._id}`)}
@@ -142,7 +142,7 @@ const PostCard = ({postedUser, post, refreshFunc}:{postedUser:UserInterface;post
                   <Repeat2  className={`w-5 h-5 ${reposted?"text-green-500":""}`} />
                     <div className="text-sm">{post.repostedBy?.length || 0}</div>
                   </div>
-                  <Dialog>
+                  {!reposted && <Dialog>
                     <DialogTrigger>
 
                   <div onClick={handleRepostedUsersClick} className='text-xs cursor-pointer hover:bg-muted hover:underline'>See Reposted Users</div>
@@ -161,7 +161,7 @@ const PostCard = ({postedUser, post, refreshFunc}:{postedUser:UserInterface;post
                         ))}
                       </div>
                     </DialogContent>
-                  </Dialog>
+                  </Dialog>}
                   </div>
                 </div>
                 <div className="w-full h-[2px] bg-muted"></div>

@@ -34,6 +34,7 @@
     "embla-carousel-react": "^8.2.0",
     "firebase": "^9.10.0",
     "framer-motion": "^11.3.30",
+    "lodash": "^4.17.21",
     "lucide-react": "^0.435.0",
     "mini-svg-data-uri": "^1.4.4",
     "react": "^18.3.1",
@@ -52,6 +53,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
+    "@types/lodash": "^4.17.10",
     "@types/node": "^22.5.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
