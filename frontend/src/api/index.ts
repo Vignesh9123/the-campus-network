@@ -98,9 +98,9 @@ const checkToken = ()=>{
 const likePost = (data:{postId:string})=>{
   return apiClient.post(`/posts/like/${data.postId}`)
 }
-const getUserFeed = ( ()=>{
-  return apiClient.get('/users/feed')
-})
+const getUserFeed = ( {limit,skip}: {limit:number|undefined,skip:number|undefined})=>{
+  return apiClient.get('/users/feed',{params:{limit,skip}})
+}
 const addComment = (data:{postId:string|undefined, content:string})=>{
   return apiClient.post(`/comments/${data.postId}`, {comment:data.content})
 }

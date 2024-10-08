@@ -505,6 +505,9 @@ const getUserFeed = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user?._id);
   const following = user.following;
 
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = parseInt(req.query.skip) || 0;
+
   const feed = await Post.aggregate([
     {
       $match: {
@@ -595,6 +598,12 @@ const getUserFeed = asyncHandler(async (req, res) => {
         isRepost: 1 ,// Indicate if it's a repost
         repostedBy:1
       }
+    },
+    {
+      $skip: skip
+    },
+    {
+      $limit: limit
     }
   ]);
 
