@@ -2,9 +2,10 @@ import mongoose, { Schema } from "mongoose";
 
 const chatSchema = new Schema(
   {
-    name: {
-      type: String,
-      required: true,
+    chatType:{
+      type:String,
+      enum:["one2one","group"],
+      default:"one2one"
     },
     isGroupChat: {
       type: Boolean,

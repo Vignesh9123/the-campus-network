@@ -44,6 +44,8 @@ import groupRouter from './routes/group.routes.js'
 import projectRouter from './routes/project.routes.js'
 import taskRouter from './routes/task.routes.js'
 import notificationRouter  from './routes/notification.routes.js'
+import chatRouter from './routes/chat.routes.js'
+import messageRouter from './routes/message.routes.js'
 import { Server } from 'socket.io';
 
 app.use('/api/v1/users', userRouter)
@@ -53,5 +55,7 @@ app.use('/api/v1/groups', groupRouter)
 app.use('/api/v1/projects', projectRouter)
 app.use('/api/v1/tasks', taskRouter)
 app.use('/api/v1/notifications', notificationRouter)
+app.use('/api/v1/chats', chatRouter)
+app.use('/api/v1/messages', messageRouter)
 initializeSocketIO(io)
 export {httpServer}

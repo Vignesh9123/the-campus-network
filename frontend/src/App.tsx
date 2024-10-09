@@ -25,7 +25,10 @@ import GroupView from './pages/GroupView'
 import TermsOfService from './pages/TermsOfService'
 import AboutTheSite from './pages/AboutTheSite'
 import PrivacyPolicy from './pages/PrivacyPolicy'
+import Chat from './pages/Chat'
+
 function App() {
+  // const {user, token} = useAuth()
   onMessage(messaging, (payload) => {
     toast.info(
       <div>
@@ -37,6 +40,16 @@ function App() {
     )
     // ...
   });
+  // useEffect(
+  //   ()=>{
+  //     socketio('http://localhost:8000',{
+  //       withCredentials:true,
+  //       auth:{token}
+  //     }).on('connect',()=>{
+  //       console.log('connected to socket.io server')
+  //     })
+  //   },[]
+  // )
   
   
 
@@ -72,6 +85,7 @@ function App() {
         <Route element={<GeneralLayout/>}>
         <Route path='/settings' element={<Settings/>}/>
         <Route path='/groupview/:groupId/' element={<GroupView/>}/>
+        <Route path='/chat' element={<Chat/>}/>
         </Route>
         </Route>
         <Route path='*' element={<div>Not Found</div>}/>

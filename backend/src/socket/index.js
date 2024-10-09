@@ -28,6 +28,9 @@ const initializeSocketIO = (io)=>{
             throw new ApiError(401, "Token is not passed in socket connection")
            }
            const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
+           if(!decodedToken){
+            throw new ApiError(401, "Invalid access token")
+           }
            const user = await User.findById(decodedToken?._id).select("-password -refreshToken")
            if(!user)
                 throw new ApiError(401, "Invalid access token")
