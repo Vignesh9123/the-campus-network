@@ -281,8 +281,20 @@ const sendMessage = (data:{content: string|undefined, chatId:string|undefined})=
   return apiClient.post(`/messages/send-message/${data.chatId}`, {content: data.content})
 }
 
+const getAllMessages = (data:{chatId:string|undefined})=>{
+  return apiClient.get(`/messages/get-messages/${data.chatId}`)
+}
+
+const deleteMessage = (data:{messageId: string|undefined})=>{
+  return apiClient.delete(`/messages/delete-message/${data.messageId}`)
+}
+
+const deleteChat = (data:{chatId:string | undefined})=>{
+  return apiClient.delete(`/chats/delete-chat/${data.chatId}`)
+}
+
 export {refreshToken, loginUser,checkToken, registerUser, logoutUser ,getAccountsToFollow,changePassword,forgotPassword, getCurrentUser, checkUsernameUnique, createPost,createRepost ,updateAccountDetails,addPersonalDetails, updateProfilePicture,getUserPosts,searchUser, getUserProfile,followOrUnfollow, searchPost,getFollowers, getFollowing, likePost, getUserFeed, addComment,deleteComment,getCommentsbyPost,getPost,
   createGroup, getGroup, acceptRequest, addToGroup, deleteGroup, exitFromGroup, isGroupNameUnique, rejectRequest, removeFromGroup, requestToJoinGroup,
   addProject, getGroupProjects, getMyProjects, getProject, updateProject, updateProjectStatus, deleteProject,
-  createTask, getTask, updateTask, updateTaskStatus, deleteTask,getMyGroups,getMyTasks,getOthersTasks,sendNotification,storeDeviceToken,sendNotificationToUser,getGroupSuggestedPeople,getGroupForVisitors,getMyIndividualProjects, updateGroupDetails, changeGroupAdmin, getLikedUsers, getRepostedUsers,getAllChats, createOrGetOneToOneChat, sendMessage
+  createTask, getTask, updateTask, updateTaskStatus, deleteTask,getMyGroups,getMyTasks,getOthersTasks,sendNotification,storeDeviceToken,sendNotificationToUser,getGroupSuggestedPeople,getGroupForVisitors,getMyIndividualProjects, updateGroupDetails, changeGroupAdmin, getLikedUsers, getRepostedUsers,getAllChats, createOrGetOneToOneChat, sendMessage,getAllMessages, deleteMessage, deleteChat
   }

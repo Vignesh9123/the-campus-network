@@ -76,6 +76,7 @@ const chatCommonAggregation = () => {
         // },
     ];
 };
+
 const getChats = asyncHandler(async (req, res) => {
     const chats = await Chat.aggregate([
         {
@@ -144,9 +145,30 @@ const createOrGetOnetoOneChat = asyncHandler(async (req, res) => {
     ])
     const data = createdChat[0];
     emitSocketEvent(req, receiverId, ChatEventEnum.NEW_CHAT_EVENT, data)
+    return res.status(201).json(new ApiResponse(200, data, "Chat created successfully"))
+})
+
+const deleteChat = asyncHandler(async (req, res) => {
+    const { chatId } = req.params
+    if (!chatId) {
+        throw new ApiError(400, "Chat id is required")
+    }
+    const chat = await Chat.findById(chatId)
+    if (!chat) {
+        throw new ApiError(404, "Chat not found")
+    }
+    const deletedChat = await Chat.findByIdAndDelete(chatId)
+    await ChatMessage.deleteMany({ chat: chatId })
+    deletedChat.participants.forEach((participant) => {
+        if (participant._id.toString() !== req.user._id.toString()) {
+            emitSocketEvent(req, participant._id, ChatEventEnum.LEAVE_CHAT_EVENT, deletedChat)
+        }
+    })
+    return res.status(200).json(new ApiResponse(200, deletedChat, "Chat deleted successfully"))
 })
 
 export {
     getChats,
-    createOrGetOnetoOneChat
+    createOrGetOnetoOneChat,
+    deleteChat
 }

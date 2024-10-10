@@ -35,36 +35,38 @@ const chatMessageCommonAggregation = () => {
     ];
 };
 
-// const getChatMessages = asyncHandler(async (req, res) => {
-//     const { chatId } = req.params;
-//     const { page = 1, limit = 10 } = req.query;
-//     const skip = (page - 1) * limit;
-//     const chatMessages = await ChatMessage.aggregate([
-//       {
-//         $match: {
-//           chat: new mongoose.Types.ObjectId(chatId),
-//         },
-//       },
-//       ...chatMessageCommonAggregation(),
-//       {
-//         $sort: {
-//           createdAt: -1,
-//         },
-//       },
-//       {
-//         $skip: skip,
-//       },
-//       {
-//         $limit: limit,
-//       },
-//     ]);
-//     if (!chatMessages.length) {
-//       throw new ApiError(404, "No chat messages found");
-//     }
-//     return res
-//       .status(200)
-//       .json(new ApiResponse(200, chatMessages, "Chat messages fetched successfully"));
-// });
+const getChatMessages = asyncHandler(async (req, res) => {
+    const { chatId } = req.params;
+    if(!chatId){
+        throw new ApiError(400, "Chat id is required");
+    }
+    const chat = await Chat.findById(chatId);
+    if(!chat){
+        throw new ApiError(404, "Chat not found");
+    }
+    if(!chat.participants.includes(req.user._id)){
+        throw new ApiError(403, "You are not authorized to access this chat");
+    }
+    const chatMessages = await ChatMessage.aggregate([
+      {
+        $match: {
+          chat: new mongoose.Types.ObjectId(chatId),
+        },
+      },
+      ...chatMessageCommonAggregation(),
+      {
+        $sort: {
+          createdAt:1
+        },
+      }
+    ]);
+    if (!chatMessages.length) {
+      throw new ApiError(404, "No chat messages found");
+    }
+    return res
+      .status(200)
+      .json(new ApiResponse(200, chatMessages, "Chat messages fetched successfully"));
+});
 
 
 const sendMessage = asyncHandler(async (req, res) => {
@@ -115,5 +117,37 @@ const sendMessage = asyncHandler(async (req, res) => {
     return res.status(201).json(new ApiResponse(201, receivedMessage, "Message sent successfully"));
 })
 
+const deleteMessage = asyncHandler(async (req, res) => {
+    const { messageId } = req.params;
+    if(!messageId){
+        throw new ApiError(400, "Message id is required");
+    }
+    const message = await ChatMessage.findById(messageId);
+    if(!message){
+        throw new ApiError(404, "Message not found");
+    }
+    if(!(message.sender.toString() === req.user._id.toString())){
+        throw new ApiError(403, "You are not authorized to delete this message");
+    }
+    const deletedMessage = await ChatMessage.findByIdAndDelete(messageId);
+    const chat = await Chat.findById(deletedMessage.chat);
+    if(chat.lastMessage == deletedMessage._id){
+      const lastMessage = await ChatMessage.findOne({chat: chat._id}).sort({createdAt: -1})
+      chat.lastMessage = lastMessage._id;
+      await chat.save();
+    }
+    chat.participants.forEach((participant) => {
+        if (participant._id.toString() !== req.user._id.toString()) {
+            emitSocketEvent(
+                req,
+                participant._id?.toString(),
+                ChatEventEnum.MESSAGE_DELETE_EVENT,
+                deletedMessage
+            );
+        }
+    });
+    return res.status(200).json(new ApiResponse(200, deletedMessage, "Message deleted successfully"));
+})
 
-export {sendMessage}
+
+export {sendMessage, getChatMessages, deleteMessage};

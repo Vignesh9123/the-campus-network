@@ -2,6 +2,8 @@ import { AxiosResponse } from "axios";
 import { getToken } from "firebase/messaging";
 import { messaging } from "../firebase/firebaseConfig";
 import { storeDeviceToken } from "@/api";
+import { ChatInterface } from "@/types";
+import { UserInterface } from "@/context/AuthContext";
 export const requestHandler = async (
     api: () => Promise<AxiosResponse<any>>,
     setLoading: ((loading: boolean) => void) | null,
@@ -53,4 +55,45 @@ export const requestHandler = async (
       alert('Notification permission denied.');
     }
   }
+
+  export const getChatObjectMetadata = (
+    chat: ChatInterface, // The chat item for which metadata is being generated.n
+    loggedInUser: UserInterface // The currently logged-in user details.
+  ) => {
+    // Determine the content of the last message, if any.
+    // If the last message contains only attachments, indicate their count.
+    const lastMessageDetails = chat?.lastMessageDetails?.[0];
+const sender = lastMessageDetails?.sender;
+
+const lastMessage = lastMessageDetails
+  ? `${sender?._id === loggedInUser?._id ? "You: " : `${sender?.username}: `}${lastMessageDetails.content}`
+  : "No messages yet"; // Placeholder text if there are no messages.
+  
+    if (chat.isGroupChat) {
+      // Case: Group chat
+      // Return metadata specific to group chats.
+      // return {
+      //   // Default avatar for group chats.
+      //   avatar: "https://via.placeholder.com/100x100.png",
+      //   title: chat.name, // Group name serves as the title.
+      //   description: `${chat.participants.length} members in the chat`, // Description indicates the number of members.
+      //   lastMessage: chat.lastMessage
+      //     ? chat.lastMessage?.sender?.username + ": " + lastMessage
+      //     : lastMessage,
+      // };
+    } else {
+      // Case: Individual chat
+      // Identify the participant other than the logged-in user.
+      const participant = chat.participants.find(
+        (p) => p._id !== loggedInUser?._id
+      );
+      // Return metadata specific to individual chats.
+      return {
+        profilePicture: participant?.profilePicture, // Participant's avatar URL.
+        title: participant?.username, // Participant's username serves as the title.
+        description: participant?.email, // Email address of the participant.
+        lastMessage,
+      };
+    }
+  };
   
