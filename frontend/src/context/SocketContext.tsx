@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import socketio,{Socket} from "socket.io-client";
+import socketio from "socket.io-client";
 const SocketContext = createContext<{
     socket:ReturnType<typeof socketio>|null
 }>(
@@ -13,7 +13,7 @@ const useSocket = () => useContext(SocketContext);
 const getSocket = ()=>{
     const token = localStorage.getItem('token')
     return socketio(
-        'http://localhost:8000',
+        import.meta.env.VITE_APP_SOCKET_URI,
         {
             withCredentials:true,
             auth:{token}
