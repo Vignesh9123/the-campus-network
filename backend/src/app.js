@@ -14,10 +14,8 @@ const io = new Server(httpServer,
         cors: {
             origin: process.env.CORS_ORIGIN,
             methods: ["GET", "POST"],
-            transports: ["polling", "websocket"],
             credentials: true,
         },
-        allowEIO3: true
     }
 
 )
