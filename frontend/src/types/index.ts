@@ -21,3 +21,24 @@ export interface CommentInterface{
     createdAt:Date;
     post?:PostInterface;   
 }
+
+export interface ChatInterface{
+    _id:string;
+    lastMessage?:string;
+    lastMessageDetails?:ChatMessageInterface[];
+    participants:UserInterface[];
+    createdAt:Date;
+    updatedAt?:Date;
+    admin:string;
+    chatType:"one2one"|"group";
+    isGroupChat?:boolean
+
+}
+
+export interface ChatMessageInterface{
+    _id:string;
+    sender:UserInterface
+    content:string;
+    chat:string;
+    createdAt:Date;
+}

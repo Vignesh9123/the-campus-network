@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const SelectWithSearch = ({ options, setValue, id, initialValue }:any) => {
+const SelectWithSearch = ({ options, setValue, id, initialValue, text }:any) => {
     const [isOpen, setIsOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedOption, setSelectedOption] = useState(null);
@@ -18,6 +18,7 @@ const SelectWithSearch = ({ options, setValue, id, initialValue }:any) => {
     return (
         <div className="relative mt-1">
             {/* Selected Option (Dropdown Button) */}
+            {text? <div className='font-bold mb-2 mx'>{text}</div> : null}
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
