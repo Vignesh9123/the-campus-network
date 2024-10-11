@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useRef} from 'react'
 import { useSocket } from '@/context/SocketContext'
-import { getAllChats, createOrGetOneToOneChat,sendMessage, getAllMessages, deleteMessage, deleteChat } from '@/api'
+import { getAllChats,sendMessage, getAllMessages, deleteMessage, deleteChat } from '@/api'
 import { ArrowLeft, EllipsisVertical } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
@@ -27,17 +27,8 @@ import {
   DropdownMenuSeparator,
 
 } from '@/components/ui/dropdown-menu'
+import { ChatEventEnums } from '@/constants';
 
-const CONNECTED_EVENT = "connected";
-const DISCONNECT_EVENT = "disconnect";
-const JOIN_CHAT_EVENT = "joinChat";
-const NEW_CHAT_EVENT = "newChat";
-const TYPING_EVENT = "typing";
-const STOP_TYPING_EVENT = "stopTyping";
-const MESSAGE_RECEIVED_EVENT = "messageReceived";
-const LEAVE_CHAT_EVENT = "leaveChat";
-const UPDATE_GROUP_NAME_EVENT = "updateGroupName";
-const MESSAGE_DELETE_EVENT = "messageDeleted";
 
 const MESSAGE_LENGTH_LIMIT = 100
 function Chat() {
@@ -78,7 +69,7 @@ function Chat() {
         setMessages([])
         currentChat.current = clickedChat
         setMessagesLoading(true)
-        socket?.emit(JOIN_CHAT_EVENT,  clickedChat._id)
+        socket?.emit(ChatEventEnums.JOIN_CHAT_EVENT,  clickedChat._id)
         getAllMessages({chatId:currentChat.current._id})
         .then((res)=>{
             setMessages(res.data.data)
@@ -138,7 +129,7 @@ function Chat() {
       sendMessage({chatId:currentChat.current?._id, content:message})
       .then((res)=>{
         console.log(res.data.data)
-        socket?.emit(MESSAGE_RECEIVED_EVENT, res.data.data)
+        socket?.emit(ChatEventEnums.MESSAGE_RECEIVED_EVENT, res.data.data)
         updateChatLastMessage(currentChat.current?._id!, res.data.data)
         if(currentChat.current?._id == res.data.data.chat){          
           setMessages([ ...messages, res.data.data])
@@ -197,25 +188,25 @@ function Chat() {
     useEffect(()=>{
      
         if(socket){
-            socket.on(CONNECTED_EVENT,()=>{console.log('connected')})
-            socket.on(DISCONNECT_EVENT, ()=>{console.log('disconnected')})
-            socket.on(NEW_CHAT_EVENT, (data)=>{
+            socket.on(ChatEventEnums.CONNECTED_EVENT,()=>{console.log('connected')})
+            socket.on(ChatEventEnums.DISCONNECT_EVENT, ()=>{console.log('disconnected')})
+            socket.on(ChatEventEnums.NEW_CHAT_EVENT, (data)=>{
                 setChats([data, ...chats])
             })
-            socket.on(MESSAGE_RECEIVED_EVENT, handleReceiveMessage)
-            socket.on(MESSAGE_DELETE_EVENT, handleDeleteMessageEvent)
-            socket.on(LEAVE_CHAT_EVENT, handleLeaveChat)
+            socket.on(ChatEventEnums.MESSAGE_RECEIVED_EVENT, handleReceiveMessage)
+            socket.on(ChatEventEnums.MESSAGE_DELETE_EVENT, handleDeleteMessageEvent)
+            socket.on(ChatEventEnums.LEAVE_CHAT_EVENT, handleLeaveChat)
             
           }
           return ()=>{
-            socket?.off(CONNECTED_EVENT, ()=>{console.log('connected')})
-            socket?.off(DISCONNECT_EVENT, ()=>{console.log('disconnected')})
-            socket?.off(NEW_CHAT_EVENT, (data)=>{
+            socket?.off(ChatEventEnums.CONNECTED_EVENT, ()=>{console.log('connected')})
+            socket?.off(ChatEventEnums.DISCONNECT_EVENT, ()=>{console.log('disconnected')})
+            socket?.off(ChatEventEnums.NEW_CHAT_EVENT, (data)=>{
               setChats([data, ...chats])
             })
-            socket?.off(MESSAGE_RECEIVED_EVENT, handleReceiveMessage)
-            socket?.off(MESSAGE_DELETE_EVENT, handleDeleteMessageEvent)
-            socket?.off(LEAVE_CHAT_EVENT, handleLeaveChat)
+            socket?.off(ChatEventEnums.MESSAGE_RECEIVED_EVENT, handleReceiveMessage)
+            socket?.off(ChatEventEnums.MESSAGE_DELETE_EVENT, handleDeleteMessageEvent)
+            socket?.off(ChatEventEnums.LEAVE_CHAT_EVENT, handleLeaveChat)
 
       }
     },[socket, chats])
