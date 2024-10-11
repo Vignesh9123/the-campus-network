@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom'
-import {Compass, Search, User,Settings} from 'lucide-react'
+import {Compass, Search, User,Settings,MessageCircle, Bell} from 'lucide-react'
 import { FaUsers } from "react-icons/fa";
 import LogoutButton from '../modules/LogoutButton';
 
 const ProfileSideBar = () => {
-  const pathname = window.location.pathname
+  const {pathname} = window.location
   return (
     <div className='flex flex-col gap-3 max-h-screen'>
       {/* <Link to={'/'} className=' md:hidden font-bold text-center m-3'>TCN</Link> */}
@@ -27,6 +27,20 @@ const ProfileSideBar = () => {
         <FaUsers strokeWidth={pathname=='/groups'?4:2} className='text-2xl mx-auto md:mx-0'/>
         <div className='hidden md:block'>Groups</div>
       </Link>
+      <Link to='/chat' className={`hover:bg-muted flex gap-2 items-center text-lg p-3 ${pathname === '/chat' ? 'bg-muted text-xl font-bold' : ''}`}>
+        <MessageCircle strokeWidth={pathname=='/chat'?4:2} className='text-2xl mx-auto md:mx-0'/>
+        <div className='hidden md:block'>Chats</div>
+      </Link>
+      <Link to='/notifications' className={`hover:bg-muted flex gap-2 items-center text-lg p-3 ${pathname === '/notifications' ? 'bg-muted text-xl font-bold' : ''}`}>
+        <Bell className='mx-auto md:mx-0' strokeWidth={pathname=='/notifications'?4:3}/>
+        <div className='hidden md:block'>Notifications</div>
+      </Link>
+
+      {/* <Link to='/create' className={`hover:bg-muted flex gap-2 items-center text-lg p-3 ${pathname === '/create' ? 'bg-muted text-xl font-bold' : ''}`}>
+        <Plus className='mx-auto md:mx-0' strokeWidth={pathname=='/create'?4:3}/>
+        <div className='hidden md:block'>Create</div>
+      </Link> */}
+
       <Link to='/profile' className={`hover:bg-muted flex gap-2 items-center text-lg p-3 ${pathname === '/profile' ? 'bg-muted text-xl font-bold' : ''}`}>
         <User className='mx-auto md:mx-0' strokeWidth={pathname=='/profile'?4:3}/>
         <div className='hidden md:block'>Profile</div>
@@ -35,7 +49,7 @@ const ProfileSideBar = () => {
         <Settings className='mx-auto md:mx-0' strokeWidth={pathname=='/settings'?3:2}/>
         <div className='hidden md:block'>Settings</div>
       </Link>
-      <LogoutButton className='hidden md:block mt-16 mx-5'/>
+      <LogoutButton className='hidden md:block mt-8 mx-5'/>
             
     </div>
   )

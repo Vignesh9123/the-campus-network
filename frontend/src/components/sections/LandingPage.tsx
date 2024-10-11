@@ -44,9 +44,9 @@ const LandingPage = () => {
         titleComponent={
           <>
             <h1 className="text-4xl font-semibold text-black dark:text-white">
-            Where graduates connect and share their true  <br />
+            Connect, share, and collaborate on projects <br />
               <span className="text-4xl md:text-[6rem] font-bold mt-1 leading-none">
-              college journeys.
+                with ease
               </span>
             </h1>
           </>

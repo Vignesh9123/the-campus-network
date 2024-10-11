@@ -15,12 +15,18 @@ import {createOrGetOneToOneChat, getFollowers} from '@/api'
 import SelectWithSearch from "./SelectWithSearch"
 import { Button } from "../ui/button"
 import { ChatInterface } from "@/types"
-function AddChatModal({setChats}:{setChats:Function}) {
+function AddChatModal({chats,setChats}:{chats:ChatInterface[],setChats:Function}) {
     const [followers, setFollowers] = useState<UserInterface[]>([])
     const {user} = useAuth()
     const [selectedUser, setSelectedUser] = useState(null)
     const handleAddToChat = ()=>{
         if(!selectedUser) return
+        if(chats.find((chat:ChatInterface)=>chat.participants.find((participant:UserInterface)=>participant.username == selectedUser))){
+            return
+        }
+        if(chats.find((chat:ChatInterface)=>chat.participants.find((participant:UserInterface)=>participant.username == user?.username))){
+            return
+        }
         const receiverId = followers.find((follower:UserInterface)=>follower.username == selectedUser)?._id
         createOrGetOneToOneChat({receiverId}).then((res)=>{
             setChats((prev:ChatInterface[])=>[res.data.data, ...prev])

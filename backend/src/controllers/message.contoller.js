@@ -131,9 +131,9 @@ const deleteMessage = asyncHandler(async (req, res) => {
     }
     const deletedMessage = await ChatMessage.findByIdAndDelete(messageId);
     const chat = await Chat.findById(deletedMessage.chat);
-    if(chat.lastMessage == deletedMessage._id){
-      const lastMessage = await ChatMessage.findOne({chat: chat._id}).sort({createdAt: -1})
-      chat.lastMessage = lastMessage._id;
+    if(chat.lastMessage.toString() == deletedMessage._id.toString()){
+      const lastMessage = await ChatMessage.find({chat: chat._id}).sort({createdAt: -1})
+      chat.lastMessage = lastMessage[0]._id;
       await chat.save();
     }
     chat.participants.forEach((participant) => {

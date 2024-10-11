@@ -40,4 +40,5 @@ export interface ChatMessageInterface{
     sender:UserInterface
     content:string;
     chat:string;
+    createdAt:Date;
 }
