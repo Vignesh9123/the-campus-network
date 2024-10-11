@@ -16,7 +16,8 @@ const getSocket = ()=>{
         import.meta.env.VITE_APP_SOCKET_URI,
         {
             withCredentials:true,
-            auth:{token}
+            auth:{token},
+            transports: ["websocket"]
         }
     )
 }
