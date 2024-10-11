@@ -161,7 +161,7 @@ const deleteChat = asyncHandler(async (req, res) => {
     await ChatMessage.deleteMany({ chat: chatId })
     deletedChat.participants.forEach((participant) => {
         if (participant._id.toString() !== req.user._id.toString()) {
-            emitSocketEvent(req, participant._id, ChatEventEnum.LEAVE_CHAT_EVENT, deletedChat)
+            emitSocketEvent(req, participant._id.toString(), ChatEventEnum.LEAVE_CHAT_EVENT, deletedChat)
         }
     })
     return res.status(200).json(new ApiResponse(200, deletedChat, "Chat deleted successfully"))

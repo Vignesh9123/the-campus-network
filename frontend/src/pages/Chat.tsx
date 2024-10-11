@@ -1,6 +1,6 @@
-import {useEffect, useState, useRef} from 'react'
+import React, {useEffect, useState, useRef} from 'react'
 import { useSocket } from '@/context/SocketContext'
-import { getAllChats, createOrGetOneToOneChat,sendMessage, getAllMessages, deleteMessage } from '@/api'
+import { getAllChats, createOrGetOneToOneChat,sendMessage, getAllMessages, deleteMessage, deleteChat } from '@/api'
 import { ArrowLeft, EllipsisVertical } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
@@ -10,7 +10,7 @@ import { useAuth } from '@/context/AuthContext';
 import AddChatModal from '@/components/modules/AddChatModal';
 import { Button } from '@/components/ui/button';
 import { FaPaperPlane } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   ContextMenu,
   ContextMenuContent,
@@ -19,6 +19,14 @@ import {
   ContextMenuSeparator,
 } from '@/components/ui/context-menu'
 import Loader from '@/components/Loader';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+
+} from '@/components/ui/dropdown-menu'
 
 const CONNECTED_EVENT = "connected";
 const DISCONNECT_EVENT = "disconnect";
@@ -34,6 +42,7 @@ const MESSAGE_DELETE_EVENT = "messageDeleted";
 const MESSAGE_LENGTH_LIMIT = 100
 function Chat() {
     const {socket} = useSocket()
+    const navigate = useNavigate()
     const {user} = useAuth()
     const [chats, setChats] = useState<any[]>([])
     const [message, setMessage] = useState<string>('')
@@ -49,6 +58,19 @@ function Chat() {
 
     const handleCopyMessage = (message:string)=>{
       navigator.clipboard.writeText(message)
+    }
+
+    const handleViewProfile = (username:string)=>{
+      navigate(`/user/${username}`)
+    }
+
+    const handleDeleteChat = (e:React.MouseEvent,chat:ChatInterface)=>{
+      e.stopPropagation()
+      if(currentChat.current?._id == chat._id) currentChat.current = null
+      deleteChat({chatId: chat._id}).then(()=>{
+        setChats((prev)=>prev.filter(c=>c._id != chat._id))
+      }
+      )
     }
 
     const handleOnChatClick = (clickedChat:ChatInterface) =>{
@@ -153,6 +175,14 @@ function Chat() {
     updateChatLastMessageOnDeletion(message?.chat!, message!)
   
   }
+  const handleLeaveChat = (chat:ChatInterface)=>{
+    if(currentChat.current?._id == chat._id){
+      currentChat.current = null
+      setMessages([])
+    }
+    setChats((prev)=>prev.filter((c)=>c._id != chat._id))
+  }
+  
   useEffect(
     ()=>{
       setChatsLoading(true)
@@ -174,16 +204,18 @@ function Chat() {
             })
             socket.on(MESSAGE_RECEIVED_EVENT, handleReceiveMessage)
             socket.on(MESSAGE_DELETE_EVENT, handleDeleteMessageEvent)
+            socket.on(LEAVE_CHAT_EVENT, handleLeaveChat)
             
-        }
-      return ()=>{
-        socket?.off(CONNECTED_EVENT, ()=>{console.log('connected')})
-        socket?.off(DISCONNECT_EVENT, ()=>{console.log('disconnected')})
-        socket?.off(NEW_CHAT_EVENT, (data)=>{
-            setChats([data, ...chats])
-        })
-        socket?.off(MESSAGE_RECEIVED_EVENT, handleReceiveMessage)
-        socket?.off(MESSAGE_DELETE_EVENT, handleDeleteMessageEvent)
+          }
+          return ()=>{
+            socket?.off(CONNECTED_EVENT, ()=>{console.log('connected')})
+            socket?.off(DISCONNECT_EVENT, ()=>{console.log('disconnected')})
+            socket?.off(NEW_CHAT_EVENT, (data)=>{
+              setChats([data, ...chats])
+            })
+            socket?.off(MESSAGE_RECEIVED_EVENT, handleReceiveMessage)
+            socket?.off(MESSAGE_DELETE_EVENT, handleDeleteMessageEvent)
+            socket?.off(LEAVE_CHAT_EVENT, handleLeaveChat)
 
       }
     },[socket, chats])
@@ -220,8 +252,19 @@ function Chat() {
                 </div>
                 </div>
                 <div>
+              <DropdownMenu>
+              <DropdownMenuTrigger>
 
                 <EllipsisVertical className='min-w-fit'/>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={()=>handleViewProfile(chatDetails?.title!)}>View Profile</DropdownMenuItem>
+                <DropdownMenuSeparator />
+               
+                <DropdownMenuItem onClick={(e)=>handleDeleteChat(e,chat)}>Delete</DropdownMenuItem>
+             
+              </DropdownMenuContent>
+              </DropdownMenu>
                 </div>
               </div>
             </div>

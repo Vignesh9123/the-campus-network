@@ -22,11 +22,10 @@ function AddChatModal({chats,setChats}:{chats:ChatInterface[],setChats:Function}
     const handleAddToChat = ()=>{
         if(!selectedUser) return
         if(chats.find((chat:ChatInterface)=>chat.participants.find((participant:UserInterface)=>participant.username == selectedUser))){
+            
             return
         }
-        if(chats.find((chat:ChatInterface)=>chat.participants.find((participant:UserInterface)=>participant.username == user?.username))){
-            return
-        }
+        
         const receiverId = followers.find((follower:UserInterface)=>follower.username == selectedUser)?._id
         createOrGetOneToOneChat({receiverId}).then((res)=>{
             setChats((prev:ChatInterface[])=>[res.data.data, ...prev])
