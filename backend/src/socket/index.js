@@ -24,13 +24,14 @@ const initializeSocketIO = (io)=>{
             console.log(cookies)
             console.log(token)
         
-        //    if(!token){
-        //        token = socket.handshake.auth.token
-        //     }
-        // if(!token){
-        //     throw new ApiError(401, "Token is not passed in socket connection")
-        // }
+           if(!token){
+               token = socket.handshake.auth.token
+            }
+        if(!token){
+            throw new ApiError(401, "Token is not passed in socket connection")
+        }
         console.log("Hello")
+           console.log(token)
            const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
            if(!decodedToken){
             throw new ApiError(401, "Invalid access token")
