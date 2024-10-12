@@ -17,16 +17,20 @@ const mountJoinChatEvent = (socket)=>{
 
 const initializeSocketIO = (io)=>{
     return io.on("connection",async (socket)=>{
+        console.log("User connected", socket.id)
         try {
            const cookies = cookie.parse(socket.handshake.headers.cookie || "")
            const token = cookies.accessToken
-
-           if(!token){
-            token = socket.handshake.auth.token
-           }
-           if(!token){
-            throw new ApiError(401, "Token is not passed in socket connection")
-           }
+            console.log(cookies)
+            console.log(token)
+        
+        //    if(!token){
+        //        token = socket.handshake.auth.token
+        //     }
+        // if(!token){
+        //     throw new ApiError(401, "Token is not passed in socket connection")
+        // }
+        console.log("Hello")
            const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
            if(!decodedToken){
             throw new ApiError(401, "Invalid access token")
