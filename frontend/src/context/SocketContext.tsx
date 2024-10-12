@@ -17,7 +17,6 @@ const getSocket = ()=>{
         {
             withCredentials:true,
             auth:{token},
-            transports: ["websocket"]
         }
     )
 }
