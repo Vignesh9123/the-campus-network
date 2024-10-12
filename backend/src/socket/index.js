@@ -21,21 +21,26 @@ const initializeSocketIO = (io)=>{
         try {
            const cookies = cookie.parse(socket.handshake.headers.cookie || "")
            const token = cookies.accessToken
-            console.log(cookies)
-            console.log(token)
+            console.log("Cookies",cookies)
+            console.log("Token",token)
         
            if(!token){
+            console.log("Inside if token") 
                token = socket.handshake.auth.token
             }
         if(!token){
+            console.log("Inside if token2")
+            
             throw new ApiError(401, "Token is not passed in socket connection")
         }
-        console.log("Hello")
-           console.log(token)
+            console.log("Hello1")
+           console.log("Token",token)
+           console.log("Hello2")
            const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
            if(!decodedToken){
             throw new ApiError(401, "Invalid access token")
            }
+           console.log("decodedToken",decodedToken)
            const user = await User.findById(decodedToken?._id).select("-password -refreshToken")
            if(!user)
                 throw new ApiError(401, "Invalid access token")
