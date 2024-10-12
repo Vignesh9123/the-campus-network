@@ -22,13 +22,13 @@ const initializeSocketIO = (io)=>{
             console.log("Socket headers",socket.handshake.headers)
             console.log("Socket auth", socket.handshake.auth)
            const cookies = cookie.parse(socket.handshake.headers.cookie || "")
-           const token = cookies.accessToken
+           const token = socket.handshake.auth.token
             console.log("Cookies",cookies)
             console.log("Token",token)
         
            if(!token){
             console.log("Inside if token1") 
-               token = socket.handshake.auth.token
+               token = cookies.accessToken
             }
             console.log("Outside if token1")
         if(!token){
