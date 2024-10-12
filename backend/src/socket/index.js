@@ -19,6 +19,8 @@ const initializeSocketIO = (io)=>{
     return io.on("connection",async (socket)=>{
         console.log("User connected", socket.id)
         try {
+            console.log("Socket headers",socket.handshake.headers)
+            console.log("Socket auth", socket.handshake.auth)
            const cookies = cookie.parse(socket.handshake.headers.cookie || "")
            const token = cookies.accessToken
             console.log("Cookies",cookies)
