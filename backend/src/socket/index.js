@@ -25,9 +25,10 @@ const initializeSocketIO = (io)=>{
             console.log("Token",token)
         
            if(!token){
-            console.log("Inside if token") 
+            console.log("Inside if token1") 
                token = socket.handshake.auth.token
             }
+            console.log("Outside if token1")
         if(!token){
             console.log("Inside if token2")
             
