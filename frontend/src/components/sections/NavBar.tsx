@@ -18,7 +18,7 @@ const NavBar = ({className}:any) => {
      <Link to={"/"} className='flex items-center'> <img src="/TCN%20Logo%20WO%20BG.png" className='w-16 h-16' alt="" />
      <div className='font-bold'>The Campus Network</div>
      </Link>
-      <div className='menus hidden lg:block lg:ml-10'>
+      <div className='menus hidden xl:block xl:ml-10'>
         <ul className='flex gap-10 text-black dark:text-white'>
           <Link to='/' className='cursor-pointer hover:underline'>Home</Link>
           <Link to='/login' className='cursor-pointer hover:underline'>Groups</Link>
@@ -87,7 +87,7 @@ const NavBar = ({className}:any) => {
                 </Link>
               </nav>
             </SheetContent>
-    </Sheet>{/*TODO: Implement slider */}
+    </Sheet>
     </div>
     <div className='ml-2 hidden lg:block'>
       <ModeToggle />

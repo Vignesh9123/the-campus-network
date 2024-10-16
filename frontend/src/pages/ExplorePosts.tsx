@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom';
 import { Separator } from '@/components/ui/separator';
 import { formatDistanceToNow } from 'date-fns';
 import _ from 'lodash'; // Import lodash for throttling
+import MobileUserNavbar from '@/components/sections/MobileUserNavbar';
 
 function ExplorePosts() {
     const [posts, setPosts] = useState<any>([]);
@@ -107,14 +108,15 @@ function ExplorePosts() {
         <>
             {user && (
                 <div className="flex">
-                    <div className="w-[15%] md:w-1/4 border-0 border-r-[1px] h-screen">
+                    <div className="hidden md:block md:w-1/4 border-0 border-r-[1px] h-screen">
                         <ProfileSideBar />
                     </div>
                     <div
                         ref={contentDivRef}
-                        className="w-[85%] md:w-[50%] border-0 border-r-[1px] h-screen overflow-y-auto scrollbar-hide"
+                        className="w-full md:w-[50%] border-0 border-r-[1px] h-screen overflow-y-auto scrollbar-hide"
                         key="scrollable-content"
                     >
+                    <MobileUserNavbar scrollableDiv={contentDivRef}/>
                         <div className="text-xl font-bold mx-10 my-5 text-center">
                             Explore Posts
                         </div>

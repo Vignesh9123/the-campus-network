@@ -7,7 +7,7 @@ import {
     CardTitle,
   } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { useState } from "react"
+import { RefObject, useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
     Eye,
@@ -17,7 +17,7 @@ import {
 import { changePassword,/*forgotPassword*/} from "@/api"
 import { toast } from "react-toastify"
 import LogoutButton from "../LogoutButton"
-function AccountSettings() {
+function AccountSettings({scrollableDiv}:{scrollableDiv:RefObject<HTMLDivElement>}) {
     
     const [showPassword, setShowPassword] = useState(false)
     const handleShowPassword = () => {
@@ -90,7 +90,7 @@ function AccountSettings() {
     // }
 
   return (
-    <div className="grid gap-6 h-[80vh] md:h-[90vh] scrollbar-hide overflow-y-auto">
+    <div ref={scrollableDiv} className="grid gap-6 h-[80vh] md:h-[90vh]  scrollbar-hide overflow-y-auto">
     <Card>
       <CardHeader>
         <CardTitle>Change Password</CardTitle>

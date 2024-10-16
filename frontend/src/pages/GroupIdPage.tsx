@@ -23,6 +23,7 @@ import {
 import { toast } from "react-toastify";
 import {RWebShare} from 'react-web-share'
 import GroupSettings from "@/components/sections/GroupSettings";
+import MobileUserNavbar from "@/components/sections/MobileUserNavbar";
 
 function GroupIdPage() {
     const {groupId} = useParams()
@@ -114,10 +115,11 @@ function GroupIdPage() {
   return (
    <div>
       {user && <div className='flex'>
-        <div className="w-[15%] md:w-1/4 border-0 border-r-[1px] h-screen">
+        <div className="hidden md:block md:w-1/4 border-0 border-r-[1px] h-screen">
         <ProfileSideBar/>
         </div>
-        <div ref={scrollableDivRef} className="md:w-[50%] w-[85vw] overflow-y-scroll scrollbar-hide border-0 border-r-[1px] h-screen">
+        <div ref={scrollableDivRef} className="md:w-[50%] overflow-y-scroll scrollbar-hide border-0 border-r-[1px] h-screen">
+          <MobileUserNavbar scrollableDiv={scrollableDivRef}/>
           {loading && <div>
             <PostSkeletonLoader/>
             <PostSkeletonLoader/>
@@ -136,7 +138,7 @@ function GroupIdPage() {
           <span>Posts: {group.posts.length}</span>
           <span>Projects: {group.projects.length}</span>
         </div>
-            <div className="flex justify-center items-center gap-5">
+            <div className="flex justify-center items-center gap-2 md:gap-5">
           
           <AlertDialog>
             <AlertDialogTrigger >
@@ -216,7 +218,7 @@ function GroupIdPage() {
 
       {/* Group Tabs */}
       <div className="group-tabs bg-gray-200 sticky top-0 z-[9999] dark:bg-gray-700 text-gray-800 dark:text-gray-200">
-        <ul className="flex justify-center md:gap-6">
+        <ul className="md:flex grid grid-cols-2 justify-center md:gap-6">
           <li className={`cursor-pointer hover:text-blue-500 duration-150 p-2 md:px-4 m-2 ${
             selectedTab === "Announcements" && "bg-muted  font-bold hover:text-gray-500"
           }`}
@@ -418,7 +420,7 @@ function GroupIdPage() {
             suggestedPeople.map(
               (person:any)=>{
                 return(
-                  <div className="bg-muted p-2 m-2 cursor-pointer">
+                  <div key={person._id} className="bg-muted p-2 m-2 cursor-pointer">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
                         <img

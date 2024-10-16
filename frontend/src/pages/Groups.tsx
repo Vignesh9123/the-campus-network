@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import ProfileSideBar from "@/components/sections/ProfileSideBar"
 import { useAuth } from "@/context/AuthContext"
 import {getMyGroups} from '@/api'
@@ -8,11 +8,13 @@ import { useNavigate } from "react-router-dom"
 import FloatingActionButton from "@/components/modules/FloatingActionButton"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import CreateGroupModal from "@/components/modules/CreateGroupModal"
+import MobileUserNavbar from "@/components/sections/MobileUserNavbar"
 function Groups() {
     const { user } = useAuth();
     const navigate = useNavigate();
     const [groups, setGroups] = useState([]);
     const [loading,  setLoading] = useState(false);
+    const scrollableDiv = useRef<HTMLDivElement>(null);
     useEffect(() => {
       
       const fetchGroups = async () => {
@@ -31,10 +33,11 @@ function Groups() {
   return (
    <div>
       {user && <div className='flex'>
-        <div className="w-[15%] md:w-1/4 border-0 border-r-[1px] h-screen">
+        <div className="hidden md:block md:w-1/4 border-0 border-r-[1px] h-screen">
         <ProfileSideBar/>
         </div>
-        <div className="md:w-[50%] w-[85vw] overflow-y-scroll scrollbar-hide border-0 border-r-[1px] h-screen">
+        <div ref={scrollableDiv} className="md:w-[50%] w-full overflow-y-scroll scrollbar-hide border-0 border-r-[1px] h-screen">
+          <MobileUserNavbar scrollableDiv={scrollableDiv}/>
         <div className="min-h-screen p-8">
       {/* Header */}
       <div className="text-center mb-8">

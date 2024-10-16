@@ -40,10 +40,10 @@ function ProjectEdit() {
 
   return (
     <div className="flex">
-      <div className="w-[15%] md:w-1/4 border-0 border-r h-screen">
+      <div className="hidden md:block md:w-1/4 border-0 border-r h-screen">
         <ProfileSideBar/>
       </div>
-      <div className="w-[85%] md:w-3/4">
+      <div className="w-full md:w-3/4">
       <div className=" py-3 text-center font-bold border-0 border-b">
         <div className="cursor-pointer flex" onClick={()=>navigate(-1)}><ArrowLeft/>Back</div>
         <div className="text-xl ">Edit Project</div>

@@ -1,6 +1,6 @@
 import { getMyTasks, getOthersTasks, getProject,deleteProject } from "@/api";
 import ProfileSideBar from "@/components/sections/ProfileSideBar";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   Breadcrumb,
@@ -46,10 +46,12 @@ import { AlertDialog,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { toast } from "react-toastify";
+import MobileUserNavbar from "@/components/sections/MobileUserNavbar";
 
 function ProjectIdPage() {
   const navigate = useNavigate();
   const { projectId } = useParams();
+  const [loading, setLoading] = useState(false);
   const [project, setProject] = useState<any>(null);
   const { user } = useAuth();
   const [admin, setAdmin] = useState(false)
@@ -58,6 +60,7 @@ function ProjectIdPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [priorityFilter, setPriorityFilter] = useState("all");
+  const scrollableDiv = useRef<HTMLDivElement>(null);
   
   const filteredMyTasks = myTasks.filter((task) => {
     const matchesSearch = task.title.toLowerCase().includes(search.toLowerCase());
@@ -82,11 +85,11 @@ function ProjectIdPage() {
 
 
 
-//TODO: Responsivity
-
+//TODO:Project title size fix in table
   
   
 const fetchProject = async () => {
+  setLoading(true)
   const data = await getProject({ projectId });
   const myTaskRes = await getMyTasks({ projectId });
   setMyTasks(myTaskRes.data.data);
@@ -96,6 +99,7 @@ const fetchProject = async () => {
   setProject(proj);
   if(proj.createdBy._id.toString() == user?._id.toString())
     setAdmin(true)
+  setLoading(false)
   
 };
   useEffect(() => {
@@ -105,13 +109,20 @@ const fetchProject = async () => {
   return (
     <div>
       <div className="flex">
-        <div className="w-[15%] md:w-1/4 border-0 border-r-[1px] h-screen">
+        <div className="hidden md:block md:w-1/4 border-0 border-r-[1px] h-screen">
           <ProfileSideBar />
         </div>
-        <div className="overflow-y-scroll md:w-3/4 scrollbar-hide h-screen">
-          {project && (
+        <div ref={scrollableDiv} className="overflow-y-scroll w-full md:w-3/4 scrollbar-hide h-screen">
+        <MobileUserNavbar scrollableDiv={scrollableDiv}/>
+          {loading && (
+            <div className="flex justify-center items-center h-full">
+              <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+            </div>
+          )}
+          
+          {!loading && project && (
             <div>
-                <div className="flex items-center m-5 mb-2 mx-10 justify-between">                    
+                <div className="flex flex-col md:flex-row gap-2 items-center m-5 mb-2 mx-10 justify-between">                    
               {project.type == "group" && <Breadcrumb className="">
                 <BreadcrumbList>
                   <BreadcrumbItem>
@@ -200,27 +211,27 @@ const fetchProject = async () => {
                 </div>}
                 </div>
               <Separator className="mt-3" />
-              <div className="header flex justify-between items-center">
+              <div className="header flex flex-col gap-2 md:flex-row justify-between items-center">
                 <div>
-                  <div className="text-3xl mt-5 mx-10 font-bold">
+                  <div className="text-xl md:text-3xl mt-5 mx-10 font-bold">
                     {project?.title}
                   </div>
-                  <div className="text-md text-muted-foreground mx-10">
+                  <div className="text-sm md:text-md text-muted-foreground mx-10">
                     {project?.description}
                   </div>
                 </div>
                 <div className="grid grid-cols-2">
                   <div className="mx-5 flex items-center gap-1">
-                    <div className="text-muted-foreground">Start Date:</div>
-                    <div className="text-lg font-bold">
+                    <div className="text-sm md:text-md text-muted-foreground">Start Date:</div>
+                    <div className="md:text-lg font-bold">
                       {new Date(project.startDate).toDateString()}
                     </div>
                   </div>
                   <div className="mx-5 flex items-center gap-1">
-                    <div className="text-muted-foreground">
+                    <div className="text-sm md:text-md text-muted-foreground">
                       Estimated End Date:
                     </div>
-                    <div className="text-lg font-bold">
+                    <div className="md:text-lg font-bold">
                       {new Date(project.estimatedEndDate).toDateString()}
                     </div>
                   </div>

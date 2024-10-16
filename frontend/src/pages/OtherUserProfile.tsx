@@ -1,4 +1,4 @@
-import {useState,useEffect} from 'react'
+import {useState,useEffect, useRef} from 'react'
 import ProfileSideBar from '@/components/sections/ProfileSideBar'
 import { getUserProfile } from '@/api'
 import { getUserPosts,getFollowers,getFollowing } from '@/api'
@@ -22,6 +22,7 @@ import { useNavigate } from 'react-router-dom'
 import DotLoader from '@/components/DotLoader'
 import { formatDistanceToNow } from 'date-fns'
 import { Separator } from '@/components/ui/separator'
+import MobileUserNavbar from '@/components/sections/MobileUserNavbar'
 function OtherUserProfile() {
     const navigate = useNavigate()
     const {username} = useParams()
@@ -33,6 +34,7 @@ function OtherUserProfile() {
     const [followers, setFollowers] = useState([])
     const [following, setFollowing] = useState([])
     const [followLoading,setFollowLoading] = useState(false)
+    const scrollableDiv = useRef<HTMLDivElement>(null);
     
 
     const getOtherFollowers = ()=>{
@@ -84,10 +86,11 @@ function OtherUserProfile() {
         { !loading && !otherUser && <div className='text-2xl font-semibold text-center'>User not found</div>}
 
         { !loading && otherUser && <div className='flex'>
-        <div className="w-[15%] md:w-1/4 border-0 border-r-[1px] h-screen">
+        <div className="hidden md:block md:w-1/4 border-0 border-r-[1px] h-screen">
         <ProfileSideBar/>
         </div>
-        <div className="w-full md:w-[50%] overflow-y-scroll scrollbar-hide border-0 border-r-[1px] h-screen">
+        <div ref={scrollableDiv} className="w-full md:w-[50%] overflow-y-scroll scrollbar-hide border-0 border-r-[1px] h-screen">
+          <MobileUserNavbar scrollableDiv={scrollableDiv}/>
         <Dialog>
               <div className="m-3 mx-auto w-44 rounded-full h-44">
                 <DialogTrigger>

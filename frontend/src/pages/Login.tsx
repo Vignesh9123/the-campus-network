@@ -6,6 +6,8 @@ import { Input } from "../components/ui/input";
 import { cn } from "@/lib/utils";
 import { FcGoogle } from "react-icons/fc";
 import { Link } from 'react-router-dom';
+import Footer from '@/components/sections/Footer';
+import { Separator } from '@/components/ui/separator';
 export default function LoginForm() {
   const { login, authError  } = useAuth();
   const [username, setUsername] = useState('');
@@ -78,6 +80,8 @@ export default function LoginForm() {
           </button>
 </form>
     </div>
+    <Separator/>
+    <Footer/>
     </>
 
   );

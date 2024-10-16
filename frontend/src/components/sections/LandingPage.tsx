@@ -24,7 +24,6 @@ const LandingPage = () => {
   
   return (
     <div className='' >
-      {/* <HeroCarousel/> */}
       <BackgroundLines className=''>
     <div className="flex gap-5 items-center justify-center pt-10">
       <Link to="/about-the-site"><Button variant="outline">Know More</Button></Link>
@@ -43,7 +42,7 @@ const LandingPage = () => {
       <ContainerScroll
         titleComponent={
           <>
-            <h1 className="text-4xl font-semibold text-black dark:text-white">
+            <h1 className="text-2xl md:text-4xl font-semibold text-black dark:text-white">
             Connect, share, and collaborate on projects <br />
               <span className="text-4xl md:text-[6rem] font-bold mt-1 leading-none">
                 with ease
@@ -66,13 +65,13 @@ const LandingPage = () => {
      <motion.div initial={navVisible?{opacity:1}:{opacity:0}} animate={navVisible?{opacity:1}:{opacity:0}} transition={{duration:0.5}}>
       <NavBar className={navVisible ? "visible fixed z-50 top-0 m-0 w-screen p-3" : "hidden"}/>
       </motion.div>
-      <div className='h-[80vh] -z-50 md:mt-64' ref={ref}>
+      <div className='h-[50vh] md:h-[40vh] lg:h-[60vh] 2xl:h-[40vh] -z-50 md:mt-40' ref={ref}>
         <motion.div style={{
           transform: isInView ? "none" : "",
           opacity: isInView ? 1 : 0,
           scale: isInView ? 1 : 0.5,
           transition: "all 0.9s cubic-bezier(0.17, 0.55, 0.55, 1) 0.5s",
-        }} className='font-bold text-center text-3xl md:text-6xl pt-[30vh]'>
+        }} className='font-bold text-center text-3xl md:text-5xl lg:text-6xl pt-[10vh] lg:pt-[20vh] 2xl:pt-[10vh]'>
           Join Our Community
         </motion.div>
         <motion.div style={{
@@ -80,10 +79,10 @@ const LandingPage = () => {
           opacity: isInView ? 1 : 0,
           scale: isInView ? 1 : 0.5,
           transition: "all 0.9s cubic-bezier(0.17, 0.55, 0.55, 1) 0.5s",
-        }} className='text-center w-[50vw] mx-auto pt-5 text-[16px] md:text-[19px]'>
+        }} className='text-center p-2 md:w-[80vw] lg:w-[50vw] mx-auto pt-5 text-[14px] lg:text-[19px]'>
        The Campus Network is a central hub where engineering students from various disciplines can connect and share their knowledge through blogs. It conveys a sense of community and collaboration, which is ideal for the purpose of the website.
         </motion.div>
-        <Separator className='mt-24'/>
+        <Separator className='mt-12 md:mt-24'/>
 
       </div>
      <Footer/>

@@ -17,7 +17,6 @@ const mountJoinChatEvent = (socket)=>{
 
 const initializeSocketIO = (io)=>{
     return io.on("connection",async (socket)=>{
-        console.log("User connected", socket.id)
         try {
            
            const cookies = cookie.parse(socket.handshake.headers.cookie || "")
@@ -38,7 +37,6 @@ const initializeSocketIO = (io)=>{
            if(!decodedToken){
             throw new ApiError(401, "Invalid access token")
            }
-           console.log("decodedToken",decodedToken)
            const user = await User.findById(decodedToken?._id).select("-password -refreshToken")
            if(!user)
                 throw new ApiError(401, "Invalid access token")

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useAuth } from "@/context/AuthContext";
 import ProfileSideBar from "@/components/sections/ProfileSideBar";
 import PostCard from "@/components/modules/Posts/PostCard";
@@ -17,7 +17,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-
+import MobileUserNavbar from "@/components/sections/MobileUserNavbar";
 import FollowButton from "@/components/modules/FollowButton";
 import { getUserPosts,getFollowers,getFollowing,getAccountsToFollow,getMyIndividualProjects,getCurrentUser } from '@/api'
 import { PostInterface } from "@/types";
@@ -26,6 +26,7 @@ import AddProjectModule from "@/components/modules/AddProjectModule";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { formatDistanceToNow } from "date-fns";
+
 const Profile = () => {
   const navigate = useNavigate()
   const { user,setUser } = useAuth();
@@ -40,6 +41,8 @@ const Profile = () => {
   const [accountsToFollow, setAccountsToFollow] = useState([])
   const [accountToFollowLoading, setAccountToFollowLoading] = useState(false)
   const [selectedTab, setSelectedTab] = useState("Posts");
+  const scrollableDiv = useRef<HTMLDivElement|null>(null)
+
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -80,6 +83,8 @@ const Profile = () => {
   const getMyProjects = async()=>{
     const res = await getMyIndividualProjects()
     setProjects(res.data.data)
+    
+    
   }
   useEffect(()=>{
     document.title = "The Campus Network - Profile"
@@ -91,17 +96,78 @@ const Profile = () => {
       setUser(res.data.data)
     })
     getMyProjects()
-    
-    
   },[])
+
+ 
   return (
     <div>
       {user && (
         <div className="flex">
-          <div className="w-[15%] md:w-1/3 border-0 border-r-[1px] h-screen">
+          <div className="hidden md:block md:w-1/3 border-0 border-r-[1px] h-screen">
             <ProfileSideBar />
           </div>
-          <div className="md:w-2/3 w-[85%] overflow-y-scroll scrollbar-hide border-0 border-r-[1px] h-screen">
+          <div ref={scrollableDiv} className="md:w-2/3 w-[] overflow-y-scroll scrollbar-hide border-0 border-r-[1px] h-screen">
+          {/* <div  ref={mobileNavbar}  className={`sticky shadow-md shadow-background flex items-center justify-between px-3 z-[1000000] bg-muted w-full border-0 border-b-2 border-muted-foreground  ${isHidden ? " -top-10 opacity-0" : " top-0 opacity-100"} duration-300`}>
+            <div className="flex gap-1 items-center">
+              <img src="/TCN%20Logo%20WO%20BG.png" className="w-14 h-14" alt="" />
+                <div className="font-bold">The Campus Network</div>            
+            </div>
+            <div className="flex gap-2 items-center">
+              <AccountDropdown/>
+            
+            <Sheet>
+            <SheetTrigger asChild>
+             <div>
+
+                <Menu className="h-6 w-6" />
+                <span className="sr-only">Toggle Menu</span>
+             </div>
+              
+            </SheetTrigger>
+            <SheetContent side="right" className="sm:max-w-xs">
+              <nav className="grid gap-6 text-lg font-medium">
+               
+                <Link
+                  to="#"
+                  className="flex items-center gap-4 px-2.5 text-foreground hover:text-foreground"
+                >
+                  <Home className="h-5 w-5" />
+                  Home
+                </Link>
+                <Link
+                  to="#"
+                  className="flex text-muted-foreground hover:text-foreground items-center gap-4 px-2.5"
+                >
+                  <Users className="h-5 w-5" />
+                  Groups
+                </Link>
+                <Link
+                  to="#"
+                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                >
+                  <Edit className="h-5 w-5" />
+                  Posts
+                </Link>
+                <Link
+                  to="#"
+                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                >
+                  <Info className="h-5 w-5" />
+                  About
+                </Link>
+                <Link
+                  to="#"
+                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                >
+                  <Contact className="h-5 w-5" />
+                  Contact
+                </Link>
+              </nav>
+            </SheetContent>
+    </Sheet>
+    </div>
+          </div> */}
+          <MobileUserNavbar scrollableDiv={scrollableDiv}/>
             <div className="flex border-0 border-b">
               <div
                 className={`w-1/2 py-5 text-center cursor-pointer ${
@@ -242,7 +308,7 @@ const Profile = () => {
               </div>
             </div>
             <div className="w-full h-[2px] bg-muted mt-5"></div>
-            <div className="group-tabs bg-gray-200 sticky top-0 z-[9999] dark:bg-gray-700 text-gray-800 dark:text-gray-200 my-3">
+            <div className={`profile-tabs bg-gray-200 sticky top-0 duration-300 z-[9999] dark:bg-gray-700 text-gray-800 dark:text-gray-200 my-3`}>
         <ul className="flex justify-center md:gap-6">
           <li className={`cursor-pointer hover:text-blue-500 duration-150 p-2 md:px-4 m-2 ${
             selectedTab === "Posts" && "bg-muted  font-bold hover:text-gray-500"

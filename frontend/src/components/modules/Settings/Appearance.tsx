@@ -7,9 +7,10 @@ import {
     CardFooter
 } from "@/components/ui/card"
 import { ModeToggle } from "@/components/mode-toggle"
-function Appearance() {
+import { RefObject } from "react"
+function Appearance({scrollableDiv}:{scrollableDiv:RefObject<HTMLDivElement>}) {
   return (
-    <div>
+    <div ref={scrollableDiv}>
         <Card>
             <CardHeader>
                 <CardTitle>

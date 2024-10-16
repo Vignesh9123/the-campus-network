@@ -9,6 +9,8 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import {FaEye, FaEyeSlash} from "react-icons/fa";
 import { checkUsernameUnique } from "@/api";
+import { Separator } from "@/components/ui/separator";
+import Footer from "@/components/sections/Footer";
 
 export default function RegisterForm() {
     const { register, authError } = useAuth();
@@ -146,6 +148,8 @@ export default function RegisterForm() {
       </form>
          
     </div>
+    <Separator/>
+    <Footer/>
               </>
   );
 }

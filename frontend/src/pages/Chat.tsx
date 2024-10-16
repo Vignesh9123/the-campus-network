@@ -28,6 +28,7 @@ import {
 
 } from '@/components/ui/dropdown-menu'
 import { ChatEventEnums } from '@/constants';
+import MobileUserNavbar from '@/components/sections/MobileUserNavbar';
 
 
 const MESSAGE_LENGTH_LIMIT = 100
@@ -45,6 +46,7 @@ function Chat() {
     const [chatsSearch, setChatsSearch] = useState<string>('')
     const [chatsLoading, setChatsLoading] = useState(false)
     const [messagesLoading, setMessagesLoading] = useState(false)
+    const scrollableDiv = useRef<HTMLDivElement>(null);
     
 
     const handleCopyMessage = (message:string)=>{
@@ -73,6 +75,10 @@ function Chat() {
         getAllMessages({chatId:currentChat.current._id})
         .then((res)=>{
             setMessages(res.data.data)
+            setMessagesLoading(false)
+        })
+        .catch((err)=>{
+            console.log(err)
             setMessagesLoading(false)
         })
 
@@ -110,7 +116,6 @@ function Chat() {
     ) => {
       // Search for the chat with the given ID in the chats array
       const chatToUpdate = chats.find((chat) => chat._id === chatToUpdateId)!;
-      console.log(message)
       // Update the 'lastMessage' field of the found chat with the new message
       chatToUpdate.lastMessageDetails[0] = message;
       chatToUpdate.lastMessage = message._id
@@ -212,8 +217,9 @@ function Chat() {
     },[socket, chats])
 
   return (
-    <div className="w-[85%] md:w-3/4 h-screen flex">
+    <div className="w-full md:w-3/4 h-screen flex">
       <div className={`md:w-[30%] md:block h-screen border-0 border-r ${currentChat.current?'hidden':'w-full block'}` }>
+        <MobileUserNavbar scrollableDiv={scrollableDiv}/>
         <div className='flex justify-between mx-5 mt-2 items-end'>
           <div className="text-3xl font-bold font-sans">Chats</div>
           <AddChatModal chats={chats} setChats={setChats}/>
@@ -223,7 +229,7 @@ function Chat() {
       <Input value={chatsSearch} onChange={(e)=>setChatsSearch(e.target.value)} placeholder='Search...'/>
         </div>
         <Separator className='mt-3'/>
-        <div className='w-full h-[80vh] overflow-y-auto'>
+        <div ref={scrollableDiv} className='w-full h-[80vh] overflow-y-auto'>
           {chatsLoading && <Loader/>}
       {chats
       .filter((chat)=>getChatObjectMetadata(chat, user!)?.title?.toLowerCase().includes(chatsSearch.toLowerCase()))

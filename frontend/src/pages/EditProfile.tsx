@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import {useAuth} from '@/context/AuthContext'
 import ProfileSideBar from '@/components/sections/ProfileSideBar'
 import { Link, useNavigate } from 'react-router-dom'
@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import {Dialog,DialogContent,DialogClose,DialogTrigger,DialogTitle} from '@/components/ui/dialog'
 import SelectWithSearch from '@/components/modules/SelectWithSearch'
 import { branches, colleges } from '@/constants'
+import MobileUserNavbar from '@/components/sections/MobileUserNavbar'
 function EditProfile() {
     const {user, updateAccDetails, updatePersonalDetails,updatePFP} = useAuth()
     const pathname = window.location.pathname
@@ -23,6 +24,7 @@ function EditProfile() {
     const [error, setError] = useState('')
     const [profilePicture, setProfilePicture] = useState<File | null | undefined>(null);
     const [valError, setValError] = useState('')
+    const scrollableDiv = useRef<HTMLDivElement>(null);
     const navigate = useNavigate()
     const checkUsername = async () => {
       if (username.length>0&&username.length < 6) {
@@ -111,10 +113,11 @@ function EditProfile() {
     <div className='w-screen'>
       {user && (
         <div className="flex">
-          <div className="w-[15%] md:w-1/4 border-0 border-r-[1px] h-screen">
+          <div className="hidden md:block md:w-1/4 border-0 border-r-[1px] h-screen">
             <ProfileSideBar />
           </div>
-          <div className="w-[85%] md:w-3/4 overflow-y-scroll scrollbar-hide border-0 border-r-[1px] h-screen">
+          <div ref={scrollableDiv} className=" md:w-3/4 overflow-y-scroll scrollbar-hide border-0 border-r-[1px] h-screen">
+          <MobileUserNavbar scrollableDiv={scrollableDiv}/>
             <div className="flex border-0 border-b">
               <Link to='/profile'
                 className={`w-1/2 py-5 text-center cursor-pointer ${

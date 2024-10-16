@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef} from 'react'
 import ProfileSideBar from '@/components/sections/ProfileSideBar'
 import { useAuth } from '@/context/AuthContext'
 import { PlaceholdersAndVanishInput } from '@/components/ui/placeholders-and-vanish-input';
@@ -6,6 +6,7 @@ import { searchUser, searchPost } from '@/api';
 import { Link } from 'react-router-dom';
 import Loader from '@/components/Loader';
 import PostCard from '@/components/modules/Posts/OthersPostCard';
+import MobileUserNavbar from '@/components/sections/MobileUserNavbar';
 
 
 function SearchPage() {
@@ -15,7 +16,8 @@ function SearchPage() {
     const [postSearchResults, setPostSearchResults] = useState([{}]);
     const [loading, setLoading] = useState(false)
     const [searched, setSearched] = useState(false)
-    const [selectedTab, setSelectedTab] = useState('users') // Default to 'users' tab
+    const [selectedTab, setSelectedTab] = useState('users')
+    const scrollableDiv = useRef<HTMLDivElement>(null);
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchQuery(e.target.value);
     };
@@ -32,10 +34,11 @@ function SearchPage() {
   return (
     <div>
         {user && <div className='flex'>
-        <div className="w-[15%] md:w-1/4 border-0 border-r-[1px] h-screen">
+        <div className="hidden md:block md:w-1/4 border-0 border-r-[1px] h-screen">
         <ProfileSideBar/>
         </div>
-        <div className="md:w-[50%] w-[85vw] overflow-y-scroll scrollbar-hide border-0 border-r-[1px] h-screen">
+        <div ref={scrollableDiv} className="w-full md:w-[50%] overflow-y-scroll scrollbar-hide border-0 border-r-[1px] h-screen">
+          <MobileUserNavbar scrollableDiv={scrollableDiv}/>
           <div className='mt-5'></div>
         <PlaceholdersAndVanishInput  placeholders={["Search for a user", "Search for a post"]}  onChange={handleChange}
         onSubmit={onSubmit}/>

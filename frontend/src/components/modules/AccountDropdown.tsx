@@ -9,8 +9,10 @@ import {
   } from "@/components/ui/dropdown-menu"
 import { Button } from '../ui/button'
 import { AuthContext } from '@/context/AuthContext'
+import { Link } from 'react-router-dom'
+import LogoutButton from './LogoutButton'
 function AccountDropdown() {
-    const {logout, user} = React.useContext(AuthContext)
+    const { user} = React.useContext(AuthContext)
 
   
   return (
@@ -18,18 +20,25 @@ function AccountDropdown() {
        {user && <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="secondary">
-      <div className='mx-2'>{user.username.charAt(0).toUpperCase() + user.username.slice(1)}</div>
+      <div className='hidden md:block mx-2'>{user.username.charAt(0).toUpperCase() + user.username.slice(1)}</div>
                 <img className="rounded-full w-10 h-10 py-1 px-1" src={user.profilePicture} alt="" />
                 <span className="sr-only">Toggle user menu</span>
               </Button>
-            </DropdownMenuTrigger>
+            </DropdownMenuTrigger>  
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Support</DropdownMenuItem>
+              <DropdownMenuItem>
+
+              <Link to={'/settings'}>Settings</Link>
+              </DropdownMenuItem>
+            
+              <DropdownMenuItem>
+              
+              <Link to={'/settings'}>Support</Link>
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={logout} >Logout</DropdownMenuItem>
+              <LogoutButton variant={"outline"} className='sm-show-text'/> 
             </DropdownMenuContent>
           </DropdownMenu>}
     </div>

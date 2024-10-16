@@ -12,7 +12,7 @@ function GeneralLayout() {
   }, [location.pathname]);
   return (
     <div className="flex max-w-screen">
-       <div className="w-[15%] md:w-1/4 h-screen border-0 border-r">
+       <div className="hidden md:block md:w-1/4 h-screen border-0 border-r">
         <ProfileSideBar/>
        </div>
        

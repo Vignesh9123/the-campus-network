@@ -62,10 +62,10 @@ const PostCard = ({postedUser, post, refreshFunc}:{postedUser:UserInterface;post
     const postCreationTime = new Date(post.createdAt!)
   return (
     <div>
-      <div className="postcard m-10 mt-3">
+      <div className="postcard m-3 md:m-10 mt-3">
                 <div className="flex header items-center gap-2">
                   <div className="flex gap-2 items-center">
-                    <div>
+                    <div className='w-fit'>
                       <img
                         src={postedUser.profilePicture}
                         className="w-10 h-10 rounded-full"
@@ -77,12 +77,11 @@ const PostCard = ({postedUser, post, refreshFunc}:{postedUser:UserInterface;post
                         if(reposted)
                           navigate(`/user/${postedUser.username}`)
                         }} className={`pl-1 font-semibold ${reposted && "hover:underline cursor-pointer"}`}>{postedUser.username}</div>
-                      <div className="text-muted-foreground text-sm flex gap-1 items-center">
+                      <div className="text-muted-foreground text-xs md:text-sm flex gap-1 items-center">
                         <Globe className="w-4 h-4" />
                         <div>
                           {
-                            //logic to display when the post was created eg, 1d, 10min, 1mo
-                           formatDistanceToNow(postCreationTime, { addSuffix: true })
+                           formatDistanceToNow(postCreationTime,{addSuffix:true})
                             
                           }
                           

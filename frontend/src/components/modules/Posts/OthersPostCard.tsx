@@ -47,7 +47,7 @@ const PostCard = ({otherUser, post, followCallback }:{otherUser:UserInterface|un
       <div className="postcard m-10 mt-3">
                 <div className="flex header items-center gap-2">
                   <div className="flex gap-2 items-center">
-                    <div>
+                    <div className='w-fit'>
                       <img
                         src={otherUser && otherUser.profilePicture}
                         className="w-10 h-10 rounded-full"
@@ -59,10 +59,10 @@ const PostCard = ({otherUser, post, followCallback }:{otherUser:UserInterface|un
                         navigate(`/user/${otherUser && otherUser.username}`)
                         window.location.reload()
                       }
-                        } className="pl-1 cursor-pointer font-semibold hover:underline">{otherUser && otherUser.username}</div>
+                        } className="pl-1 cursor-pointer text-sm md:text-md font-semibold hover:underline">{otherUser && otherUser.username}</div>
                       <div className="text-muted-foreground text-sm flex gap-1 items-center">
                         <Globe className="w-4 h-4" />
-                        <div>
+                        <div className='text-xs md:text-sm'>
                           {
 
                             formatDistanceToNow(postCreationTime, { addSuffix: true })
