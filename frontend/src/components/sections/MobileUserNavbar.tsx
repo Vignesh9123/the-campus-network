@@ -28,32 +28,21 @@ function MobileUserNavbar({ scrollableDiv }: { scrollableDiv: React.RefObject<HT
   }, [isHidden, scrollableDiv]);
 
   useEffect(() => {
-    let rafId: number;
-    let isScrolling = false;
-
-    const debouncedScroll = () => {
-      if (!isScrolling) {
-        rafId = requestAnimationFrame(() => {
-          handleScroll();
-          isScrolling = false;
-        });
-      }
-      isScrolling = true;
-    };
-
     const currentScrollableDiv = scrollableDiv.current;
-    currentScrollableDiv?.addEventListener('scroll', debouncedScroll);
-
-    return () => {
-      currentScrollableDiv?.removeEventListener('scroll', debouncedScroll);
-      cancelAnimationFrame(rafId);
-    };
+    if (currentScrollableDiv) {
+      currentScrollableDiv.addEventListener("scroll", handleScroll);
+      return () => {
+        currentScrollableDiv.removeEventListener("scroll", handleScroll);
+      };
+    }
   }, [handleScroll, scrollableDiv]);
+  
+
 
   return (
     <div
       ref={mobileNavbar}
-      className={`sticky md:hidden shadow-md shadow-background flex items-center justify-between px-3 z-[1000000] bg-muted w-full border-0 border-b-2 border-muted-foreground ${isHidden ? "h-0 -top-10 opacity-0" : "h-fit top-0 opacity-100"} duration-300`}
+      className={`sticky top-0 md:hidden shadow-md shadow-background flex items-center justify-between px-3 z-[1000000] bg-muted w-full border-0 border-b-2 border-muted-foreground ${isHidden ? "opacity-0" : "opacity-100"} duration-300`}
     >
       <div className="flex gap-1 items-center">
         <img src="/TCN%20Logo%20WO%20BG.png" className="w-14 h-14" alt="" />
