@@ -13,7 +13,7 @@ import { Link } from 'react-router-dom'
 import LogoutButton from './LogoutButton'
 function AccountDropdown() {
     const { user} = React.useContext(AuthContext)
-
+    const pathname = window.location.pathname
   
   return (
     <div>
@@ -28,15 +28,15 @@ function AccountDropdown() {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              {pathname != '/add-personal-details' && <DropdownMenuItem>
 
               <Link to={'/settings'}>Settings</Link>
-              </DropdownMenuItem>
+              </DropdownMenuItem>}
             
-              <DropdownMenuItem>
+              {pathname != '/add-personal-details' &&<DropdownMenuItem>
               
               <Link to={'/settings'}>Support</Link>
-              </DropdownMenuItem>
+              </DropdownMenuItem>}
               <DropdownMenuSeparator />
               <LogoutButton variant={"outline"} className='sm-show-text'/> 
             </DropdownMenuContent>

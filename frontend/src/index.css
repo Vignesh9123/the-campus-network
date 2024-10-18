@@ -163,3 +163,6 @@ body * {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+.scrollbar-wide::-webkit-scrollbar{
+  width: 20px;
+}

@@ -1,5 +1,4 @@
-"use client";
-import React,{useEffect, useState} from "react";
+import React,{useEffect, useState, useRef} from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -11,6 +10,20 @@ import {FaEye, FaEyeSlash} from "react-icons/fa";
 import { checkUsernameUnique } from "@/api";
 import { Separator } from "@/components/ui/separator";
 import Footer from "@/components/sections/Footer";
+import Cropper,{ ReactCropperElement } from "react-cropper";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import "cropperjs/dist/cropper.css";
+
+
 
 export default function RegisterForm() {
     const { register, authError } = useAuth();
@@ -18,15 +31,23 @@ export default function RegisterForm() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [profilePicture, setProfilePicture] = useState<File | null | undefined>(null);
+    const [profilePictureURL, setProfilePictureURL] = useState<string | undefined>(undefined);
+    const [croppedProfilePicture, setCroppedProfilePicture] = useState<File | null>(null);
     const [confirmPassword, setConfirmPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [isUnique, setIsUnique] = useState(true);
     const [error, setError] = useState('')
+    const cropperRef = useRef<ReactCropperElement>(null);
+    const [pfpCropOpen, setPfpCropOpen] = useState(false);
 
     const togglePasswordVisibility = () => {
       setShowPassword(!showPassword);
     };
     const checkUsername = async () => {
+      if(username.length == 0){
+        setError('Username cannot be empty');
+        return
+      }
       if (username.length>0&&username.length < 6) {
         setIsUnique(false);
         setError('Username must be at least 6 characters long');
@@ -48,6 +69,20 @@ export default function RegisterForm() {
       }
       }
     };
+    const getCropData = ()=>{
+      if (cropperRef.current) {
+        const canvas = cropperRef.current?.cropper.getCroppedCanvas();
+        if (canvas) {
+          canvas.toBlob((blob) => {
+            if (blob) {
+              const file = new File([blob], 'profile_picture.png', { type: 'image/png' });
+              setCroppedProfilePicture(file);
+            }
+          }, 'image/png');
+          setPfpCropOpen(false);
+        }
+      }
+    }     
     
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -55,12 +90,16 @@ export default function RegisterForm() {
       alert("Passwords do not match");
       return;
     }
+    if(profilePicture && !croppedProfilePicture){
+      alert("Please crop your profile picture");
+      return;
+    }
     const formData = new FormData()
     formData.append('username', username)
     formData.append('email', email)
     formData.append('password', password)
-    if(profilePicture){
-      formData.append('profilePicture', profilePicture)
+    if(profilePicture && croppedProfilePicture){
+      formData.append('profilePicture', croppedProfilePicture)
     }
     if(username && email && password && isUnique){
         register(formData);
@@ -68,12 +107,23 @@ export default function RegisterForm() {
 
     
   };
+  const handlePFPChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfilePictureURL(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+      setProfilePicture(file);
+      setPfpCropOpen(true);
+    }
+  };
   useEffect(() => {
     
       checkUsername();
     
   
-    // Cleanup the timeout if username changes within debounce delay
   }, [username]);
   useEffect(()=>{
     document.title = 'The Campus Network - Register'
@@ -117,8 +167,37 @@ export default function RegisterForm() {
         </LabelInputContainer>
         <LabelInputContainer className="mb-4">
           <Label htmlFor="profilePicture">Profile Picture</Label>
-          <Input id="profilePicture" onChange={(e) => setProfilePicture(e.target.files?.[0])} type="file"/>
+          <Input id="profilePicture" onChange={handlePFPChange} type="file"/>
         </LabelInputContainer>
+      { profilePicture && <Dialog open={pfpCropOpen} onOpenChange={setPfpCropOpen}>
+        <DialogTrigger asChild>
+          <Button className="mb-4" variant="outline">Crop Profile Picture</Button>
+        </DialogTrigger>
+        <DialogContent className="">
+          <div className="">
+
+          <DialogHeader>
+            <DialogTitle>Crop Profile Picture</DialogTitle>
+            <DialogDescription>
+              Crop your profile picture to a square shape.
+            </DialogDescription>
+          </DialogHeader>
+          {profilePicture &&  <div className=' mx-auto max-h-[90vh] mt-4'>
+                    <Cropper
+                      ref={cropperRef}
+                      src={profilePictureURL}
+                      aspectRatio={1 / 1}
+                      style={{ height: 300, width: '100%' }}
+                      background={false}
+                      guides={true}
+                    />
+                  </div>}
+          </div>
+          <DialogFooter className=" justify-end">
+              <Button onClick={getCropData}>Set</Button>
+          </DialogFooter>
+          </DialogContent>
+        </Dialog>}
        
         <LabelInputContainer className="mb-4 relative">
           <Label htmlFor="password">Password <p className="inline text-red-500 text-sm">*</p></Label>

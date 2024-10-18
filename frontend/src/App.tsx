@@ -38,19 +38,8 @@ function App() {
       </div>,
       {toastId:payload.notification?.title} 
     )
-    // ...
   });
-  // useEffect(
-  //   ()=>{
-  //     socketio('http://localhost:8000',{
-  //       withCredentials:true,
-  //       auth:{token}
-  //     }).on('connect',()=>{
-  //       console.log('connected to socket.io server')
-  //     })
-  //   },[]
-  // )
-  
+
   
 
   

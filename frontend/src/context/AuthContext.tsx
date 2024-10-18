@@ -102,6 +102,7 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
             async () => await registerUser(data),
             setIsLoading,
             ()=>{
+                setAuthError(null)
                 navigate("/login");
             },
             (err:any)=>{

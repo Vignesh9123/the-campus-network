@@ -10,6 +10,9 @@ import {Dialog,DialogContent,DialogClose,DialogTrigger,DialogTitle} from '@/comp
 import SelectWithSearch from '@/components/modules/SelectWithSearch'
 import { branches, colleges } from '@/constants'
 import MobileUserNavbar from '@/components/sections/MobileUserNavbar'
+import Cropper, { ReactCropperElement } from "react-cropper";
+import "cropperjs/dist/cropper.css";
+
 function EditProfile() {
     const {user, updateAccDetails, updatePersonalDetails,updatePFP} = useAuth()
     const pathname = window.location.pathname
@@ -23,8 +26,10 @@ function EditProfile() {
     const [isUnique, setIsUnique] = useState(true);
     const [error, setError] = useState('')
     const [profilePicture, setProfilePicture] = useState<File | null | undefined>(null);
+    const [profilePictureUrl, setProfilePictureUrl] = useState<string>(user?.profilePicture!);
     const [valError, setValError] = useState('')
     const scrollableDiv = useRef<HTMLDivElement>(null);
+    const cropperRef = useRef<ReactCropperElement>(null)
     const navigate = useNavigate()
     const checkUsername = async () => {
       if (username.length>0&&username.length < 6) {
@@ -51,6 +56,17 @@ function EditProfile() {
       }
       }
     };
+    const handlePFPChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setProfilePictureUrl(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+        setProfilePicture(file);
+      }
+    }
     useEffect(() => {
       if(username.length==0){
         setIsUnique(false)
@@ -103,9 +119,22 @@ function EditProfile() {
     
     const handleUpdatePFP = async() => {
       if(profilePicture){
-        const data = new FormData()
-        data.append('profilePicture', profilePicture)
-        await updatePFP(data)
+        if(cropperRef.current){
+          const cropper = cropperRef.current.cropper
+          const canvas = cropper.getCroppedCanvas()
+          canvas.toBlob(async(blob) => {
+            if(blob){
+              const file = new File([blob], 'profile_picture.jpg', {type: 'image/jpeg'})
+              const data = new FormData()
+              data.append('profilePicture', file)
+              await updatePFP(data)
+              setProfilePictureUrl(URL.createObjectURL(file))
+            }
+          }, 'image/jpeg', 0.8)
+        }
+        // const data = new FormData()
+        // data.append('profilePicture', profilePicture)
+        // await updatePFP(data)
 
       }
     }
@@ -146,7 +175,18 @@ function EditProfile() {
                 <DialogContent  className='w-[85%]'>
                   <DialogTitle className='text-center font-bold mt-4'>Update Profile Picture</DialogTitle>
 
-                  <Input type='file' onChange={(e) => setProfilePicture(e.target.files?.[0])} />
+                  <Input type='file' onChange={handlePFPChange} />
+
+                 {profilePicture &&  <div className=' mx-auto max-h-[90vh] mt-4'>
+                    <Cropper
+                      ref={cropperRef}
+                      src={profilePictureUrl}
+                      aspectRatio={1 / 1}
+                      style={{ height: 300, width: '100%' }}
+                      background={false}
+                      guides={true}
+                    />
+                  </div>}
                   <Button onClick={handleUpdatePFP} className='w-full mt-4'>Update</Button>
                   <DialogClose className='text-center mt-4'>Close</DialogClose>
                     
