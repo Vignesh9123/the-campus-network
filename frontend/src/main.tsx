@@ -7,11 +7,14 @@ import { BrowserRouter } from 'react-router-dom'
 import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer } from 'react-toastify'
 import { SocketProvider } from './context/SocketContext.tsx'
+import {NextUIProvider} from '@nextui-org/react'
+
 
 createRoot(document.getElementById('root')!).render(
 
     <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
         <BrowserRouter>
+        <NextUIProvider>
 
       <AuthProvider>
         <SocketProvider>
@@ -20,6 +23,7 @@ createRoot(document.getElementById('root')!).render(
         <ToastContainer/>
 
       </AuthProvider>
+        </NextUIProvider>
         </BrowserRouter>
     </ThemeProvider>
  

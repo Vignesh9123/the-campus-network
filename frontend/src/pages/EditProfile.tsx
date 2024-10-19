@@ -128,13 +128,10 @@ function EditProfile() {
               const data = new FormData()
               data.append('profilePicture', file)
               await updatePFP(data)
-              setProfilePictureUrl(URL.createObjectURL(file))
             }
           }, 'image/jpeg', 0.8)
         }
-        // const data = new FormData()
-        // data.append('profilePicture', profilePicture)
-        // await updatePFP(data)
+       
 
       }
     }
