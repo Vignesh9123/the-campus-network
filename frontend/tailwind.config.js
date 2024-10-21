@@ -120,9 +120,7 @@ module.exports = {
         },
         { values: flattenColorPalette(theme("backgroundColor")), type: "color" }
       );
-    },
-	nextui()
-  ],
+    }],
 }
 function addVariablesForColors({ addBase, theme }) {
   let allColors = flattenColorPalette(theme("colors"));
