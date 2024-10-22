@@ -1,13 +1,19 @@
 import {useState} from 'react'
-import {Globe, EllipsisVertical, ThumbsUpIcon, MessageSquare, Repeat2}  from 'lucide-react'
+import {Globe, EllipsisVertical, ThumbsUpIcon, MessageSquare, Repeat2, Trash2}  from 'lucide-react'
 import { UserInterface } from '@/context/AuthContext'
 import { formatDistanceToNow } from 'date-fns'
 import { PostInterface } from '@/types'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
-import { createRepost, getLikedUsers, getRepostedUsers } from '@/api'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { createRepost, deletePost, getLikedUsers, getRepostedUsers } from '@/api'
+import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import DotLoader from '@/components/DotLoader'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu"
+import { Button } from '@/components/ui/button'
 const PostCard = ({postedUser, post, refreshFunc}:{postedUser:UserInterface;post:PostInterface, refreshFunc:()=>void}) => {
 
   const navigate = useNavigate()
@@ -21,7 +27,7 @@ const PostCard = ({postedUser, post, refreshFunc}:{postedUser:UserInterface;post
 
    const [likedUsersLoading, setLikedUsersLoading] = useState(false)
    const [repostedUsersLoading, setRepostedUsersLoading] = useState(false)
-
+   const [dropdownOpen, setDropdownOpen] = useState(false)
    const handleRepostedUsersClick = async() => {
     setRepostedUsersLoading(true)
     setLikedUsersLoading(false)
@@ -58,6 +64,20 @@ const PostCard = ({postedUser, post, refreshFunc}:{postedUser:UserInterface;post
       console.log(error)
     }
    }
+
+
+   const handleDeletePost = async(postId:string)=>{
+    try {
+      deletePost({postId})
+      .then(()=>{
+        refreshFunc()
+      })
+    } catch (error) {
+      console.log(error)
+    } finally{
+      setDropdownOpen(false)
+    }
+   }
    
     const postCreationTime = new Date(post.createdAt!)
   return (
@@ -90,7 +110,34 @@ const PostCard = ({postedUser, post, refreshFunc}:{postedUser:UserInterface;post
                     </div>
                   </div>
                   <div className="ml-auto pr-10">
-                  {!reposted && <EllipsisVertical className="h-8 cursor-pointer hover:bg-muted" />}
+                  {!reposted && 
+                  <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
+                    <DropdownMenuTrigger>
+                  <EllipsisVertical className="h-8 cursor-pointer hover:bg-muted" />
+                    </DropdownMenuTrigger>  
+                    <DropdownMenuContent>
+                      <Dialog>
+                      <DialogTrigger className=' w-full'>
+
+                      <Button variant={"destructive"} className=' flex items-center gap-2 w-full'><Trash2 size={20}/> Delete </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Are you sure you want to delete this post?</DialogTitle>
+                        </DialogHeader>
+                        <DialogClose asChild>
+                          <Button variant={"destructive"} onClick={()=>handleDeletePost(post._id)} >Delete</Button>
+                        </DialogClose>
+                        <DialogClose asChild>
+
+                          <Button>Cancel</Button>
+                        </DialogClose>
+                        
+                      </DialogContent>
+                      </Dialog>                      
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                  }
                   </div>
                 </div>
                 <div className="w-3/4 h-[2px] mx-auto m-4 bg-muted"></div>

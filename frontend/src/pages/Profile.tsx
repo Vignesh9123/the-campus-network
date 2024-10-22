@@ -42,6 +42,7 @@ const Profile = () => {
   const [accountToFollowLoading, setAccountToFollowLoading] = useState(false)
   const [selectedTab, setSelectedTab] = useState("Posts");
   const scrollableDiv = useRef<HTMLDivElement|null>(null)
+  const [postsLoading, setPostsLoading] = useState(false)
 
 
   const scrollToTop = () => {
@@ -88,8 +89,12 @@ const Profile = () => {
   }
   useEffect(()=>{
     document.title = "The Campus Network - Profile"
+    setPostsLoading(true)
     getUserPosts({username:user?.username!}).then((res)=>{
       setPosts(res.data.data)
+    })
+    .finally(()=>{
+      setPostsLoading(false)
     })
     getAccountRecommendations()
     getCurrentUser().then((res)=>{
@@ -107,66 +112,7 @@ const Profile = () => {
             <ProfileSideBar />
           </div>
           <div ref={scrollableDiv} className="md:w-2/3 w-[] overflow-y-scroll scrollbar-hide border-0 border-r-[1px] h-screen">
-          {/* <div  ref={mobileNavbar}  className={`sticky shadow-md shadow-background flex items-center justify-between px-3 z-[1000000] bg-muted w-full border-0 border-b-2 border-muted-foreground  ${isHidden ? " -top-10 opacity-0" : " top-0 opacity-100"} duration-300`}>
-            <div className="flex gap-1 items-center">
-              <img src="/TCN%20Logo%20WO%20BG.png" className="w-14 h-14" alt="" />
-                <div className="font-bold">The Campus Network</div>            
-            </div>
-            <div className="flex gap-2 items-center">
-              <AccountDropdown/>
-            
-            <Sheet>
-            <SheetTrigger asChild>
-             <div>
-
-                <Menu className="h-6 w-6" />
-                <span className="sr-only">Toggle Menu</span>
-             </div>
-              
-            </SheetTrigger>
-            <SheetContent side="right" className="sm:max-w-xs">
-              <nav className="grid gap-6 text-lg font-medium">
-               
-                <Link
-                  to="#"
-                  className="flex items-center gap-4 px-2.5 text-foreground hover:text-foreground"
-                >
-                  <Home className="h-5 w-5" />
-                  Home
-                </Link>
-                <Link
-                  to="#"
-                  className="flex text-muted-foreground hover:text-foreground items-center gap-4 px-2.5"
-                >
-                  <Users className="h-5 w-5" />
-                  Groups
-                </Link>
-                <Link
-                  to="#"
-                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                >
-                  <Edit className="h-5 w-5" />
-                  Posts
-                </Link>
-                <Link
-                  to="#"
-                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                >
-                  <Info className="h-5 w-5" />
-                  About
-                </Link>
-                <Link
-                  to="#"
-                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                >
-                  <Contact className="h-5 w-5" />
-                  Contact
-                </Link>
-              </nav>
-            </SheetContent>
-    </Sheet>
-    </div>
-          </div> */}
+          
           <MobileUserNavbar scrollableDiv={scrollableDiv}/>
             <div className="flex border-0 border-b">
               <div
@@ -342,6 +288,9 @@ const Profile = () => {
                 posts.length == 0 &&
                 <div className="text-center text-muted-foreground mt-3">No posts yet</div>
               }
+              {postsLoading && !posts[0] && <div className="flex justify-center items-center h-full">
+              <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+            </div>}
             {
               posts.map((post:PostInterface, index) => {
                 return(
@@ -355,8 +304,13 @@ const Profile = () => {
                         </Link>
                     </div>}
                 <PostCard refreshFunc={()=>{
+
+                  setPostsLoading(true)
+                  scrollToTop()
                   getUserPosts({username:user?.username!}).then((res)=>{
                     setPosts(res.data.data)
+                  }).finally(()=>{
+                    setPostsLoading(false)
                   })
                 }} key={index} postedUser={post.isRepost && post.repostedPost?.createdBy?post.repostedPost?.createdBy:user} post={post.isRepost && post.repostedPost?post.repostedPost:post}/>
                   </>

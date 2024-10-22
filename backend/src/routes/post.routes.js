@@ -7,7 +7,7 @@ const router = Router()
 router.route("/post/:postId").get(getPost)
 router.route("/create").post(verifyJWT, createPost)
 router.route("/update/:postId").post(verifyJWT, updatePost)
-router.route("/delete/:postId").post(verifyJWT, deletePost)
+router.route("/delete/:postId").delete(verifyJWT, deletePost)
 router.route("/user/:username").get(getUserPosts)
 router.route("/search").get(searchPosts) // api/v1/posts/search?query=something
 router.route("/like/:postId").post(verifyJWT,likeorUnlikePost)
