@@ -1,6 +1,7 @@
 import { ChatEventEnum, AvailableChatEvents } from "../constants.js";
 import { emitSocketEvent } from "../socket/index.js";
 import { Chat } from '../models/chat.model.js'
+import {Group} from '../models/group.model.js'
 import { ChatMessage } from '../models/message.model.js'
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
@@ -31,7 +32,12 @@ const chatCommonAggregation = () => {
                             posts: 0,
                             preferences: 0,
                             isEmailVarified: 0,
-                            loginType: 0
+                            loginType: 0,
+                            followers: 0,
+                            following: 0,
+                            joinDate: 0,
+                            lastLogin: 0,
+                            pendingGroupRequests: 0,
                         },
                     },
                 ],
@@ -167,8 +173,38 @@ const deleteChat = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, deletedChat, "Chat deleted successfully"))
 })
 
+const createGroupChat = asyncHandler(async (req, res) => {
+    const { groupId } = req.body
+    if (!groupId) {
+        throw new ApiError(400, "Group Id is required")
+    }
+    const group = await Group.findById(groupId)
+    if (!group) {
+        throw new ApiError(404, "Group not found")
+    }
+    const members = group.members
+    const newChat = await Chat.create({
+        admin: group.admin,
+        isGroupChat: true,
+        chatType: "group",
+        name: group.name,
+        participants:members
+        
+
+    })
+    const createdChat = await Chat.aggregate([
+        {
+            $match: {
+                _id: newChat._id
+            }
+        },
+        ...chatCommonAggregation()
+    ])
+    return res.status(201).json(new ApiResponse(200, createdChat[0], "Group chat created successfully"))
+})
 export {
     getChats,
     createOrGetOnetoOneChat,
-    deleteChat
+    deleteChat,
+    createGroupChat
 }

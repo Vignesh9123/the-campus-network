@@ -2,6 +2,12 @@ import mongoose, { Schema } from "mongoose";
 
 const chatSchema = new Schema(
   {
+    name:{
+      type:String,
+      required:function(){
+        return this.chatType==="group"
+      }
+    },
     chatType:{
       type:String,
       enum:["one2one","group"],

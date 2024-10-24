@@ -111,7 +111,7 @@ const Profile = () => {
           <div className="hidden md:block md:w-1/3 border-0 border-r-[1px] h-screen">
             <ProfileSideBar />
           </div>
-          <div ref={scrollableDiv} className="md:w-2/3 w-[] overflow-y-scroll scrollbar-hide border-0 border-r-[1px] h-screen">
+          <div ref={scrollableDiv} className="md:w-2/3 w-full overflow-y-scroll scrollbar-hide border-0 border-r-[1px] h-screen">
           
           <MobileUserNavbar scrollableDiv={scrollableDiv}/>
             <div className="flex border-0 border-b">
