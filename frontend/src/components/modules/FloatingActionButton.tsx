@@ -19,7 +19,7 @@ const FloatingActionButton: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-8 right-8 lg:right-[32rem] flex flex-col items-center space-y-4">
+    <div className="fixed bottom-8 right-8 md:right-96 lg:right-[32rem] flex flex-col items-center space-y-4">
       {/* Option Buttons */}
       {isOpen && (
         <>
