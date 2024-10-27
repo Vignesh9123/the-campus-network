@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+		<!--	created with www.mysitemapgenerator.com	-->
+		<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+	<loc>https://the-campus-network.vercel.app/</loc>
+	<lastmod>2024-10-27T14:48:46+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://the-campus-network.vercel.app/login</loc>
+	<lastmod>2024-10-27T14:48:46+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://the-campus-network.vercel.app/settings</loc>
+	<lastmod>2024-10-27T14:48:46+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://the-campus-network.vercel.app/about-the-site</loc>
+	<lastmod>2024-10-27T14:48:46+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://the-campus-network.vercel.app/contact</loc>
+	<lastmod>2024-10-27T14:48:46+01:00</lastmod>
+	<priority>0.5</priority>
+</url>
+<url>
+	<loc>https://the-campus-network.vercel.app/terms-of-service</loc>
+	<lastmod>2024-10-27T14:48:46+01:00</lastmod>
+	<priority>0.5</priority>
+</url>
+<url>
+	<loc>https://the-campus-network.vercel.app/privacy-policy</loc>
+	<lastmod>2024-10-27T14:48:46+01:00</lastmod>
+	<priority>0.5</priority>
+</url>
+<url>
+	<loc>https://the-campus-network.vercel.app/register</loc>
+	<lastmod>2024-10-27T14:48:46+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://the-campus-network.vercel.app/explore</loc>
+	<lastmod>2024-10-27T14:48:46+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://the-campus-network.vercel.app/search</loc>
+	<lastmod>2024-10-27T14:48:46+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://the-campus-network.vercel.app/groups</loc>
+	<lastmod>2024-10-27T14:48:46+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://the-campus-network.vercel.app/chat</loc>
+	<lastmod>2024-10-27T14:48:46+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<!-- <url>
+	<loc>https://the-campus-network.vercel.app/notifications</loc>
+	<lastmod>2024-10-27T14:48:46+01:00</lastmod>
+	<priority>1.0</priority>
+</url> -->
+<url>
+	<loc>https://the-campus-network.vercel.app/profile</loc>
+	<lastmod>2024-10-27T14:48:46+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<!-- <url>
+	<loc>https://the-campus-network.vercel.app/editProfile</loc>
+	<lastmod>2024-10-27T14:48:46+01:00</lastmod>
+	<priority>1.0</priority>
+</url> -->
+<!-- <url>
+	<loc>https://the-campus-network.vercel.app/engine.io</loc>
+	<lastmod>2024-10-27T14:48:46+01:00</lastmod>
+	<priority>1.0</priority>
+</url> -->
+<!-- <url>
+	<loc>https://the-campus-network.vercel.app/setLogin</loc>
+	<lastmod>2024-10-27T14:48:46+01:00</lastmod>
+	<priority>1.0</priority>
+</url> -->
+<!-- <url>
+	<loc>https://the-campus-network.vercel.app/add-personal-details</loc>
+	<lastmod>2024-10-27T14:48:46+01:00</lastmod>
+	<priority>1.0</priority>
+</url> -->
+</urlset>

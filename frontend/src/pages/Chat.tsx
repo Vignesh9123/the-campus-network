@@ -313,7 +313,7 @@ function Chat() {
                     <div className='max-w-[90%]'>
 
                       <Link to={`/user/${message.sender.username}`} className='text-xs hover:underline text-muted dark:text-muted-foreground'>{message.sender.username == user?.username ? 'You' : message.sender.username}</Link>
-                      <div className='w-full break-all text-white'>{message.content}</div>{/*Fix sizing */}
+                      <div className='w-full break-words text-white'>{message.content}</div>{/*Fix sizing */}
                       <div className='text-xs text-accent-foreground dark:text-muted-foreground'>{new Date(message.createdAt).toLocaleString(
                         'en-IN', {
                         day:'numeric',
