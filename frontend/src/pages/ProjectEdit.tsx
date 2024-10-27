@@ -15,6 +15,8 @@ function ProjectEdit() {
   const [description, setDescription] = useState("")
   const [status, setStatus] = useState("")
   const [estimatedEndDate, setEstimatedEndDate] = useState("")
+  const [githubLink, setGithubLink] = useState("")
+  const [projectLink, setProjectLink] = useState("")
 
   const fetchProject = async () => {
     const data = await getProject({projectId})
@@ -22,6 +24,8 @@ function ProjectEdit() {
     setDescription(data.data.data.description)
     setStatus(data.data.data.status)
     setEstimatedEndDate(data.data.data.estimatedEndDate.split("T")[0])
+    setGithubLink(data.data.data.githubLink)
+    setProjectLink(data.data.data.projectLink)
   }
   useEffect(() => {
     fetchProject()
@@ -32,7 +36,9 @@ function ProjectEdit() {
       title,
       description,
       status,
-      estimatedEndDate
+      estimatedEndDate,
+      githubLink,
+      projectLink
     }})
     toast.success("Project updated successfully")
     navigate(`/projects/${projectId}`)
@@ -89,6 +95,26 @@ function ProjectEdit() {
             type="date"
             value={estimatedEndDate}
             onChange={(e)=>setEstimatedEndDate(e.target.value)}
+          />
+        </div>
+        <div className="flex flex-col gap-2">
+          <label className="text-md" htmlFor="githubLink">
+            Github Link
+          </label>
+          <Input
+            id="githubLink"
+            value={githubLink}
+            onChange={(e)=>setGithubLink(e.target.value)}
+          />
+        </div>
+        <div className="flex flex-col gap-2">
+          <label className="text-md" htmlFor="projectLink">
+            Project Link
+          </label>
+          <Input
+            id="projectLink"
+            value={projectLink}
+            onChange={(e)=>setProjectLink(e.target.value)}
           />
         </div>
 

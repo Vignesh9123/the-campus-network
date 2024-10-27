@@ -7,7 +7,7 @@ import { Task } from '../models/task.model.js'
 import { User } from '../models/user.model.js'
 
 const addProject = asyncHandler(async (req, res) => {
-    const {title, description, startDate, estimatedEndDate, group, type} = req.body
+    const {title, description, startDate, estimatedEndDate, group, type, projectLink, githubLink} = req.body
     
     if(!title || !description || !startDate || !estimatedEndDate) 
         throw new ApiError(400, "All fields are required")
@@ -22,7 +22,9 @@ const addProject = asyncHandler(async (req, res) => {
             startDate,
             estimatedEndDate,
             createdBy: req.user._id,
-            type: "individual"
+            type: "individual",
+            projectLink,
+            githubLink
         })
         if(!project) throw new ApiError(500, "Something went wrong while creating the project")
         return res.status(201).json(new ApiResponse(201, project, "Personal Project added successfully"))
@@ -113,12 +115,13 @@ const updateProject = asyncHandler(async (req, res) => {
     if(project.type == "group" && (!req.user.groups.includes(project.group._id) || project.createdBy._id.toString() !== req.user._id.toString()))
         throw new ApiError(403, "You are not authorized to update this project")
 
-    const {title, description, estimatedEndDate} = req.body
+    const {title, description, estimatedEndDate, projectLink, githubLink} = req.body
     const updatedProject = await Project.findByIdAndUpdate(projectId, {
         title:title || project.title,
         description:description || project.description,
-        estimatedEndDate:estimatedEndDate || project.estimatedEndDate 
-
+        estimatedEndDate:estimatedEndDate || project.estimatedEndDate ,
+        projectLink:projectLink || project.projectLink,
+        githubLink:githubLink || project.githubLink
     }, {new: true})
 
     if(!project) throw new ApiError(404, "Project not found")

@@ -3,8 +3,8 @@ import {asyncHandler} from '../utils/asyncHandler.js'
 import {ApiError} from '../utils/ApiError.js'
 import {ApiResponse} from '../utils/ApiResponse.js'
 import {User} from '../models/user.model.js'
-import { deleteUserTasks } from './task.controller.js'
 import { Project } from '../models/project.model.js'
+import { Task } from '../models/task.model.js'
 const createGroup = asyncHandler(async (req, res) => {
     const {name, description} = req.body
     if (!name) {
@@ -37,8 +37,8 @@ const isGroupNameUnique = asyncHandler(async (req, res) => {
 const getGroup = asyncHandler(async (req, res) => {
     const {groupId} = req.params
     const group = await Group.findById(groupId)
-        .populate('admin', 'username email profilePicture') //TODO:Check if required
-        .populate('members', 'username email profilePicture')
+        .populate('admin', 'username email profilePicture college engineeringDomain') //TODO:Check if required
+        .populate('members', 'username email profilePicture college engineeringDomain')
         .populate('projects', '')
     //populate joinRequests only req.user._id == group.admin._id
     if(!group.members.
@@ -93,6 +93,9 @@ const exitFromGroup = asyncHandler(async (req, res) => {
     }
     group.members = group.members.filter(member => member.toString() !== req.user._id.toString())
     await group.save()
+    await Task.deleteMany({
+        
+    })
     const user = await User.findByIdAndUpdate(req.user._id, {$pull: {groups: group._id}}, {new: true})
     .select('-password -refreshToken')
     return res.status(200).json(new ApiResponse(200, null, "User left from group"))
@@ -111,7 +114,17 @@ const requestToJoinGroup = asyncHandler(async (req, res) => {
         throw new ApiError(400, "User already the member of the group")
     group.joinRequests.push(req.user._id)
     await group.save()
-
+    group.projects.forEach(async(project) => {
+        await Task.deleteMany({
+            project: project._id,
+            assignedTo: { $size: 1, $eq: [req.user._id] }
+        });
+        await Task.updateMany(
+            { project: project._id },
+            { assignedTo: req.user._id },
+            { $pull: { assignedTo: req.user._id } }
+        );    
+    })
     const user = await User.findByIdAndUpdate(req.user._id, {$push: {pendingGroupRequests: group._id}}, {new: true})
     .select('-password -refreshToken')
     return res.status(200).json(new ApiResponse(200, null, "Request sent"))
@@ -198,10 +211,22 @@ const removeFromGroup = asyncHandler(async (req, res) => {
     if (group.members.includes(userId)) {
         group.members = group.members.filter(member => member.toString() !== userId.toString())
         await group.save()
-        deleteUserTasks(req,res);
-        
+        group.projects.forEach(async(project) => {
+            await Task.deleteMany({
+                project: project._id,
+                assignedTo: { $size: 1, $eq: [userId] }
+            });
+            await Task.updateMany(
+                { project: project._id },
+                { assignedTo: userId },
+                { $pull: { assignedTo: userId } }
+            );    
+        })
     }
+    
     await User.findByIdAndUpdate(userId, {$pull: {groups: group._id}}, {new: true})
+
+    return res.status(200).json(new ApiResponse(200, null, "User removed from group"))
 })
 
 const deleteGroup = asyncHandler(async (req, res) => {

@@ -118,7 +118,7 @@ function GroupIdPage() {
         <div className="hidden md:block md:w-1/4 border-0 border-r-[1px] h-screen">
         <ProfileSideBar/>
         </div>
-        <div ref={scrollableDivRef} className="md:w-[50%] overflow-y-scroll scrollbar-hide border-0 border-r-[1px] h-screen">
+        <div ref={scrollableDivRef} className="w-full md:w-[50%] overflow-y-scroll scrollbar-hide border-0 border-r-[1px] h-screen">
           <MobileUserNavbar scrollableDiv={scrollableDivRef}/>
           {loading && <div>
             <PostSkeletonLoader/>
@@ -309,7 +309,10 @@ function GroupIdPage() {
         />
         <div>
           <Link to={`/user/${member.username}`} className="text-xl hover:underline block font-semibold my-1">{member.username}</Link>
-          <span className="text-gray-500">{member.email}</span>
+
+          <span className="text-gray-500 block text-sm">
+            ({member.engineeringDomain.split('(')[1]} in ({member.college.split('(')[1]}
+          </span>
         </div>
       </div>
       <div>

@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/context/AuthContext";
-import { Ellipsis } from "lucide-react";
+import { Ellipsis, SquareArrowOutUpRight } from "lucide-react";
 import TaskTableRow from "@/components/modules/TaskTableRow";
 import {
     Accordion,
@@ -123,7 +123,7 @@ const fetchProject = async () => {
         <MobileUserNavbar scrollableDiv={scrollableDiv}/>
           {loading && (
             <div className="flex justify-center items-center h-full">
-              <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+              <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-700"></div>
             </div>
           )}
           
@@ -244,6 +244,28 @@ const fetchProject = async () => {
                   </div>
                 </div>
               </div>
+              <Separator className="mt-3"/>
+                <div className="mx-5 grid grid-cols-2 md:flex  items-center justify-around mt-5">
+                  <div className="flex flex-col justify-center">
+                    <div className="text-sm md:text-md text-muted-foreground">Status</div>
+                    <div className={`md:text-lg font-bold ${project?.status == 'active'?'text-[#4CAF50]':project?.status == 'completed'?'text-[#2196F3]':
+                      project?.status == 'cancelled'?'text-[#E53935]':
+                      project?.status == 'on hold'?'text-[#FFC107]':'text-[#9C27B0]'
+                    }`}>{project?.status}</div>
+                  </div>
+                  <div>
+                    <div className="text-sm md:text-md text-muted-foreground">
+                      GitHub Link
+                    </div>
+                    <Link target="_blank" to={project?.githubLink?project?.githubLink:""} className="md:text-lg break-words text-wrap text-blue-500 underline font-bold">{(project?.githubLink)?project?.githubLink:"-"}<SquareArrowOutUpRight size={15} className="ml-2 mb-2 inline"/></Link>
+                  </div>
+                  <div >
+                    <div className="text-sm  md:text-md text-muted-foreground">
+                      Project Live Link
+                    </div>
+                    <Link target="_blank" to={project?.projectLink?project?.projectLink:""} className="md:text-lg break-words text-blue-500 underline font-bold">{(project?.projectLink)?project?.projectLink:"-"}<SquareArrowOutUpRight size={15} className="ml-2 mb-2 inline"/></Link>
+                  </div>
+                </div>
               <Separator className="mt-5" />
               <Accordion type="single" defaultValue="yourTasks" collapsible className="m-5">
       <AccordionItem value="yourTasks">

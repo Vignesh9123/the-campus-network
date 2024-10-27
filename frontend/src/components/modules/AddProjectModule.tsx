@@ -16,6 +16,8 @@ function AddProjectModule({groupId, refreshFunc, type}: {groupId?:string;
     const [description, setDescription] = useState('')
     const [startDate, setStartDate] = useState('')
     const [endDate, setEndDate] = useState('')
+    const [githubLink, setGithubLink] = useState('')
+    const [projectLink, setProjectLink] = useState('')
     const [ open,  setOpen ] = useState(false) 
 
 
@@ -27,7 +29,9 @@ function AddProjectModule({groupId, refreshFunc, type}: {groupId?:string;
             startDate,
             estimatedEndDate: endDate,
             group: type == "group" ? groupId : undefined,
-            type
+            type,
+            githubLink,
+            projectLink
            
            }   
         }).then(()=>{
@@ -45,7 +49,7 @@ function AddProjectModule({groupId, refreshFunc, type}: {groupId?:string;
         <DialogTrigger asChild>
           <Button className="my-4 w-full ">Add Project</Button>
         </DialogTrigger>
-        <DialogContent className="max-w-[40vw]">
+        <DialogContent className="md:max-w-[40vw]">
           <DialogTitle>Add Project</DialogTitle>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
@@ -79,7 +83,7 @@ function AddProjectModule({groupId, refreshFunc, type}: {groupId?:string;
               </div>
             </div>
             
-            <div className="grid grid-cols-2 gap-3">
+            <div className="flex justify-around">
               <div className="flex items-center gap-2">
               <label className="text-" htmlFor="startDate">
                 Start Date
@@ -91,8 +95,8 @@ function AddProjectModule({groupId, refreshFunc, type}: {groupId?:string;
                 value={startDate}
                 onChange={(e)=>setStartDate(e.target.value)}
                 />
-            <Separator orientation="vertical"/>
             </div>
+            <Separator orientation="vertical"/>
               <div className="flex items-center gap-2">
               <label className="text-md" htmlFor="estendDate">
                   End Date <span className="text-xs">(estimated)</span>
@@ -104,7 +108,37 @@ function AddProjectModule({groupId, refreshFunc, type}: {groupId?:string;
                 onChange={(e)=>setEndDate(e.target.value)}
                 />
             </div>
+
           </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+              <label className="text-" htmlFor="github">
+                GitHub Link
+              </label>
+              <div className="col-span-3">
+              <Input
+                id="github"
+                value={githubLink}
+                onChange={(e)=>setGithubLink(e.target.value)}
+                type="text"
+                placeholder="Project GitHub Link (Optional)"
+              />
+              </div>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+              <label className="text-" htmlFor="projectlink">
+                Project Link
+              </label>
+              <div className="col-span-3">
+              <Input
+                id="projectlink"
+                value={projectLink}
+                onChange={(e)=>setProjectLink(e.target.value)}
+                type="text"
+                placeholder="Project Live Link (Optional)"
+              />
+              </div>
+          </div>
+          
           </div>
           <Button className="w-full"
           onClick={()=>{
