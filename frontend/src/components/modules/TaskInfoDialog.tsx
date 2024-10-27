@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import UpdateTaskModal from "./UpdateTaskModal"
 import { toast } from "react-toastify"
+import { Link } from "react-router-dom"
 function TaskInfoDialog({task, admin, setOpen, refreshFunction}:{task:any, admin:boolean, setOpen:(value: boolean)=>void, refreshFunction:()=>void}) 
 {
     const [taskStatus, setTaskStatus] = useState(task.status)
@@ -54,7 +55,7 @@ function TaskInfoDialog({task, admin, setOpen, refreshFunction}:{task:any, admin
         <Separator className="my-2"/>
         <div>Assigned to: {
             task.assignedTo.map((user:any)=>(
-                <div key={user.id} className="text-sm">{user.username}</div>
+                <Link to={`/user/${user.username}`} key={user.id} className="text-sm block underline text-blue-500">{user.username}</Link>
             ))    
         }</div>
         <Separator className="my-2"/>

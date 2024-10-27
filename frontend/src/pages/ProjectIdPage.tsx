@@ -90,16 +90,23 @@ function ProjectIdPage() {
   
 const fetchProject = async () => {
   setLoading(true)
-  const data = await getProject({ projectId });
-  const myTaskRes = await getMyTasks({ projectId });
-  setMyTasks(myTaskRes.data.data);
-  const othersTaskRes = await getOthersTasks({projectId});
-  setOthersTasks(othersTaskRes.data.data);
-  const proj = data.data.data
-  setProject(proj);
-  if(proj.createdBy._id.toString() == user?._id.toString())
-    setAdmin(true)
-  setLoading(false)
+  try{
+    const data = await getProject({ projectId });
+    const myTaskRes = await getMyTasks({ projectId });
+    setMyTasks(myTaskRes.data.data);
+    const othersTaskRes = await getOthersTasks({projectId});
+    setOthersTasks(othersTaskRes.data.data);
+    const proj = data.data.data
+    setProject(proj);
+    if(proj.createdBy._id.toString() == user?._id.toString())
+      setAdmin(true)
+    setLoading(false)
+  }
+  catch{
+    toast("Sorry We Encountered some problem while fetching your project")
+    setLoading(false)
+  }
+
   
 };
   useEffect(() => {

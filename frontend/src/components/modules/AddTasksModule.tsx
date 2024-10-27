@@ -161,7 +161,30 @@ function AddTasksModule({members,
                         <div className="col-span-3">
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <Button variant="secondary" className='w-full'>Select Assignees</Button>
+                                    <div>
+
+                                    {taskAssignees.length == 0 && <Button variant="secondary" className='w-full'>Select Assignees</Button>}
+
+                                    {taskAssignees.length > 0 && <div className='w-full h-auto max-h-[80px] overflow-y-auto hover:bg-black'>
+                                        <div className="flex flex-col gap-2 md:flex-row p-2 md:flex-wrap md:gap-5 justify-start">
+                                            {taskAssignees.map((assignee:any) => {
+                                                return <div className="bg-muted p-2 w-fit flex gap-2">
+                                                    <div>
+                                                        <img src={members?.find((member) => member._id == assignee)?.profilePicture} alt="pfp" className='w-5 h-5 rounded-full' />
+                                                    </div>
+                                                    <div>
+                                                    {members?.find((member) => member._id == assignee)?.username}
+                                                    </div>
+                                                    <div className="ml-2 cursor-pointer" onClick={() => {
+                                                        setTaskAssignees(taskAssignees.filter((id:any) => id !== assignee))
+                                                    }}>
+                                                        x
+                                                    </div>
+                                                </div>
+                                            })}
+                                        </div>    
+                                    </div>}
+                                    </div>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent>
                                    
