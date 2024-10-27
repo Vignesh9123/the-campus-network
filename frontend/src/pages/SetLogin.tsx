@@ -13,13 +13,14 @@ const SetLogin = () => {
   useEffect(() => {
     console.log(refreshToken)
     if (accessToken) {
+      console.log("accessToken",accessToken)
+      localStorage.setItem('token', accessToken)
       getGoogleSignedInUser({accessToken})
       requestPermission().then(() => {
         navigate('/profile')
       })
     }
   }, [])
-  // eslint-disable-next-line react/jsx-no-useless-fragment
   return (
     <div>
       
