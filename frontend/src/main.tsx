@@ -8,14 +8,14 @@ import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer } from 'react-toastify'
 import { SocketProvider } from './context/SocketContext.tsx'
 import {NextUIProvider} from '@nextui-org/react'
-
+import { Analytics } from "@vercel/analytics/react"
 
 createRoot(document.getElementById('root')!).render(
 
     <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
         <BrowserRouter>
         <NextUIProvider>
-
+        <Analytics/>
       <AuthProvider>
         <SocketProvider>
         <App />

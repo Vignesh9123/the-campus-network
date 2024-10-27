@@ -140,11 +140,10 @@ export const SkeletonThree = () => {
 
 export const SkeletonTwo = () => {
   const images = [
-    "https://images.unsplash.com/photo-1517322048670-4fba75cbbb62?q=80&w=3000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://images.unsplash.com/photo-1573790387438-4da905039392?q=80&w=3425&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://images.unsplash.com/photo-1555400038-63f5ba517a47?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://images.unsplash.com/photo-1554931670-4ebfabf6e7a9?q=80&w=3387&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://images.unsplash.com/photo-1546484475-7f7bd55792da?q=80&w=2581&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "/the-narrator-fc-post.png",
+    "/rancho-post.png",
+    "/cooper-interstellar-post.png",
+    
   ];
 
   const imageVariants = {
@@ -160,9 +159,9 @@ export const SkeletonTwo = () => {
     },
   };
   return (
-    <div className="relative flex flex-col items-start p-8 gap-10 h-full overflow-hidden">
+    <div className="relative flex flex-col items-start md:justify-center p-8 gap-10 h-full overflow-hidden">
       {/* TODO */}
-      <div className="flex flex-row -ml-20">
+      <div className="flex flex-row md:flex-col -ml-20 md:mx-auto">
         {images.map((image, idx) => (
           <motion.div
             variants={imageVariants}
@@ -176,15 +175,14 @@ export const SkeletonTwo = () => {
           >
             <img
               src={image}
-              alt="bali images"
-              width="500"
-              height="500"
-              className="rounded-lg h-20 w-20 md:h-40 md:w-40 object-cover flex-shrink-0"
+              alt="post images"
+             
+              className="rounded-lg h-40 w-40 md:h-40 md:w-40 object-cover flex-shrink-0"
             />
           </motion.div>
         ))}
       </div>
-      <div className="flex flex-row">
+      {/* <div className="flex flex-row">
         {images.map((image, idx) => (
           <motion.div
             key={"images-second" + idx}
@@ -205,7 +203,7 @@ export const SkeletonTwo = () => {
             />
           </motion.div>
         ))}
-      </div>
+      </div> */}
 
       <div className="absolute left-0 z-[100] inset-y-0 w-20 bg-gradient-to-r from-white dark:from-black to-transparent  h-full pointer-events-none" />
       <div className="absolute right-0 z-[100] inset-y-0 w-20 bg-gradient-to-l from-white dark:from-black  to-transparent h-full pointer-events-none" />
