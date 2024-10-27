@@ -9,6 +9,7 @@ import { ToastContainer } from 'react-toastify'
 import { SocketProvider } from './context/SocketContext.tsx'
 import {NextUIProvider} from '@nextui-org/react'
 import { Analytics } from "@vercel/analytics/react"
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 createRoot(document.getElementById('root')!).render(
 
@@ -16,6 +17,7 @@ createRoot(document.getElementById('root')!).render(
         <BrowserRouter>
         <NextUIProvider>
         <Analytics/>
+        <SpeedInsights />
       <AuthProvider>
         <SocketProvider>
         <App />
