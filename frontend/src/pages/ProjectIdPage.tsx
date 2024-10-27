@@ -271,7 +271,6 @@ const fetchProject = async () => {
       <AccordionItem value="yourTasks">
         <AccordionTrigger className="text-xl font-semibold">Your Tasks</AccordionTrigger>
         <AccordionContent>
-          {/* Filters */}
           <div className="flex justify-between">
 
          <div className="flex gap-5">
@@ -331,7 +330,9 @@ const fetchProject = async () => {
        <div>Due Date</div>
     </div>
     <div className="max-h-[50vh] overflow-y-auto">
-    {
+      {filteredMyTasks.length == 0 && <div className="text-center text-xl font-semibold text-muted-foreground">No Tasks Found</div>}
+    {filteredMyTasks.length > 0 &&
+    
       filteredMyTasks.map((task) => (
         <TaskTableRow admin={admin} task={task} key={task._id} refreshFunction={fetchProject} />
     ))}
@@ -405,7 +406,10 @@ const fetchProject = async () => {
        <div>Due Date</div>
     </div>
     <div className="max-h-[50vh] overflow-y-auto">
-    {
+
+      {filteredOthersTasks.length == 0 && <div className="text-center text-xl font-semibold text-muted-foreground">No Tasks Found</div>}
+    {filteredOthersTasks.length > 0 &&
+
       filteredOthersTasks.map((task) => (
         <TaskTableRow admin={admin} task={task} key={task._id} refreshFunction={fetchProject}/>
     ))}

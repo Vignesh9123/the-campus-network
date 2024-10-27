@@ -93,8 +93,15 @@ const exitFromGroup = asyncHandler(async (req, res) => {
     }
     group.members = group.members.filter(member => member.toString() !== req.user._id.toString())
     await group.save()
-    await Task.deleteMany({
-        
+    group.projects.forEach(async(project) => {
+        await Task.deleteMany({
+            project: project._id,
+            assignedTo: { $size: 1, $eq: [req.user._id] }
+        });
+        await Task.updateMany(
+            { project: project._id, assignedTo: { $in: [req.user._id] } },
+            { $pull: { assignedTo: req.user._id } }
+        );    
     })
     const user = await User.findByIdAndUpdate(req.user._id, {$pull: {groups: group._id}}, {new: true})
     .select('-password -refreshToken')
@@ -217,8 +224,7 @@ const removeFromGroup = asyncHandler(async (req, res) => {
                 assignedTo: { $size: 1, $eq: [userId] }
             });
             await Task.updateMany(
-                { project: project._id },
-                { assignedTo: userId },
+                { project: project._id, assignedTo: userId},
                 { $pull: { assignedTo: userId } }
             );    
         })

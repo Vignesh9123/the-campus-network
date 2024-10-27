@@ -45,6 +45,7 @@ const addProject = asyncHandler(async (req, res) => {
         startDate,
         estimatedEndDate,
         group,
+        type : "group",
         createdBy: req.user._id
     })
 
