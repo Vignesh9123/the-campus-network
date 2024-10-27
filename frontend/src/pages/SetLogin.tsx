@@ -8,12 +8,9 @@ const SetLogin = () => {
   const navigate = useNavigate()
   const { getGoogleSignedInUser } = useAuth()
   const queryParameters = new URLSearchParams(window.location.search)
-  const refreshToken = queryParameters.get('refresh-token')
   const accessToken = queryParameters.get('access-token')
   useEffect(() => {
-    console.log(refreshToken)
     if (accessToken) {
-      console.log("accessToken",accessToken)
       localStorage.setItem('token', accessToken)
       getGoogleSignedInUser({accessToken})
       requestPermission().then(() => {
