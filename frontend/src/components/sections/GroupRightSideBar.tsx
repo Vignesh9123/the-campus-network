@@ -2,22 +2,35 @@ import { useEffect, useState } from "react"
 import { Input } from "../ui/input"
 import {FaUserFriends} from  'react-icons/fa'
 import { Button } from "../ui/button"
-import { getGroup } from "@/api"
+import {  getGroupForVisitors, requestToJoinGroup } from "@/api"
+import { useAuth } from "@/context/AuthContext"
 
 function GroupRightSideBar() {
     const [group, setGroup] = useState<any>([])
     const [search, setSearch] = useState('')
     const [loading, setLoading] = useState(false)
-    
+    const [requested, setRequested] = useState(false)
+    const {user} = useAuth()    
     useEffect(() => {
         const fetchGroups = async () => {
             setLoading(true)
-            const data = await getGroup({groupId:search})
+            const data = await getGroupForVisitors({groupId:search})
             setGroup(data.data.data)
+            if(data.data.data.joinRequests.includes(user?._id)){
+                setRequested(true)
+            }
             setLoading(false)
         }
         fetchGroups()
     }, [search])
+    const handleRequestClick = (groupId:string)=>{
+      if(group.joinRequests.includes(user?._id)){
+        return
+      }
+      requestToJoinGroup({groupId}).then(()=>{
+        setRequested(true)
+      })
+    }
     useEffect(
         () => {
             console.log(group)
@@ -47,7 +60,11 @@ function GroupRightSideBar() {
                   <div className="text-gray-600 flex m-1 justify-end dark:text-gray-400">
                     <FaUserFriends className="w-6 h-6" />
                   </div>
-                  <Button variant="secondary" className="text-xs">Send Request</Button>
+                  {!group.members.some((member: any) => member._id === user?._id) && (
+  <Button onClick={()=>handleRequestClick(group._id)} variant={requested ? "outline" : "default"} className="text-xs">
+    {requested ? "Request Sent" : "Send Request"}
+  </Button>
+)}
                 </div>
 
 

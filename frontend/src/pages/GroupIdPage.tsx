@@ -4,7 +4,7 @@ import { useAuth } from "@/context/AuthContext"
 import {acceptRequest, deleteGroup, getGroup,removeFromGroup,getGroupSuggestedPeople, addToGroup,exitFromGroup, rejectRequest} from '@/api'
 import { Link, useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import GroupAnnouncements from "../components/sections/GroupAnnouncements";
+// import GroupAnnouncements from "../components/sections/GroupAnnouncements";
 import PostSkeletonLoader from "@/components/modules/Posts/PostSkeletonLoader";
 import { Check, X } from "lucide-react";
 import AddProjectModule from "@/components/modules/AddProjectModule";
@@ -37,7 +37,7 @@ function GroupIdPage() {
     const [group, setGroup] = useState<any>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [selectedTab, setSelectedTab] = useState(urlTab || "Announcements");
+    const [selectedTab, setSelectedTab] = useState(urlTab || "Projects");
     const [admin, setAdmin] = useState(false);
     const [joinRequests,setJoinRequests] = useState([]);
     const [suggestedPeople, setSuggestedPeople] = useState([])
@@ -219,7 +219,7 @@ function GroupIdPage() {
       {/* Group Tabs */}
       <div className="group-tabs bg-gray-200 sticky top-0 z-[9999] dark:bg-gray-700 text-gray-800 dark:text-gray-200">
         <ul className="md:flex grid grid-cols-2 justify-center md:gap-6">
-          <li className={`cursor-pointer hover:text-blue-500 duration-150 p-2 md:px-4 m-2 ${
+          {/* <li className={`cursor-pointer hover:text-blue-500 duration-150 p-2 md:px-4 m-2 ${
             selectedTab === "Announcements" && "bg-muted  font-bold hover:text-gray-500"
           }`}
           onClick={() =>{
@@ -230,7 +230,7 @@ function GroupIdPage() {
             }
           }
           }
-          >Announcements</li>
+          >Announcements</li> */}
           <li className={`cursor-pointer hover:text-blue-500 duration-150 p-2  md:px-4 m-2
             ${selectedTab === "Projects" && "bg-muted hover:text-gray-500 font-bold"}
           `}
@@ -260,9 +260,16 @@ function GroupIdPage() {
             setSelectedTab("Settings")
           }}
           >Settings</li>}
+          {(group.admin._id == user._id) && <li className={`cursor-pointer hover:text-blue-500 duration-150 p-2  md:px-4 m-2
+            ${selectedTab === "Join Requests" && "bg-muted hover:text-gray-500 font-bold"}
+          `}
+          onClick={()=>{
+            setSelectedTab("Join Requests")
+          }}
+          >Join Requests {joinRequests.length > 0 && <span className="rounded-full inline-flex w-6 items-center justify-center bg-gray-500">{joinRequests.length}</span>}</li>}
         </ul>
       </div>
-      {selectedTab === "Announcements" && <GroupAnnouncements/>}
+      {/* {selectedTab === "Announcements" && <GroupAnnouncements/>} */}
       {selectedTab === "Projects" && <div className="group-projects p-4">
         {/* Project Cards */}
         {group.projects.length == 0 && 
@@ -348,14 +355,11 @@ function GroupIdPage() {
         {/* Settings Form */}
         <GroupSettings group={group} refreshFunc={fetchGroup}/>
       </div>}
-
-    </div>}
-        </div>
-        <div className="md:w-[25%] hidden md:block  h-screen">
+      {selectedTab === "Join Requests" && <div className="group-settings p-4">
+        {/* Settings Form */}
         {admin &&
         <div className="min-h-[40vh] max-h-[40vh] overflow-y-auto"> 
         <div className="m-3 text-lg font-bold">
-          Join Requests
           </div>
           {joinRequests.length == 0 &&
           <p className="text-center">No join requests</p>
@@ -409,8 +413,14 @@ function GroupIdPage() {
           </div>
 
           }
+      </div>}
+
+    </div>}
+        </div>
+        <div className="md:w-[25%] hidden md:block  h-screen">
+       
           {admin && <div>
-            <div className="m-3 text-lg font-bold">
+            <div className="m-3  text-lg font-bold">
           Suggested Members
 
           </div>

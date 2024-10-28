@@ -112,42 +112,7 @@ function Groups() {
       </div> */}
 
       {/* Suggested Groups */}
-      <div className="suggested-groups mt-12">
-        <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-200 mb-4">Suggested Groups</h2>
-        
-        {/* List of Suggested Groups */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-          {/* Example Group 1 */}
-          <div className="group-item bg-gray-100 dark:bg-gray-800 p-6 rounded shadow">
-           
-            <h3 className="text-xl text-gray-900 dark:text-gray-200 mb-2">Group Name 1</h3>
-            <p className="text-gray-700 dark:text-gray-300 mb-4">This is a brief description of the group.</p>
-            <Button className="">
-              Send Request
-            </Button>
-          </div>
-
-          {/* Example Group 2 */}
-          <div className="group-item bg-gray-100 dark:bg-gray-800 p-6 rounded shadow">
-            
-            <h3 className="text-xl text-gray-900 dark:text-gray-200 mb-2">Group Name 2</h3>
-            <p className="text-gray-700 dark:text-gray-300 mb-4">This is a brief description of the group.</p>
-             <Button className="">
-              Send Request
-            </Button>
-          </div>
-
-          {/* Example Group 3 */}
-          <div className="group-item bg-gray-100 dark:bg-gray-800 p-6 rounded shadow">
-            
-            <h3 className="text-xl text-gray-900 dark:text-gray-200 mb-2">Group Name 3</h3>
-            <p className="text-gray-700 dark:text-gray-300 mb-4">This is a brief description of the group.</p>
-            <Button className="">
-              Send Request
-            </Button>
-          </div>
-        </div>
-      </div>
+      
     </div>
         </div>
         <div className="hidden md:block md:w-[25%] h-screen">

@@ -6,6 +6,8 @@ import {User} from '../models/user.model.js'
 import { Project } from '../models/project.model.js'
 import { Task } from '../models/task.model.js'
 import {Chat} from '../models/chat.model.js'
+import {emitSocketEvent} from '../socket/index.js'
+import { ChatEventEnum } from '../constants.js'
 const createGroup = asyncHandler(async (req, res) => {
     const {name, description} = req.body
     if (!name) {
@@ -165,8 +167,8 @@ const acceptRequest = asyncHandler(async (req, res) => {
     await group.save()
     const user = await User.findByIdAndUpdate(userId, {$push: {groups: group._id}, $pull: {pendingGroupRequests: group._id}}, {new: true})
     .select('-password -refreshToken')
-    await Chat.findOneAndUpdate({group: groupId}, { $push: { participants: userId } }, {new: true})
-    //TODO: Inform user that chat has been added using socket
+    const chat = await Chat.findOneAndUpdate({group: groupId}, { $push: { participants: userId } }, {new: true})
+    emitSocketEvent(req, userId, ChatEventEnum.NEW_CHAT_EVENT, chat)
     return res.status(200).json(new ApiResponse(200, group, "Request accepted"))
 })
 
@@ -208,7 +210,8 @@ const addToGroup = asyncHandler(async (req, res) => {
     if (!group.members.includes(userId)) {
         group.members.push(userId)
         const chat = await Chat.findOneAndUpdate({group: groupId}, { $push: { participants: userId } }, {new: true})
-        //TODO: Inform user that chat has been added using socket
+        emitSocketEvent(req, userId, ChatEventEnum.NEW_CHAT_EVENT, chat)
+
         await group.save()
     }
 
