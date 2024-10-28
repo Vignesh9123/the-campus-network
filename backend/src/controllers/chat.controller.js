@@ -188,7 +188,8 @@ const createGroupChat = asyncHandler(async (req, res) => {
         isGroupChat: true,
         chatType: "group",
         name: group.name,
-        participants:members
+        participants:members,
+        group:groupId
         
 
     })

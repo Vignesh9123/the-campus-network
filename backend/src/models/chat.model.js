@@ -31,6 +31,13 @@ const chatSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
     },
+    group:{
+      type: Schema.Types.ObjectId,
+      ref: "Group",
+      required:function(){
+        return this.chatType==="group"
+      }
+    }
   },
   { timestamps: true }
 );

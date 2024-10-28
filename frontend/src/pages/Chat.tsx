@@ -53,8 +53,10 @@ function Chat() {
       navigator.clipboard.writeText(message)
     }
 
-    const handleViewProfile = (username:string)=>{
-      navigate(`/user/${username}`)
+    const handleViewProfile = (chatDetails:any)=>{
+      const requestedChat = chats.find((chat)=>chat._id == chatDetails._id)
+      const link = requestedChat.isGroupChat? `/groups/${requestedChat.group}` : `/user/${chatDetails.title}`
+      navigate(link)
     }
 
     const handleDeleteChat = (e:React.MouseEvent,chat:ChatInterface)=>{
@@ -236,6 +238,7 @@ function Chat() {
       .map(
         (chat:ChatInterface)=>{
           const chatDetails = getChatObjectMetadata(chat, user!)
+          console.log("chat Details",chatDetails)
           return(
             <div key={chat._id} onClick={()=>handleOnChatClick(chat)} className={`border-b max-w-full  cursor-pointer hover:bg-muted p-3 ${currentChat.current?._id == chat._id ? 'bg-muted' : unreadMessages.filter((m)=>m.chat == chat._id).length > 0 ? 'bg-green-800' : 'bg-transparent' } }`}>
               <div className="flex justify-between items-center w-full px-3">
@@ -255,7 +258,7 @@ function Chat() {
                 <EllipsisVertical className='min-w-fit'/>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem onClick={()=>handleViewProfile(chatDetails?.title!)}>View Profile</DropdownMenuItem>
+                <DropdownMenuItem onClick={()=>handleViewProfile(chatDetails)}>View Profile</DropdownMenuItem>
                 <DropdownMenuSeparator />
                
                 <DropdownMenuItem onClick={(e)=>handleDeleteChat(e,chat)}>Delete</DropdownMenuItem>
@@ -287,7 +290,7 @@ function Chat() {
               <img src={getChatObjectMetadata(currentChat.current, user!)?.profilePicture} className='w-10 h-10  rounded-full' alt="User profile Picture" />
             </div>
             <div className='max-w-[70%]'>
-              <Link to={`/user/${getChatObjectMetadata(currentChat.current, user!)?.title}`} className='font-bold hover:underline'>{getChatObjectMetadata(currentChat.current, user!)?.title}</Link>
+              <Link to={currentChat?.current?.isGroupChat ? `/groups/${currentChat.current.group}` : `/user/${getChatObjectMetadata(currentChat.current, user!)?.title}`} className='font-bold hover:underline'>{getChatObjectMetadata(currentChat.current, user!)?.title}</Link>
             </div>
            
           </div>}

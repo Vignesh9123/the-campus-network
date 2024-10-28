@@ -72,15 +72,14 @@ const lastMessage = lastMessageDetails
     if (chat.isGroupChat) {
       // Case: Group chat
       // Return metadata specific to group chats.
-      // return {
-      //   // Default avatar for group chats.
-      //   avatar: "https://via.placeholder.com/100x100.png",
-      //   title: chat.name, // Group name serves as the title.
-      //   description: `${chat.participants.length} members in the chat`, // Description indicates the number of members.
-      //   lastMessage: chat.lastMessage
-      //     ? chat.lastMessage?.sender?.username + ": " + lastMessage
-      //     : lastMessage,
-      // };
+      return {
+        // Default avatar for group chats.
+        profilePicture: "https://res.cloudinary.com/dxygc9jz4/image/upload/t_color-white/enifyimlrv3farvfto8k.jpg",
+        title: chat.name, // Group name serves as the title.
+        description: `${chat.participants.length} members in the chat`, // Description indicates the number of members.
+        lastMessage: lastMessage,
+        _id: chat._id
+      };
     } else {
       // Case: Individual chat
       // Identify the participant other than the logged-in user.
@@ -93,6 +92,7 @@ const lastMessage = lastMessageDetails
         title: participant?.username, // Participant's username serves as the title.
         description: participant?.email, // Email address of the participant.
         lastMessage,
+        _id: chat._id
       };
     }
   };

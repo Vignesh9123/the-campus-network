@@ -24,6 +24,7 @@ export interface CommentInterface{
 
 export interface ChatInterface{
     _id:string;
+    name:string;
     lastMessage?:string;
     lastMessageDetails?:ChatMessageInterface[];
     participants:UserInterface[];
@@ -31,8 +32,8 @@ export interface ChatInterface{
     updatedAt?:Date;
     admin:string;
     chatType:"one2one"|"group";
-    isGroupChat?:boolean
-
+    isGroupChat?:boolean;
+    group?:string;
 }
 
 export interface ChatMessageInterface{
