@@ -131,12 +131,15 @@ function PostComments() {
                 <div className="fixed bottom-0 w-[85vw] md:w-auto md:left-1/4 md:right-1/4 bg-muted px-4 py-3 border-t">
                     <div className="flex items-center gap-2">
                         <img src={user?.profilePicture} className="w-8 h-8 rounded-full" alt={user?.username} />
+                        <div className="w-full">
+
                         <Input 
                             value={comment} 
                             onChange={(e) => setComment(e.target.value)} 
-                            className="flex-1 lg:w-[350px] xl:w-[500px]" 
+                            className="flex-1 w-full " 
                             placeholder="Add a comment..." 
-                        />
+                            />
+                        </div>
                         <Button onClick={handleAddComment} disabled={commentLoading
                             || !comment.trim()
                         }>

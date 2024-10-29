@@ -198,6 +198,7 @@ function Chat() {
             socket.on(ChatEventEnums.CONNECTED_EVENT,()=>{console.log('connected')})
             socket.on(ChatEventEnums.DISCONNECT_EVENT, ()=>{console.log('disconnected')})
             socket.on(ChatEventEnums.NEW_CHAT_EVENT, (data)=>{
+              console.log("New Chat",data) //TODO
                 setChats([data, ...chats])
             })
             socket.on(ChatEventEnums.MESSAGE_RECEIVED_EVENT, handleReceiveMessage)

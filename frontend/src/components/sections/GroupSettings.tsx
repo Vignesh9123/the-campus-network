@@ -126,13 +126,13 @@ function GroupSettings({group, refreshFunc}:{group:any, refreshFunc:()=>void}) {
                 <div className='flex flex-col gap-3'>
                {group.members.map((member:any)=>{
                    return(
-                       <div key={member._id} className='flex border-b pb-2 items-center justify-between gap-4'>
+                       <div key={member._id} className='flex border-b pb-2 items-center justify-between md:gap-4'>
                            <div className="flex items-center gap-4">
-                                <img className='h-12 w-12 rounded-full' src={member.profilePicture} alt="profile pic"/>
+                                <img className='w-8 h-8 md:h-12 md:w-12 rounded-full' src={member.profilePicture} alt="profile pic"/>
 
                                 <div>
                                     <p>{member.username}</p>
-                                    <p>{member.email}</p>
+                                    <p className='text-xs text-muted-foreground overflow-ellipsis break-words'>({member.college.split('(')[1]}</p>
                                 </div>
                            </div>
                            <div className="flex gap-4">

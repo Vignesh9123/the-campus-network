@@ -185,7 +185,7 @@ const Profile = () => {
                             <img src={follower.profilePicture} className="w-10 h-10 rounded-full" alt="" />
                             <div className="flex flex-col">
                               <div className="font-bold">{follower.username}</div>
-                              <div className="text-sm text-muted-foreground">{follower.email}</div>
+                              <div className="text-sm text-muted-foreground line-clamp-1">{follower.college}</div>
                             </div>
                           </div>
                         ))
@@ -220,7 +220,7 @@ const Profile = () => {
                             <img src={follow.profilePicture} className="w-10 h-10 rounded-full" alt="" />
                             <div className="flex flex-col">
                               <div className="font-bold">{follow.username}</div>
-                              <div className="text-sm text-muted-foreground">{follow.email}</div>
+                              <div className="text-sm text-muted-foreground line-clamp-1">{follow.college}</div>
                             </div>
                           </div>
                         ))
@@ -368,12 +368,16 @@ const Profile = () => {
                 (user:any, index) => (
                 <div key={index} className="accountCard flex items-center justify-between gap-1 p-3 h-14 w-[95%] mx-auto border-y-[1px]">
                 <div className="flex items-center gap-1">
-                    <div>
-                      <img src={user.profilePicture} className="w-10 h-10 rounded-full " alt="" />
+                    <div className="min-w-fit">
+                      <img src={user.profilePicture} className="w-10  h-10 rounded-full " alt="" />
                     </div>
-                    <Link  to={`/user/${user.username}`} className="font-semibold hover:underline">
+                    <div>
+
+                    <Link  to={`/user/${user.username}`} className="font-semibold overflow-ellipsis hover:underline">
                       {user.username}
                     </Link>
+                    <p className="text-xs text-muted-foreground">{user.college?.split('(')[1]?'('+user.college?.split('(')[1]:user.college}</p>
+                    </div>
                 </div>
                     <FollowButton userIdToFollow={user._id} className="h-3/4"/>
               </div>

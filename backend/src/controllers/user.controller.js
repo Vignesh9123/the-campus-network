@@ -326,7 +326,7 @@ const getUserFollowers = asyncHandler(async(req, res)=>{
   }
   const user = await User.findOne({username}).select("followers").populate({
     path: "followers",
-    select: "username email profilePicture"
+    select: "username email profilePicture college engineeringDomain"
   });
   const followers = user?.followers || [];
   return res
@@ -340,7 +340,7 @@ const getUserFollowing = asyncHandler(async(req, res)=>{
   }
   const user = await User.findOne({username}).select("following").populate({
     path: "following",
-    select: "username email profilePicture"
+    select: "username email profilePicture college engineeringDomain"
   });
   const following = user?.following || [];
   return res
@@ -355,7 +355,7 @@ const getAccountRecommendations = asyncHandler(async(req, res)=>{
   const following = user?.following || [];
   const users = await User.find({
     _id: {$nin: [req.user?._id, ...followers, ...following]}
-  }).select("username email profilePicture")
+  }).select("username email profilePicture college engineeringDomain")
   .limit(5);
   return res
   .status(200)
@@ -453,7 +453,6 @@ const forgotPassword = asyncHandler(async(req, res)=>{
 const resetPassword = asyncHandler(async(req, res)=>{
   const {resetToken} = req.params;
   const {password} = req.body;
-  console.log("reset:",resetToken, password);
   const user = await User.findOne({
     passwordResetToken: resetToken,
   });

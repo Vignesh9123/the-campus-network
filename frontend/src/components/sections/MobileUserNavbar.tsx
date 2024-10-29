@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import {Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
-import {Menu,Compass, Search, User,Settings,MessageCircle, Bell } from 'lucide-react'
+import {Menu,Compass, Search, User,Settings,MessageCircle } from 'lucide-react'
 import AccountDropdown from "@/components/modules/AccountDropdown";
 import { FaUsers } from "react-icons/fa";
 
@@ -95,7 +95,7 @@ function MobileUserNavbar({ scrollableDiv }: { scrollableDiv: React.RefObject<HT
                 <MessageCircle strokeWidth={pathname === "/chat" ? 4 : 2} className="text-2xl md:mx-0" />
                 <div>Chats</div>
               </Link>
-              <Link
+              {/* <Link
                 to="/notifications"
                 className={`hover:bg-muted flex gap-2 items-center text-lg p-3 ${
                   pathname === "/notifications" ? "bg-muted text-xl font-bold" : ""
@@ -103,7 +103,7 @@ function MobileUserNavbar({ scrollableDiv }: { scrollableDiv: React.RefObject<HT
               >
                 <Bell className="md:mx-0" strokeWidth={pathname === "/notifications" ? 4 : 3} />
                 <div>Notifications</div>
-              </Link>
+              </Link> */}
               <Link
                 to="/profile"
                 className={`hover:bg-muted flex gap-2 items-center text-lg p-3 ${

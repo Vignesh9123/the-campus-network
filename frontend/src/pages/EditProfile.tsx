@@ -142,7 +142,7 @@ function EditProfile() {
           <div className="hidden md:block md:w-1/4 border-0 border-r-[1px] h-screen">
             <ProfileSideBar />
           </div>
-          <div ref={scrollableDiv} className=" md:w-3/4 overflow-y-scroll scrollbar-hide border-0 border-r-[1px] h-screen">
+          <div ref={scrollableDiv} className="w-full md:w-3/4 overflow-y-scroll scrollbar-hide border-0 border-r-[1px] h-screen">
           <MobileUserNavbar scrollableDiv={scrollableDiv}/>
             <div className="flex border-0 border-b">
               <Link to='/profile'

@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react"
 import ProfileSideBar from "@/components/sections/ProfileSideBar"
-import { useAuth } from "@/context/AuthContext"
-import {acceptRequest, deleteGroup, getGroup,removeFromGroup,getGroupSuggestedPeople, addToGroup,exitFromGroup, rejectRequest} from '@/api'
+import { useAuth, UserInterface } from "@/context/AuthContext"
+import {acceptRequest, deleteGroup, getGroup,removeFromGroup,getGroupSuggestedPeople, addToGroup,exitFromGroup, rejectRequest, getFollowers, getFollowing} from '@/api'
 import { Link, useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 // import GroupAnnouncements from "../components/sections/GroupAnnouncements";
@@ -9,7 +9,6 @@ import PostSkeletonLoader from "@/components/modules/Posts/PostSkeletonLoader";
 import { Check, X } from "lucide-react";
 import AddProjectModule from "@/components/modules/AddProjectModule";
 import { 
-
     AlertDialog,
     AlertDialogAction,
     AlertDialogCancel,
@@ -24,6 +23,8 @@ import { toast } from "react-toastify";
 import {RWebShare} from 'react-web-share'
 import GroupSettings from "@/components/sections/GroupSettings";
 import MobileUserNavbar from "@/components/sections/MobileUserNavbar";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 
 function GroupIdPage() {
     const {groupId} = useParams()
@@ -41,9 +42,12 @@ function GroupIdPage() {
     const [admin, setAdmin] = useState(false);
     const [joinRequests,setJoinRequests] = useState([]);
     const [suggestedPeople, setSuggestedPeople] = useState([])
-    
+    const [followers, setFollowers] = useState([])
+    const [following, setFollowing] = useState([])
+    const [membersToAdd, setMembersToAdd] = useState<any>([])
     const scrollableDivRef = useRef<HTMLDivElement>(null);
-
+    const [addMembersDialogOpen, setAddMembersDialogOpen] = useState(false)
+    const [addMembersQuery, setAddMembersQuery] = useState("")
     const scrollToTop = ()=>{
         if(scrollableDivRef.current){
             scrollableDivRef.current.scrollTo(
@@ -55,8 +59,10 @@ function GroupIdPage() {
             )
         }
     }
+
     const fetchGroup = async () => {
       setLoading(true);
+      setGroup(null);
       try {
           const data = await getGroup({groupId});
           const grp = data.data.data
@@ -71,7 +77,8 @@ function GroupIdPage() {
             if(user?._id == grp.admin._id){
               setAdmin(true)
               setJoinRequests(grp.joinRequests)
-              
+              setFollowers((await getFollowers({username:user?.username})).data.data)
+              setFollowing((await getFollowing({username:user?.username})).data.data)
             }
             else{
               setAdmin(false)
@@ -112,6 +119,16 @@ function GroupIdPage() {
     useEffect(()=>{
       fetchSuggestedPeople()
     },[admin])
+    useEffect(()=>{
+      setMembersToAdd(
+        followers.filter((follower: any) =>
+          following.some((followingUser: any) => followingUser._id === follower._id) &&
+          !group.members.some((member: any) => member._id === follower._id)
+        )
+      );
+      
+      
+    },[admin, followers, following])
   return (
    <div>
       {user && <div className='flex'>
@@ -135,10 +152,10 @@ function GroupIdPage() {
 
         <div className="group-stats flex justify-center gap-4 mt-4 text-gray-700 dark:text-gray-300">
           <span>Members: {group.members.length}</span>
-          <span>Posts: {group.posts.length}</span>
+          {/* <span>Posts: {group.posts.length}</span> */}
           <span>Projects: {group.projects.length}</span>
         </div>
-            <div className="flex justify-center items-center gap-2 md:gap-5">
+            <div className="grid grid-cols-2 md:flex justify-center items-center gap-5">
           
           <AlertDialog>
             <AlertDialogTrigger >
@@ -207,10 +224,44 @@ function GroupIdPage() {
             }}
 
           >
-            <Button variant={"default"} className="mt-6 ml-2">
+            <Button variant={"default"} className="w-fit mx-auto md:w-auto md:mt-6 md:ml-2 md:mr-2">
               Share Group
             </Button>
           </RWebShare>
+         {admin && <div>
+            <Dialog open={addMembersDialogOpen} onOpenChange={setAddMembersDialogOpen}>
+            <DialogTrigger>
+
+            <Button variant={"outline"} className="md:mt-6">Add Members</Button>
+            </DialogTrigger>
+
+            <DialogContent>
+               <DialogHeader>
+                 <DialogTitle>Add Members to {group.name}</DialogTitle>
+                 <DialogDescription>You should be following the member and they should be following you to add them to the group</DialogDescription>
+               </DialogHeader>
+               <Input placeholder="Search..." value={addMembersQuery} onChange={(e)=>setAddMembersQuery(e.target.value)}/>
+               <div className="flex flex-col gap-4 max-h-[40vh] overflow-auto justify-between items-center">
+               {membersToAdd.filter((member:UserInterface)=>member.username.toLowerCase().includes(addMembersQuery.toLowerCase())).map((member:UserInterface)=>(
+                 <div className="flex justify-between w-[95%] items-center">
+                   <div className="flex gap-2 justify-between items-center">
+                   <img src={member.profilePicture} className="w-10 h-10 rounded-full"/>
+                   <span>{member.username}</span>
+                   </div>
+                   <Button onClick={()=>{
+                     addToGroup({groupId,userId:member._id}).then(()=>{
+                       toast.success("Successfully added member to group")
+                       setAddMembersDialogOpen(false)
+                     })
+                   }}
+                   >Add</Button>
+                 </div>
+               ))}
+               </div>
+
+            </DialogContent>
+            </Dialog>
+          </div>}
 
         
             </div>

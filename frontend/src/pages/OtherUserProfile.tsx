@@ -27,7 +27,7 @@ function OtherUserProfile() {
     const navigate = useNavigate()
     const {username} = useParams()
     const [otherUser,setOtherUser] = useState<any>(null)
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [showPreview, setShowPreview] = useState(false);
     const [posts,setPosts] = useState<any>([])
     const {user} = useAuth()
@@ -147,7 +147,7 @@ function OtherUserProfile() {
                             <img src={follower.profilePicture} className="w-10 h-10 rounded-full" alt="" />
                             <div className="flex flex-col">
                               <div className="font-bold">{follower.username}</div>
-                              <div className="text-sm text-muted-foreground">{follower.email}</div>
+                              <div className="text-sm text-muted-foreground line-clamp-1">{follower.college}</div>
                             </div>
                           </div>
                         ))
@@ -194,7 +194,7 @@ function OtherUserProfile() {
                             <img src={follow.profilePicture} className="w-10 h-10 rounded-full" alt="" />
                             <div className="flex flex-col">
                               <div className="font-bold">{follow.username}</div>
-                              <div className="text-sm text-muted-foreground">{follow.email}</div>
+                              <div className="text-sm text-muted-foreground line-clamp-1">{follow.college}</div>
                             </div>
                           </div>
                         ))

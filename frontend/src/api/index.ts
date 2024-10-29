@@ -81,6 +81,9 @@ const searchUser = (data:{query:string})=>{
 const getUserProfile = (data:{username:string | undefined}) =>{
   return apiClient.get(`/users/u=${data.username}`)
 }
+const resetPassword = (data:{token:string, password:string})=>{
+  return apiClient.post(`/users/reset-password/${data.token}`, {password:data.password})
+}
 const refreshToken = () => {
     return apiClient.post("/users/refresh-token");
 };
@@ -300,5 +303,5 @@ const deleteChat = (data:{chatId:string | undefined})=>{
 export {refreshToken, loginUser,checkToken, registerUser, logoutUser ,getAccountsToFollow,changePassword,forgotPassword, getCurrentUser, checkUsernameUnique, createPost,createRepost ,updateAccountDetails,addPersonalDetails, updateProfilePicture,getUserPosts,searchUser, getUserProfile,followOrUnfollow, searchPost,getFollowers, getFollowing, likePost, getUserFeed, addComment,deleteComment,getCommentsbyPost,getPost,
   createGroup, getGroup, acceptRequest, addToGroup, deleteGroup, exitFromGroup, isGroupNameUnique, rejectRequest, removeFromGroup, requestToJoinGroup,deletePost,
   addProject, getGroupProjects, getMyProjects, getProject, updateProject, updateProjectStatus, deleteProject,
-  createTask, getTask, updateTask, updateTaskStatus, deleteTask,getMyGroups,getMyTasks,getOthersTasks,sendNotification,storeDeviceToken,sendNotificationToUser,getGroupSuggestedPeople,getGroupForVisitors,getMyIndividualProjects, updateGroupDetails, changeGroupAdmin, getLikedUsers, getRepostedUsers,getAllChats, createOrGetOneToOneChat, sendMessage,getAllMessages, deleteMessage, deleteChat
+  createTask, getTask, updateTask, updateTaskStatus, deleteTask,getMyGroups,getMyTasks,getOthersTasks,sendNotification,storeDeviceToken,sendNotificationToUser,getGroupSuggestedPeople,getGroupForVisitors,getMyIndividualProjects, updateGroupDetails, changeGroupAdmin, getLikedUsers, getRepostedUsers,getAllChats, createOrGetOneToOneChat, sendMessage,getAllMessages, deleteMessage, deleteChat, resetPassword
   }

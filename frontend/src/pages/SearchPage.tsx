@@ -62,10 +62,10 @@ function SearchPage() {
                 Posts
               </button>
             </div>}
-            {selectedTab === 'users' && searched && !userSearchResults[0] && <div className='text-center m-10 text-lg font-bold'>
+            {selectedTab === 'users' && searched && !loading && !userSearchResults[0] && <div className='text-center m-10 text-lg font-bold'>
               No results found
               </div>}
-            {selectedTab === 'users' && userSearchResults.length > 0 && (
+            {selectedTab === 'users' && !loading && userSearchResults.length > 0 && (
               <div>
               
                 {userSearchResults[0] && userSearchResults.map((result: any) => {

@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom'
-import {Compass, Search, User,Settings,MessageCircle, Bell} from 'lucide-react'
+import {Compass, Search,Settings,MessageCircle, } from 'lucide-react'
 import { FaUsers } from "react-icons/fa";
 import LogoutButton from '../modules/LogoutButton';
+import { useAuth } from '@/context/AuthContext';
 
 const ProfileSideBar = () => {
+  const {user} = useAuth()
   const {pathname} = window.location
   return (
     <div className='flex flex-col gap-3 max-h-screen'>
@@ -31,10 +33,10 @@ const ProfileSideBar = () => {
         <MessageCircle strokeWidth={pathname=='/chat'?4:2} className='text-2xl mx-auto md:mx-0'/>
         <div className='hidden md:block'>Chats</div>
       </Link>
-      <Link to='/notifications' className={`hover:bg-muted flex gap-2 items-center text-lg p-3 ${pathname === '/notifications' ? 'bg-muted text-xl font-bold' : ''}`}>
+      {/* <Link to='/notifications' className={`hover:bg-muted flex gap-2 items-center text-lg p-3 ${pathname === '/notifications' ? 'bg-muted text-xl font-bold' : ''}`}>
         <Bell className='mx-auto md:mx-0' strokeWidth={pathname=='/notifications'?4:3}/>
         <div className='hidden md:block'>Notifications</div>
-      </Link>
+      </Link> */}
 
       {/* <Link to='/create' className={`hover:bg-muted flex gap-2 items-center text-lg p-3 ${pathname === '/create' ? 'bg-muted text-xl font-bold' : ''}`}>
         <Plus className='mx-auto md:mx-0' strokeWidth={pathname=='/create'?4:3}/>
@@ -42,7 +44,7 @@ const ProfileSideBar = () => {
       </Link> */}
 
       <Link to='/profile' className={`hover:bg-muted flex gap-2 items-center text-lg p-3 ${pathname === '/profile' ? 'bg-muted text-xl font-bold' : ''}`}>
-        <User className='mx-auto md:mx-0' strokeWidth={pathname=='/profile'?4:3}/>
+        <img src={user?.profilePicture} className='w-8 h-8 mx-auto md:mx-0 rounded-full' alt="" />
         <div className='hidden md:block'>Profile</div>
       </Link>
       <Link to='/settings' className={`hover:bg-muted flex gap-2 items-center text-lg p-3 ${pathname === '/settings' ? 'bg-muted text-xl font-bold' : ''}`}>

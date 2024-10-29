@@ -8,6 +8,7 @@ import { Task } from '../models/task.model.js'
 import {Chat} from '../models/chat.model.js'
 import {emitSocketEvent} from '../socket/index.js'
 import { ChatEventEnum } from '../constants.js'
+import mongoose from 'mongoose'
 const createGroup = asyncHandler(async (req, res) => {
     const {name, description} = req.body
     if (!name) {
@@ -168,7 +169,7 @@ const acceptRequest = asyncHandler(async (req, res) => {
     const user = await User.findByIdAndUpdate(userId, {$push: {groups: group._id}, $pull: {pendingGroupRequests: group._id}}, {new: true})
     .select('-password -refreshToken')
     const chat = await Chat.findOneAndUpdate({group: groupId}, { $push: { participants: userId } }, {new: true})
-    emitSocketEvent(req, userId, ChatEventEnum.NEW_CHAT_EVENT, chat)
+    emitSocketEvent(req, userId, ChatEventEnum.NEW_CHAT_EVENT, chat) //TODO
     return res.status(200).json(new ApiResponse(200, group, "Request accepted"))
 })
 
@@ -235,6 +236,7 @@ const removeFromGroup = asyncHandler(async (req, res) => {
     if (group.members.includes(userId)) {
         group.members = group.members.filter(member => member.toString() !== userId.toString())
         await group.save()
+        await Chat.findOneAndUpdate({group: groupId}, { $pull: { participants: new mongoose.Types.ObjectId(userId) } }, {new: true}) //TODO
         group.projects.forEach(async(project) => {
             await Task.deleteMany({
                 project: project._id,

@@ -75,9 +75,9 @@ const PostCard = ({otherUser, post, followCallback }:{otherUser:UserInterface|un
                     </div>
                   </div>
                   <div className="ml-auto pr-10">
-                    <FollowButton userIdToFollow={otherUser && otherUser._id} 
+                   {otherUser?._id != user?._id && <FollowButton userIdToFollow={otherUser && otherUser._id} 
                     callback={followCallback} 
-                    />
+                    />}
                   </div>
                 </div>
                 <div className="w-3/4 h-[2px] mx-auto m-4 bg-muted"></div>

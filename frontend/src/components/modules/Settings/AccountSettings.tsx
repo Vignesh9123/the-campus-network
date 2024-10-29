@@ -14,7 +14,7 @@ import {
     EyeOff,
     
 } from 'lucide-react'
-import { changePassword,/*forgotPassword*/} from "@/api"
+import { changePassword,forgotPassword} from "@/api"
 import { toast } from "react-toastify"
 import LogoutButton from "../LogoutButton"
 function AccountSettings({scrollableDiv}:{scrollableDiv:RefObject<HTMLDivElement>}) {
@@ -68,26 +68,26 @@ function AccountSettings({scrollableDiv}:{scrollableDiv:RefObject<HTMLDivElement
         })
     }
 
-    // const handleForgotPasswordSubmit = () => { 
-    //     if(!resetPasswordEmail){
-    //         setCperror("Email is required")
-    //         return
-    //     }
-    //     forgotPassword({email:resetPasswordEmail}).then(
-    //         (res)=>{
-    //             if(res.status == 200){
-    //                 toast.success("Check your email for reset password link")
-    //                 setResetPasswordEmail("")
-    //             }
-    //         }
-    //     ).catch((err)=>{
-    //       console.log(err)
-    //         if(err.status == 400){
-    //             setCperror("Invalid Email")
+    const handleForgotPasswordSubmit = () => { 
+        if(!resetPasswordEmail){
+            setCperror("Email is required")
+            return
+        }
+        forgotPassword({email:resetPasswordEmail}).then(
+            (res)=>{
+                if(res.status == 200){
+                    toast.success("Check your email for reset password link")
+                    setResetPasswordEmail("")
+                }
+            }
+        ).catch((err)=>{
+          console.log(err)
+            if(err.status == 400){
+                setCperror("Invalid Email")
                 
-    //         }
-    //     })
-    // }
+            }
+        })
+    }
 
   return (
     <div ref={scrollableDiv} className="grid gap-6 h-[80vh] md:h-[90vh]  scrollbar-hide overflow-y-auto">
@@ -143,7 +143,7 @@ function AccountSettings({scrollableDiv}:{scrollableDiv:RefObject<HTMLDivElement
         </form>
       </CardContent>
       <CardFooter className="border-t px-6 py-4">
-        <Button onClick={()=>{}}>Reset</Button>
+        <Button onClick={handleForgotPasswordSubmit}>Reset</Button>
       </CardFooter>
     </Card>
     <Card x-chunk="dashboard-04-chunk-2">
