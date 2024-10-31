@@ -5,7 +5,7 @@ import passport from 'passport'
 import session from 'express-session'
 import { initializeSocketIO } from './socket/index.js';
 import { createServer } from 'http';
-
+import morganLogger from './logger/morgan.logger.js';
 const app = express()
 const httpServer = createServer(app);
 
@@ -26,7 +26,7 @@ app.use(cors({
     origin: process.env.CORS_ORIGIN,
   credentials: true,
 }))
-
+app.use(morganLogger)
 app.use(express.json({limit:"16kb"}))
 app.use(express.urlencoded({extended:true,limit:"16kb"}))
 app.use(express.static("public"))
