@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { Button } from '@/components/ui/button'
+import { toast } from 'react-toastify'
 const PostCard = ({postedUser, post, refreshFunc}:{postedUser:UserInterface;post:PostInterface, refreshFunc:()=>void}) => {
 
   const navigate = useNavigate()
@@ -34,8 +35,8 @@ const PostCard = ({postedUser, post, refreshFunc}:{postedUser:UserInterface;post
     try {
       const res = await getRepostedUsers({postId:post._id})
       setRepostedUsers(res.data.data)
-    } catch (error) {
-      console.log(error)
+    } catch {
+      toast.error("Something went wrong. Please try again later.", {theme:"colored"})
     }
     finally{
       setRepostedUsersLoading(false)
@@ -47,8 +48,8 @@ const PostCard = ({postedUser, post, refreshFunc}:{postedUser:UserInterface;post
     try {
       const res = await getLikedUsers({postId:post._id})
       setLikedUsers(res.data.data)
-    } catch (error) {
-      console.log(error)
+    } catch{
+     toast.error("Something went wrong. Please try again later.", {theme:"colored"})
     } finally {
       setLikedUsersLoading(false)
     }
@@ -60,8 +61,8 @@ const PostCard = ({postedUser, post, refreshFunc}:{postedUser:UserInterface;post
       await createRepost({postId:post._id})
       setReposted(!reposted)
       refreshFunc()
-    } catch (error) {
-      console.log(error)
+    } catch {
+      toast.error("Something went wrong. Please try again later.", {theme:"colored"})
     }
    }
 
@@ -72,8 +73,8 @@ const PostCard = ({postedUser, post, refreshFunc}:{postedUser:UserInterface;post
       .then(()=>{
         refreshFunc()
       })
-    } catch (error) {
-      console.log(error)
+    } catch {
+     toast.error("Something went wrong. Please try again later.", {theme:"colored"})
     } finally{
       setDropdownOpen(false)
     }

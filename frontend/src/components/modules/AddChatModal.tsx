@@ -34,7 +34,6 @@ function AddChatModal({chats,setChats}:{chats:ChatInterface[],setChats:Function}
     useEffect(()=>{
         getFollowers({username: user?.username}).then((res)=>{
             setFollowers(res.data.data)
-            console.log(res.data.data)
         })
     },[])
   return (

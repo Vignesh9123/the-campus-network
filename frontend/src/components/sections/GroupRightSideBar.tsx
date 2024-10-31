@@ -31,11 +31,7 @@ function GroupRightSideBar() {
         setRequested(true)
       })
     }
-    useEffect(
-        () => {
-            console.log(group)
-        }
-        ,[group])
+    
 
   return (
     <div>

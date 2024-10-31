@@ -48,7 +48,6 @@ export const requestHandler = async (
       const token =await getToken(messaging, {
         vapidKey:import.meta.env.VITE_APP_VAPID_KEY
       })
-      console.log("Token:",token);
       await storeDeviceToken({token})
       
     } else {

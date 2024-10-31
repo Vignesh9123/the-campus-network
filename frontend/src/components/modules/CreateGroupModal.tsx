@@ -3,6 +3,7 @@ import { createGroup } from '@/api'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import { isGroupNameUnique } from '@/api'
+import { toast } from 'react-toastify'
 function CreateGroupModal() {
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
@@ -30,11 +31,10 @@ function CreateGroupModal() {
                 name,
                 description
             }
-            const response = await createGroup({groupData})
-            console.log(response)
+            await createGroup({groupData})
             window.location.reload()
-        } catch (error) {
-            console.log(error)
+        } catch{
+            toast.error("Something went wrong. Please try again later.", {theme:"colored"})
         }
     }
   return (

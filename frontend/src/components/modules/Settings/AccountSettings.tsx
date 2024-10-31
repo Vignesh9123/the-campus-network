@@ -85,10 +85,11 @@ function AccountSettings() {
                 }
             }
         ).catch((err)=>{
-          console.log(err)
             if(err.status == 400){
                 setCperror("Invalid Email")
-                
+            }
+            else{
+              toast.error("Something went wrong, please try again later")
             }
         })
     }

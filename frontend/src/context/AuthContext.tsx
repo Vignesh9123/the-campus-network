@@ -3,6 +3,7 @@ import {useNavigate, useLocation} from 'react-router-dom'
 import { requestHandler,/*requestPermission*/ } from "@/utils";
 import { loginUser, registerUser, logoutUser,getCurrentUser,updateAccountDetails,addPersonalDetails , updateProfilePicture, refreshToken,followOrUnfollow,checkToken,sendNotificationToUser} from "@/api";
 import Loader from "@/components/Loader";
+import { toast } from "react-toastify";
 export interface UserInterface {
     _id: string;
     profilePicture: string;
@@ -133,13 +134,13 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
             (err:any)=>{
                 if(err.status == 403){
                     refreshAccessToken().then(()=>logout())
-                    .catch((err)=>{
-                        console.log(err)
+                    .catch(()=>{
+                        toast.error("Something went wrong, please try again later")
                     })
                     
                 }
                 else{
-                    console.log(err)
+                    toast.error("Something went wrong, please try again later")
                 }
             }
         );
@@ -168,12 +169,12 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
             (err:any)=>{
                 if(err.status == 403){
                     refreshAccessToken().then(()=>followOrUnfollowUser(userId))
-                    .catch((err)=>{
-                        console.log(err)
+                    .catch(()=>{
+                        toast.error("Something went wrong, please try again later")
                     })
                 }
                 else{
-                    console.log(err)
+                    toast.error("Something went wrong, please try again later")
                 }
             }
         )
@@ -202,7 +203,6 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
             async()=>await checkToken(),
             setIsLoading,
             (_res)=>{
-                // console.log(res);
             },
             (err:any)=>{
                 if(err.status == 403){
@@ -238,12 +238,12 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
             (err:any)=>{
                 if(err.status == 403){
                     refreshAccessToken().then(()=>updateAccDetails(data))
-                    .catch((err)=>{
-                        console.log(err)
+                    .catch(()=>{
+                        toast.error("Something went wrong, please try again later")
                     })
                 }
                 else{
-                    console.log(err)
+                    toast.error("Something went wrong, please try again later")
                 }
             }
 
@@ -254,7 +254,6 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
             async()=>await addPersonalDetails(data),
             setIsLoading,
             (res)=>{
-                console.log(res);
                 setUser(res.data);
                 localStorage.setItem("user", JSON.stringify(res.data));
                 navigate('/profile')
@@ -262,12 +261,12 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
             (err:any)=>{
                 if(err.status == 403){
                     refreshAccessToken().then(()=>updatePersonalDetails(data))
-                    .catch((err)=>{
-                        console.log(err)
+                    .catch(()=>{
+                        toast.error("Something went wrong, please try again later")
                     })
                 }
                 else{
-                    console.log(err)
+                    toast.error("Something went wrong, please try again later")
                 }
             }
         )
@@ -277,19 +276,18 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
             async()=>await updateProfilePicture(data),
             setIsLoading,
             (res)=>{
-                console.log(res);
                 setUser(res.data);
                 localStorage.setItem("user", JSON.stringify(res.data));
             },
             (err:any)=>{
                 if(err.status == 403){
                     refreshAccessToken().then(()=>updatePFP(data))
-                    .catch((err)=>{
-                        console.log(err)
+                    .catch(()=>{
+                        toast.error("Something went wrong, please try again later")
                     })
                 }
                 else{
-                    console.log(err)
+                    toast.error("Something went wrong, please try again later")
                 }
             }
         )

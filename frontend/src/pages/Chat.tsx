@@ -29,6 +29,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { ChatEventEnums } from '@/constants';
 import MobileUserNavbar from '@/components/sections/MobileUserNavbar';
+import { toast } from 'react-toastify';
 
 
 const MESSAGE_LENGTH_LIMIT = 100
@@ -80,8 +81,8 @@ function Chat() {
             setMessages(res.data.data)
             setMessagesLoading(false)
         })
-        .catch((err)=>{
-            console.log(err)
+        .catch(()=>{
+            toast.error("Something went wrong, please try again later")
             setMessagesLoading(false)
         })
 
@@ -94,8 +95,7 @@ function Chat() {
     ) => {
       // Search for the chat with the given ID in the chats array
       const chatToUpdate = chats.find((chat) => chat._id === chatToUpdateId)!;
-      console.log("chat to update",chatToUpdate)
-      console.log("message", message)
+
       //Updating the last message of chat only in case of deleted message and chats last message is same
       if (chatToUpdate.lastMessage === message._id) {
         requestHandler(
@@ -103,7 +103,6 @@ function Chat() {
           null,
           (req) => {
             const { data } = req;
-            console.log(data)
             chatToUpdate.lastMessageDetails[0] = data[data.length - 1];
             chatToUpdate.lastMessage = data[data.length - 1]._id;
             setChats([...chats]);
@@ -122,9 +121,6 @@ function Chat() {
       // Update the 'lastMessage' field of the found chat with the new message
       chatToUpdate.lastMessageDetails[0] = message;
       chatToUpdate.lastMessage = message._id
-      // Update the 'updatedAt' field of the chat with the 'updatedAt' field from the message
-      console.log("Updated chat: ", chatToUpdate)
-      console.log("Updated message: ", message)
       // Update the state of chats, placing the updated chat at the beginning of the array
       setChats([
         chatToUpdate, // Place the updated chat first
@@ -136,7 +132,6 @@ function Chat() {
       if(!currentChat.current) return
       sendMessage({chatId:currentChat.current?._id, content:message})
       .then((res)=>{
-        console.log(res.data.data)
         socket?.emit(ChatEventEnums.MESSAGE_RECEIVED_EVENT, res.data.data)
         updateChatLastMessage(currentChat.current?._id!, res.data.data)
         if(currentChat.current?._id == res.data.data.chat){          
@@ -158,7 +153,6 @@ function Chat() {
     const message = messages.find((msg)=>msg._id == messageId)
     deleteMessage({messageId})
     .then((res)=>{
-      console.log(res.data.data)
       // socket?.emit(MESSAGE_DELETE_EVENT, res.data.data)
       if(currentChat.current?._id == res.data.data.chat){
         setMessages((prev)=>prev.filter((msg)=>msg._id != messageId))
@@ -189,7 +183,6 @@ function Chat() {
       .then((res)=>{
         setChats(res.data.data)
         setChatsLoading(false)
-        console.log(res.data.data)
       })
     },[]
   )
@@ -199,7 +192,7 @@ function Chat() {
             socket.on(ChatEventEnums.CONNECTED_EVENT,()=>{console.log('connected')})
             socket.on(ChatEventEnums.DISCONNECT_EVENT, ()=>{console.log('disconnected')})
             socket.on(ChatEventEnums.NEW_CHAT_EVENT, (data)=>{
-              console.log("New Chat",data) //TODO
+               //TODO
                 setChats([data, ...chats])
             })
             socket.on(ChatEventEnums.MESSAGE_RECEIVED_EVENT, handleReceiveMessage)
@@ -240,7 +233,6 @@ function Chat() {
       .map(
         (chat:ChatInterface)=>{
           const chatDetails = getChatObjectMetadata(chat, user!)
-          console.log("chat Details",chatDetails)
           return(
             <div key={chat._id} onClick={()=>handleOnChatClick(chat)} className={`border-b max-w-full  cursor-pointer hover:bg-muted p-3 ${currentChat.current?._id == chat._id ? 'bg-muted' : unreadMessages.filter((m)=>m.chat == chat._id).length > 0 ? 'bg-green-800' : 'bg-transparent' } }`}>
               <div className="flex justify-between items-center w-full px-3">

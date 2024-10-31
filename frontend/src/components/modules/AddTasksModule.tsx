@@ -70,8 +70,7 @@ function AddTasksModule({members,
             assignedTo: type == "individual" ? [user?._id] : taskAssignees,
             projectId
         }
-        createTask({taskData}).then((res) => {
-            console.log(res)
+        createTask({taskData}).then(() => {
             toast.success('Task added successfully')
             refreshFunc()
             taskData.assignedTo.map(

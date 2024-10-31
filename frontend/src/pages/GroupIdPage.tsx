@@ -386,8 +386,7 @@ function GroupIdPage() {
           {  admin &&
             <Button className="my-1" 
             onClick={()=>{removeFromGroup({userId:member._id, groupId:group._id})
-            .then((res)=>{
-              console.log(res)
+            .then(()=>{
               fetchGroup()
             })
             
