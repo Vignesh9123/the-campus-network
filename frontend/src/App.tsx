@@ -28,6 +28,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy'
 import Chat from './pages/Chat'
 import ResetPassword from './pages/ResetPassword'
 import VerifyEmail from './pages/VerifyEmail'
+import ForgotPassword from './pages/ForgotPassword'
 function App() {
   // const {user, token} = useAuth()
   onMessage(messaging, (payload) => {
@@ -56,7 +57,7 @@ function App() {
         <Route path='/terms-of-service' element={<TermsOfService/>}/>
         <Route path='/privacy-policy' element={<PrivacyPolicy/>}/>
         <Route path='/about-the-site' element={<AboutTheSite/>}/>
-
+        <Route path='/forgot-password' element={<ForgotPassword/>}/>
         </Route>
         <Route element={<PrivateRoute>
           
@@ -76,11 +77,11 @@ function App() {
         <Route path='/settings' element={<Settings/>}/>
         <Route path='/groupview/:groupId/' element={<GroupView/>}/>
         <Route path='/chat' element={<Chat/>}/>
-        <Route path='/reset-password/:token' element={<ResetPassword/>}/>
         <Route path='/mail-verification/:token' element={<VerifyEmail/>}/>
         
         </Route>
         </Route>
+        <Route path='/reset-password/:token' element={<ResetPassword/>}/>
         <Route path='*' element={<div>Not Found</div>}/>
         
       </Routes>

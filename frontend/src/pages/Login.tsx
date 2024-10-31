@@ -8,10 +8,16 @@ import { FcGoogle } from "react-icons/fc";
 import { Link } from 'react-router-dom';
 import Footer from '@/components/sections/Footer';
 import { Separator } from '@/components/ui/separator';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 export default function LoginForm() {
   const { login, authError  } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
   useEffect(
     ()=>{
       document.title = "The Campus Network - Login"
@@ -37,8 +43,8 @@ export default function LoginForm() {
   return (
     <>
     <NavBar className='mb-5'/>
-    <div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
-      <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
+    <div className="max-w-md w-full my-6 mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
+      <h2 className="font-bold text-lg md:text-xl text-neutral-800 dark:text-neutral-200">
         Welcome back to The Campus Network
       </h2>
       <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
@@ -51,8 +57,18 @@ export default function LoginForm() {
           <Input id="email" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="yourname@example.com" type="text" />
         </LabelInputContainer>
         <LabelInputContainer className="mb-4">
-          <Label htmlFor="password">Password</Label>
-          <Input value={password} onChange={(e) => setPassword(e.target.value)} id="password" placeholder="••••••••" type="password" />
+          <div className='flex justify-between'>
+            <Label htmlFor="password">Password</Label>
+            <Link className='text-sm underline' to='/forgot-password'>Forgot Password?</Link>
+          </div>
+          <div className="flex justify-around items-center">
+            <div className="w-full mr-1">
+          <Input value={password}  required={true} onChange={(e) => setPassword(e.target.value)} id="password" placeholder="••••••••" type={showPassword ? "text" : "password"} />
+            </div>
+          <button type="button" onClick={togglePasswordVisibility} className="absolut w-fit right3 tp-7 text-white">
+            {showPassword ? <FaEyeSlash className="text-black dark:text-white "/> : <FaEye className="text-black dark:text-white"/>}
+          </button>
+          </div>
         </LabelInputContainer>
        {authError && <div className="text-red-500 text-sm m-2">{authError}</div>}
 

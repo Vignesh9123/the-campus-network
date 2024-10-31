@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import CreateGroupModal from "@/components/modules/CreateGroupModal"
 import MobileUserNavbar from "@/components/sections/MobileUserNavbar"
 function Groups() {
+  document.title = "The Campus Network - Groups"
     const { user } = useAuth();
     const navigate = useNavigate();
     const [groups, setGroups] = useState([]);

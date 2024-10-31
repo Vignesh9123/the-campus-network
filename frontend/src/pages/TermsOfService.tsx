@@ -5,6 +5,7 @@ import { useEffect } from "react"
 import { Link } from "react-router-dom"
 
 function TermsOfService() {
+  document.title = "The Campus Network - Terms of Service"
     useEffect(() => {
         window.scrollTo(0, 0);
       }, []);

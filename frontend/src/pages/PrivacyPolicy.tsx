@@ -4,6 +4,7 @@ import { useEffect } from "react";
 
 const PrivacyPolicy = () => {
     useEffect(()=>{
+      document.title = "The Campus Network - Privacy Policy"
         window.scrollTo(0,0)
     }
         ,[]

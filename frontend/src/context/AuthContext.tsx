@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext, createContext} from "react";
 import {useNavigate, useLocation} from 'react-router-dom'
-import { requestHandler,requestPermission } from "@/utils";
+import { requestHandler,/*requestPermission*/ } from "@/utils";
 import { loginUser, registerUser, logoutUser,getCurrentUser,updateAccountDetails,addPersonalDetails , updateProfilePicture, refreshToken,followOrUnfollow,checkToken,sendNotificationToUser} from "@/api";
 import Loader from "@/components/Loader";
 export interface UserInterface {
@@ -75,7 +75,7 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
                 localStorage.setItem("user", JSON.stringify(res.data.user));
                 localStorage.setItem("token", res.data.accessToken);
                 setAuthError(null);
-                requestPermission().then(()=>{
+                // requestPermission().then(()=>{
                 const currentUser = res.data.user
                 if(!currentUser?.college && !currentUser?.engineeringDomain){
                     return navigate("/add-personal-details");
@@ -83,7 +83,9 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
                 }
                
                 const savedLocation = location.state?.from || '/profile';
-            navigate(savedLocation);})
+            navigate(savedLocation);
+        // }
+    // )
             },
             (err:any)=>{
                 if(err.status == 401){

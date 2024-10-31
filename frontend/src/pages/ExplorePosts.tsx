@@ -13,6 +13,7 @@ import _ from 'lodash'; // Import lodash for throttling
 import MobileUserNavbar from '@/components/sections/MobileUserNavbar';
 
 function ExplorePosts() {
+    document.title = 'The Campus Network - Explore';
     const [posts, setPosts] = useState<any>([]);
     const [loading, setLoading] = useState(true);
     const { user } = useAuth();

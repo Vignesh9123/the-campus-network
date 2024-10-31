@@ -8,7 +8,6 @@ import {
   DialogTrigger,
   DialogTitle} from '@/components/ui/dialog'
 import CreatePostModule from './Posts/CreatePostModal';
-import LogoutButton from './LogoutButton';
 import { MdOutlineGroupAdd } from "react-icons/md";
 import CreateGroupModal from './CreateGroupModal';
 const FloatingActionButton: React.FC = () => {
@@ -57,7 +56,6 @@ const FloatingActionButton: React.FC = () => {
 
         {/* Mode Toggle */}
           <ModeToggle/>
-          <LogoutButton className='md:hidden'/>
         </>
       )}
 

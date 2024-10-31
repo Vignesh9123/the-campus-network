@@ -58,6 +58,7 @@ function GroupView() {
         setError(null)
         getGroupForVisitors({groupId}).then((res) => {
             setGroup(res.data.data)
+            document.title = `The Campus Network - ${res.data.data.name}`
             if(res.data.data.joinRequests.includes(user?._id)){
                 setJoinRequested(true)
             }

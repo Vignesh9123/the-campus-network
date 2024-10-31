@@ -35,6 +35,7 @@ export default function RegisterForm() {
     const [croppedProfilePicture, setCroppedProfilePicture] = useState<File | null>(null);
     const [confirmPassword, setConfirmPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isUnique, setIsUnique] = useState(true);
     const [error, setError] = useState('')
     const cropperRef = useRef<ReactCropperElement>(null);
@@ -42,6 +43,10 @@ export default function RegisterForm() {
 
     const togglePasswordVisibility = () => {
       setShowPassword(!showPassword);
+    };
+
+    const toggleConfirmPasswordVisibility = () => {
+      setShowConfirmPassword(!showConfirmPassword);
     };
     const checkUsername = async () => {
       if(username.length == 0){
@@ -201,29 +206,40 @@ export default function RegisterForm() {
        
         <LabelInputContainer className="mb-4 relative">
           <Label htmlFor="password">Password <p className="inline text-red-500 text-sm">*</p></Label>
-          <Input value={password} required={true} onChange={(e) => setPassword(e.target.value)} id="password" placeholder="••••••••" type={showPassword ? "text" : "password"} />
-          <button type="button" onClick={togglePasswordVisibility} className="absolute right-3 top-7 text-white">
-            {showPassword ? <FaEyeSlash className="text-black dark:text-white top-2"/> : <FaEye className="text-black dark:text-white top-2"/>}
+          <div className="flex justify-around items-center">
+            <div className="w-full mr-1">
+          <Input value={password}  required={true} onChange={(e) => setPassword(e.target.value)} id="password" placeholder="••••••••" type={showPassword ? "text" : "password"} />
+            </div>
+          <button type="button" onClick={togglePasswordVisibility} className="absolut w-fit right3 tp-7 text-white">
+            {showPassword ? <FaEyeSlash className="text-black dark:text-white "/> : <FaEye className="text-black dark:text-white"/>}
           </button>
+          </div>
         </LabelInputContainer>
-        <LabelInputContainer className="mb-4">
+        <LabelInputContainer className="mb-4 relative">
           <Label htmlFor="confirmPassword">Confirm Password <p className="inline text-red-500 text-sm">*</p></Label>
-          <Input  required={true} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} id="confirmPassword" placeholder="••••••••" type="password" />
+          <div className="flex justify-around items-center">
+
+            <div className="w-full mr-1">
+          <Input   required={true} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} id="confirmPassword" placeholder="••••••••" type={showConfirmPassword?'text':'password'} />
+            </div>
+            <button type="button" onClick={toggleConfirmPasswordVisibility} className="absolut w-fit right3 tp-7 text-white">
+            {showConfirmPassword ? <FaEyeSlash className="text-black dark:text-white "/> : <FaEye className="text-black dark:text-white"/>}
+            </button>
+            </div>
         </LabelInputContainer>
 
         <button
-          className={`bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset] ${(isUnique && !error)?"":"opacity-75 cursor-not-allowed"}`}
-          disabled={(!isUnique || !!error)}
+          className={`bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset] ${(isUnique && !error && username && email && password && confirmPassword)?"":"opacity-75 cursor-not-allowed"}`}
+          disabled={(!isUnique || !!error || !username || !email || !password || !confirmPassword)}
           type="submit"
         >
           Sign up &rarr;
           <BottomGradient />
         </button>
 
-        <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
+        <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-3 h-[1px] w-full" />
 
-        <div className="flex flex-col space-y-4">
-        </div>
+       
       </form>
          
     </div>

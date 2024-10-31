@@ -67,7 +67,7 @@ function GroupIdPage() {
           const data = await getGroup({groupId});
           const grp = data.data.data
           const members = data.data.data.members
-          
+          document.title = `The Campus Network - ${grp.name}`
           if(members.find((member:any) => member._id === user?._id))
             {
               setGroup(data.data.data);

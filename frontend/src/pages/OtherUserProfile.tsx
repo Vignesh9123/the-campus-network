@@ -65,6 +65,7 @@ function OtherUserProfile() {
       }
       const response = await getUserProfile({username})
       setOtherUser(response.data.data.user)
+      document.title = `The Campus Network - ${response.data.data.user.username}`
       setFollowers([])
       setFollowing([])
       const posts = await getUserPosts({username:username||''})

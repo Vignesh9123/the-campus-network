@@ -4,6 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import { useEffect } from "react";
 const AboutTheSite = () => {
     useEffect(() => {
+        document.title = "The Campus Network - About the site"
         window.scrollTo(0, 0)
     },[])
   return (

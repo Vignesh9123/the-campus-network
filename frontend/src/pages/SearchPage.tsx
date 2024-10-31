@@ -10,6 +10,7 @@ import MobileUserNavbar from '@/components/sections/MobileUserNavbar';
 
 
 function SearchPage() {
+  document.title = "The Campus Network - Search";
     const {user} = useAuth();
     const [searchQuery, setSearchQuery] = useState('')
     const [userSearchResults, setUserSearchResults] = useState([]);

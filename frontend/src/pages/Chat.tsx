@@ -33,6 +33,7 @@ import MobileUserNavbar from '@/components/sections/MobileUserNavbar';
 
 const MESSAGE_LENGTH_LIMIT = 100
 function Chat() {
+    document.title = "The Campus Network - Chats"
     const {socket} = useSocket()
     const navigate = useNavigate()
     const {user} = useAuth()
@@ -342,7 +343,7 @@ function Chat() {
               )
             })}
             <div className='lg:hidden text-center text-muted text-xs'>Press and hold to select a message</div>
-            <div className='sticky bottom-2 my-2 mx-2 bg-background flex items-center'>
+            <div className='sticky bottom-0 md:bottom-2  my-2 mx-2 bg-background flex items-center'>
               <div className='w-full'>
 
             <Input maxLength={MESSAGE_LENGTH_LIMIT} onKeyDown={(e)=>{if(e.key == 'Enter') handleSendMessage()}} value={message} className={`${message.length == MESSAGE_LENGTH_LIMIT ? 'border-red-500' : ''}`} onChange={(e)=>setMessage(e.target.value)} placeholder='Type a message...'/>

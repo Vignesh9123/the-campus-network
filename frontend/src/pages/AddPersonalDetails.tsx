@@ -8,6 +8,7 @@ import SelectWithSearch from '@/components/modules/SelectWithSearch'
 import { colleges,branches } from '@/constants'
 
 function AddPersonalDetails() {
+  document.title = "The Campus Network - Add Personal Details"
     const [college, setCollege] = useState('')
     const [engineeringDomain, setEngineeringDomain] = useState('')
     const [yearOfGraduation, setYearOfGraduation] = useState<string>('')

@@ -1,7 +1,7 @@
 import LoginButton from '../modules/LoginButton'
 import AccountDropdown from '../modules/AccountDropdown'
-import SearchBar from '../modules/SearchBar'
-import { Contact, Edit, Home, Info, Users,Menu } from 'lucide-react'
+// import SearchBar from '../modules/SearchBar'
+import { /*Contact,*/ Edit, Home, Info, Users,Menu } from 'lucide-react'
 import { ModeToggle } from '../mode-toggle'
 import { Link } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
@@ -21,10 +21,10 @@ const NavBar = ({className}:any) => {
       <div className='menus hidden xl:block xl:ml-10'>
         <ul className='flex gap-10 text-black dark:text-white'>
           <Link to='/' className='cursor-pointer hover:underline'>Home</Link>
-          <Link to='/login' className='cursor-pointer hover:underline'>Groups</Link>
-          <Link to='/login' className='cursor-pointer hover:underline'>Posts</Link>
+          <Link to='/groups' className='cursor-pointer hover:underline'>Groups</Link>
+          <Link to='/explore' className='cursor-pointer hover:underline'>Posts</Link>
           <Link to='/about-the-site' className='cursor-pointer hover:underline'>About</Link>
-          <Link to='/contact' className='cursor-pointer hover:underline'>Contact</Link>
+          {/* <Link to='/contact' className='cursor-pointer hover:underline'>Contact</Link> */}
         </ul>
 
       </div>
@@ -35,9 +35,9 @@ const NavBar = ({className}:any) => {
    
       <LoginButton />
     </div>}
-    <div className='hidden md:block md:ml-28 lg:ml-10'>
+    {/* <div className='hidden md:block md:ml-28 lg:ml-10'>
       <SearchBar />
-    </div>
+    </div> */}
     <div className='ml-auto cursor-pointer hover:bg-muted p-2 rounded-md lg:hidden'>
 
     <Sheet>
@@ -51,40 +51,40 @@ const NavBar = ({className}:any) => {
               <nav className="grid gap-6 text-lg font-medium">
                
                 <Link
-                  to="#"
+                  to="/"
                   className="flex items-center gap-4 px-2.5 text-foreground hover:text-foreground"
                 >
                   <Home className="h-5 w-5" />
                   Home
                 </Link>
                 <Link
-                  to="#"
+                  to="/groups"
                   className="flex text-muted-foreground hover:text-foreground items-center gap-4 px-2.5"
                 >
                   <Users className="h-5 w-5" />
                   Groups
                 </Link>
                 <Link
-                  to="#"
+                  to="/explore"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                 >
                   <Edit className="h-5 w-5" />
                   Posts
                 </Link>
                 <Link
-                  to="#"
+                  to="/about-the-site"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                 >
                   <Info className="h-5 w-5" />
                   About
                 </Link>
-                <Link
+                {/* <Link
                   to="#"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                 >
                   <Contact className="h-5 w-5" />
                   Contact
-                </Link>
+                </Link> */}
               </nav>
             </SheetContent>
     </Sheet>

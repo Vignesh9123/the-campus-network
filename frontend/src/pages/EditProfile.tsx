@@ -14,6 +14,7 @@ import Cropper, { ReactCropperElement } from "react-cropper";
 import "cropperjs/dist/cropper.css";
 
 function EditProfile() {
+    document.title = "The Campus Network - Edit Profile"
     const {user, updateAccDetails, updatePersonalDetails,updatePFP} = useAuth()
     const pathname = window.location.pathname
     const [username, setUsername] = useState<string>(user?.username!)

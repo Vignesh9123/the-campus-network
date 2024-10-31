@@ -125,23 +125,30 @@ function AccountSettings() {
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-2">
-          <div>
+          <div className="flex items-center">
+            <div className="w-full mr-1">
+
           <Input type={showPassword ? "text" : "password"} value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} placeholder="Old Password" />
+          </div>
           {
-            showPassword?<EyeOff onClick={handleShowPassword} className="absolute right-3 top-3"/>:<Eye onClick={handleShowPassword} className="absolute right-3 top-3"/>
+            showPassword?<EyeOff onClick={handleShowPassword} className=""/>:<Eye onClick={handleShowPassword} className=""/>
           }
           </div>
-          <div>
+          <div className="flex items-center">
+          <div className="w-full mr-1">
 
           <Input type={showNewPassword ? "text" : "password"} value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="New Password" />
+          </div>
           {
-            showNewPassword?<EyeOff onClick={handleShowNewPassword} className="absolute right-3 top-3"/>:<Eye onClick={handleShowNewPassword} className="absolute right-3 top-3"/>
+            showNewPassword?<EyeOff onClick={handleShowNewPassword} className=""/>:<Eye onClick={handleShowNewPassword} className=""/>
           }
           </div>
-          <div>
+          <div className="flex items-center">
+          <div className="w-full mr-1">
           <Input type={showConfirmPassword ? "text" : "password"} value={newConfirmPassword} onChange={(e) => setNewConfirmPassword(e.target.value)} placeholder="Confirm Password" />
+          </div>
           {
-            showConfirmPassword?<EyeOff onClick={handleShowConfirmPassword} className="absolute right-3 top-3"/>:<Eye onClick={handleShowConfirmPassword} className="absolute right-3 top-3"/>
+            showConfirmPassword?<EyeOff onClick={handleShowConfirmPassword} className=""/>:<Eye onClick={handleShowConfirmPassword} className=""/>
           }
           </div>
         

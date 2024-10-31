@@ -7,6 +7,7 @@ import MobileUserNavbar from "@/components/sections/MobileUserNavbar"
 
 
 export default function Settings() {
+  document.title = "The Campus Network - Settings"
   const [selectedTab, setSelectedTab] = useState("Accounts")
   const scrollableDiv = useRef<HTMLDivElement>(null);
   return (

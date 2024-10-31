@@ -97,6 +97,7 @@ const fetchProject = async () => {
     const othersTaskRes = await getOthersTasks({projectId});
     setOthersTasks(othersTaskRes.data.data);
     const proj = data.data.data
+    document.title = `The Campus Network - ${proj.title}`
     setProject(proj);
     if(proj.createdBy._id.toString() == user?._id.toString())
       setAdmin(true)

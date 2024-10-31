@@ -28,14 +28,14 @@ function AccountDropdown() {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              {pathname != '/add-personal-details' && <DropdownMenuItem>
+              {pathname != '/add-personal-details' && pathname!='reset-password'&& <DropdownMenuItem>
 
-              <Link to={'/settings'}>Settings</Link>
+              <Link to={'/profile'}>Profile</Link>
               </DropdownMenuItem>}
             
-              {pathname != '/add-personal-details' &&<DropdownMenuItem>
+              {pathname != '/add-personal-details' && pathname!='reset-password' &&<DropdownMenuItem>
               
-              <Link to={'/settings'}>Support</Link>
+              <Link to={'/settings'}>Settings</Link>
               </DropdownMenuItem>}
               <DropdownMenuSeparator />
               <LogoutButton variant={"outline"} className='sm-show-text'/> 
