@@ -116,13 +116,14 @@ const updateProject = asyncHandler(async (req, res) => {
     if(project.type == "group" && (!req.user.groups.includes(project.group._id) || project.createdBy._id.toString() !== req.user._id.toString()))
         throw new ApiError(403, "You are not authorized to update this project")
 
-    const {title, description, estimatedEndDate, projectLink, githubLink} = req.body
+    const {title, description, estimatedEndDate, projectLink, githubLink, status} = req.body
     const updatedProject = await Project.findByIdAndUpdate(projectId, {
         title:title || project.title,
-        description:description || project.description,
+        description:description,
         estimatedEndDate:estimatedEndDate || project.estimatedEndDate ,
-        projectLink:projectLink || project.projectLink,
-        githubLink:githubLink || project.githubLink
+        projectLink:projectLink,
+        githubLink:githubLink,
+        status: status || project.status
     }, {new: true})
 
     if(!project) throw new ApiError(404, "Project not found")

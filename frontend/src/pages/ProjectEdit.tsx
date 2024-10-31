@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom"
 import { toast } from "react-toastify"
 import { useNavigate } from "react-router-dom"
 import { ArrowLeft } from "lucide-react"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 function ProjectEdit() {
   const navigate = useNavigate()
@@ -32,7 +33,7 @@ function ProjectEdit() {
   }, [])
 
   const handleUpdate = async () => {
-    await updateProject({projectId, updateData:{
+  await updateProject({projectId, updateData:{
       title,
       description,
       status,
@@ -80,11 +81,23 @@ function ProjectEdit() {
           <label className="text-md" htmlFor="status">
             Status
           </label>
-          <Input
-            id="status"
+          <Select
             value={status}
-            onChange={(e)=>setStatus(e.target.value)}
-          />
+            onValueChange={(value)=>setStatus(value)}
+          >
+            <SelectTrigger>
+              <SelectValue>{status}</SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="completed">Completed</SelectItem>
+              <SelectItem value="cancelled">Cancelled</SelectItem>
+              <SelectItem value="on hold">On Hold</SelectItem>
+              <SelectItem value="in review">In Review</SelectItem>
+
+
+            </SelectContent>
+          </Select>
         </div>
        <div className="flex flex-col gap-2">
           <label className="text-md" htmlFor="estendDate">

@@ -25,6 +25,7 @@ import GroupSettings from "@/components/sections/GroupSettings";
 import MobileUserNavbar from "@/components/sections/MobileUserNavbar";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { FaGithub, FaProjectDiagram } from "react-icons/fa";
 
 function GroupIdPage() {
     const {groupId} = useParams()
@@ -351,6 +352,22 @@ function GroupIdPage() {
                 }}
                 >View Project</Button>
               </div>
+              </div>
+              <div className="flex justify-around items-center">
+                {project.githubLink && 
+                <div className="flex items-center">
+                  
+                <FaGithub className="w-6 h-6 mr-2"/>
+                <a href={project.githubLink} target="_blank" className="text-blue-500 hover:underline">GitHub</a>
+                </div>
+                }
+                {project.projectLink &&
+                <div className="flex items-center">
+                <FaProjectDiagram className="w-6 h-6 mr-2"/>
+                <a href={project.projectLink} target="_blank" className="text-blue-500 hover:underline">Live</a>
+                </div>
+                }
+              
               </div>
             </div>
           ))}

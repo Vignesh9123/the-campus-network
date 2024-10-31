@@ -13,10 +13,13 @@ export const sendEmail = async (options) => {
     });
 
     const mailOptions = {
-        from: process.env.SENDER_EMAIL,
+        from: {
+            name: 'The Campus Network',
+            address: process.env.SENDER_EMAIL
+        },
         to: options.email,
         subject: options.subject,
-        text: options.message
+        html: options.message
     };
 
     await transporter.sendMail(mailOptions);

@@ -440,7 +440,77 @@ const forgotPassword = asyncHandler(async(req, res)=>{
   user.passwordResetToken = resetToken;
   await user.save({validateBeforeSave: false});
   const resetPasswordURL = `${req.get("origin")}/reset-password/${resetToken}`;
-  const message = `You have requested to reset your password. Please click on the link to reset your password: ${resetPasswordURL}. If you did not request this, please ignore this email.`;
+  const message = `
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Your Password</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        color: #333333;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+      .header {
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      .content {
+        font-size: 16px;
+        line-height: 1.5;
+        text-align: left;
+      }
+      .button {
+        display: inline-block;
+        background-color: #4CAF50;
+        color: white;
+        padding: 12px 20px;
+        margin-top: 20px;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        text-align: center;
+      }
+      .footer {
+        font-size: 12px;
+        color: #777;
+        margin-top: 30px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">Reset Your Password</div>
+      <div class="content">
+        <p>Hello,</p>
+        <p>We received a request to reset your password. Click the button below to set a new password:</p>
+        <a href="${resetPasswordURL}" class="button">Reset Password</a>
+        <p>If you didn’t request a password reset, please ignore this email. This link will expire in 24 hours.</p>
+      </div>
+      <div class="footer">
+        <p>&copy; 2024 The Campus Network. All rights reserved.</p>
+      </div>
+    </div>
+  </body>
+  </html>
+  `;
+  
+  
   await sendEmail({
     email: user.email,
     subject: "Reset your password",
@@ -493,7 +563,76 @@ const sendVerificationEmail = asyncHandler(async(req, res)=>{
   const user = await User.findById(req.user?._id);
   const token = user.generateEmailVerificationToken();
   const verificationURL = `${req.get("origin")}/mail-verification/${token}`;
-  const message = `Please click on the link to verify your email: ${verificationURL}`;
+const message = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Verification</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: #333333;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    .header {
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .content {
+      font-size: 16px;
+      line-height: 1.5;
+      text-align: left;
+    }
+    .button {
+      display: inline-block;
+      background-color: #4CAF50;
+      color: white;
+      padding: 12px 20px;
+      margin-top: 20px;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .footer {
+      font-size: 12px;
+      color: #777;
+      margin-top: 30px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">Verify Your Email</div>
+    <div class="content">
+      <p>Hello,</p>
+      <p>Thank you for signing up! Please click the button below to verify your email address:</p>
+      <a href="${verificationURL}" class="button">Verify Email</a>
+      <p>If you did not request this verification, you can safely ignore this email.</p>
+    </div>
+    <div class="footer">
+      <p>&copy; 2024 The Campus Network. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>
+`;
+
   await sendEmail({
     email: user.email,
     subject: "Verify your email",

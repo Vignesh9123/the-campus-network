@@ -80,18 +80,19 @@ function AccountSettings() {
             (res)=>{
                 setResetLoading(false)
                 if(res.status == 200){
-                    toast.success("Check your email for reset password link")
-                    setResetPasswordEmail("")
+                  toast.success("Check your email for reset password link")
+                  setResetPasswordEmail("")
                 }
-            }
-        ).catch((err)=>{
-            if(err.status == 400){
+              }
+            ).catch((err)=>{
+              if(err.status == 400){
                 setCperror("Invalid Email")
-            }
-            else{
-              toast.error("Something went wrong, please try again later")
-            }
-        })
+              }
+              else{
+                toast.error("Something went wrong, please try again later")
+              }
+            })
+            .finally(()=>setResetLoading(false))
     }
 
     const handleVerifyEmailSubmit = () => {

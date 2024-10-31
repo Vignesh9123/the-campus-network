@@ -1,4 +1,2 @@
-# campus-chronicles
-
-TODO: Remove console logs
+# The-Campus-Networks
 TODO: Add toast for all forms

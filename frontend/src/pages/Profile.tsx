@@ -27,6 +27,7 @@ import AddProjectModule from "@/components/modules/AddProjectModule";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { formatDistanceToNow } from "date-fns";
+import { FaGithub, FaProjectDiagram } from "react-icons/fa";
 
 const Profile = () => {
   const navigate = useNavigate()
@@ -354,6 +355,22 @@ const Profile = () => {
                 }}
                 >View Project</Button>
               </div>
+              </div>
+              <div className="flex justify-around items-center">
+                {project.githubLink && 
+                <div className="flex items-center">
+                  
+                <FaGithub className="w-6 h-6 mr-2"/>
+                <a href={project.githubLink} target="_blank" className="text-blue-500 hover:underline">GitHub</a>
+                </div>
+                }
+                {project.projectLink &&
+                <div className="flex items-center">
+                <FaProjectDiagram className="w-6 h-6 mr-2"/>
+                <a href={project.projectLink} target="_blank" className="text-blue-500 hover:underline">Live</a>
+                </div>
+                }
+              
               </div>
             </div>
           ))}
