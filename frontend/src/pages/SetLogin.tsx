@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
-import { requestPermission } from '@/utils'
+// import { requestPermission } from '@/utils'
 
 
 const SetLogin = () => {
@@ -13,9 +13,9 @@ const SetLogin = () => {
     if (accessToken) {
       localStorage.setItem('token', accessToken)
       getGoogleSignedInUser({accessToken})
-      requestPermission().then(() => {
-        navigate('/profile')
-      })
+      // requestPermission().then(() => {
+      navigate('/profile')
+      // })
     }
   }, [])
   return (
