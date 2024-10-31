@@ -1,4 +1,4 @@
-export const DB_NAME = "campus-chronicles"
+export const DB_NAME = "the-campus-network"
 export const postKeywords = [
     // General categories
     "admissions", "campus", "events", "exams", "internships", 
