@@ -48,6 +48,7 @@ function App() {
   return (
     <div>
       <Routes>
+        <Route path='/about-the-site' element={<AboutTheSite/>}/>
         <Route element={<PublicRoute/>}>
 
         <Route path='/' element={<LandingPage/>}/>
@@ -56,7 +57,6 @@ function App() {
         <Route path='/register' element={<RegisterForm/>}/>
         <Route path='/terms-of-service' element={<TermsOfService/>}/>
         <Route path='/privacy-policy' element={<PrivacyPolicy/>}/>
-        <Route path='/about-the-site' element={<AboutTheSite/>}/>
         <Route path='/forgot-password' element={<ForgotPassword/>}/>
         </Route>
         <Route element={<PrivateRoute>

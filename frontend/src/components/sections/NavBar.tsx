@@ -10,6 +10,7 @@ import {Sheet, SheetContent, SheetTrigger } from '../ui/sheet'
 
 
 const NavBar = ({className}:any) => {
+  const pathname = window.location.pathname
   const {user} = useAuth()
   return (
     <div className={'flex items-center justify-around  bg-white dark:bg-black px-5 py-5 ' + className || ''}>
@@ -21,8 +22,8 @@ const NavBar = ({className}:any) => {
       <div className='menus hidden xl:block xl:ml-10'>
         <ul className='flex gap-10 text-black dark:text-white'>
           <Link to='/' className='cursor-pointer hover:underline'>Home</Link>
-          <Link to='/groups' className='cursor-pointer hover:underline'>Groups</Link>
-          <Link to='/explore' className='cursor-pointer hover:underline'>Posts</Link>
+          <Link to={`${pathname != '/add-personal-details'?'/groups':'/add-personal-details'}`} className='cursor-pointer hover:underline'>Groups</Link>
+          <Link to={`${pathname != '/add-personal-details'?'/explore':'/add-personal-details'}`} className='cursor-pointer hover:underline'>Posts</Link>
           <Link to='/about-the-site' className='cursor-pointer hover:underline'>About</Link>
           {/* <Link to='/contact' className='cursor-pointer hover:underline'>Contact</Link> */}
         </ul>
