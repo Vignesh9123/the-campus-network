@@ -1,6 +1,7 @@
 import React,{useRef,useEffect, useState} from 'react'
 import { Button } from '@/components/ui/button';
 import { createPost } from '@/api';
+import { toast } from 'react-toastify';
 export default function CreatePostModule() {
     const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -8,16 +9,16 @@ export default function CreatePostModule() {
     const [content, setContent] = useState('')
     const [maxReachedTitle, setMaxReachedTitle] = useState(false)
     const [maxReachedContent, setMaxReachedContent] = useState(false)
-    const [isPublic, setIsPublic] = useState(true)
-    const [isOnlyFollowers, setIsOnlyFollowers] = useState(false)
+    const [error, setError]=  useState('')
+    // const [isPublic, setIsPublic] = useState(true)
+    // const [isOnlyFollowers, setIsOnlyFollowers] = useState(false)
+    // const handlePublicChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     setIsPublic(event.target.checked);
+    // };
 
-    const handlePublicChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setIsPublic(event.target.checked);
-    };
-
-    const handleOnlyFollowersChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setIsOnlyFollowers(event.target.checked);
-    };  
+    // const handleOnlyFollowersChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     setIsOnlyFollowers(event.target.checked);
+    // };  
 
     const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setTitle(event.target.value);
@@ -42,14 +43,22 @@ export default function CreatePostModule() {
       const post = {
         title,
         content,
-        isPublic,
-        onlyFollowers:isOnlyFollowers,
+        isPublic:true,
+        onlyFollowers:false,
         tags:[]
       }
       createPost(post)
-      .then((res)=>{
-        console.log(res)
+      .then(()=>{
+        setError('')
         window.location.reload()
+      }).catch((err)=>{
+        if(err.status === 402){
+          toast.error("There is/are some words in your title or content that must not be used in posts. Please remove them and try again.",{theme:"colored"})
+          setError("There is/are some words in your title or content that must not be used in posts. Please remove them and try again.")
+        }else{
+          toast.error("Something went wrong. Please try again later.", {theme:"colored"})
+          setError("Something went wrong. Please try again later.")
+        }
       })
     }
     
@@ -85,7 +94,9 @@ export default function CreatePostModule() {
       maxLength={1000}
     />
     <div className={`ml-auto mt-1 mb-4 w-fit ${content.length>950?'text-red-500':'text-gray-400'}`}>{content.length}/1000</div>
-    <div className='flex gap-5'>
+
+    {error && <div className='text-red-500'>{error}</div>}
+    {/* <div className='flex gap-5'>
     <div>
     <input type="checkbox" id="public" name="public" checked={isPublic} onChange={handlePublicChange} />
     <label className='ml-1' htmlFor="public">Public</label>
@@ -94,7 +105,7 @@ export default function CreatePostModule() {
     <input type="checkbox" id="onlyFollowers" name="onlyFollowers" checked={isOnlyFollowers} onChange={handleOnlyFollowersChange} />
     <label className='ml-1' htmlFor="onlyFollowers">Only followers</label>
     </div>
-    </div>
+    </div> */}
     <div className='flex justify-end'>
       <Button onClick={handlePostSubmit} disabled={maxReachedTitle || maxReachedContent} >Post</Button>
     </div>

@@ -5,13 +5,19 @@ import { ApiResponse } from '../utils/ApiResponse.js';
 import { User } from '../models/user.model.js';
 import { postKeywords } from '../constants.js';
 import * as mongoose from 'mongoose';
+import { Filter } from 'bad-words'
 
 //create a new post
 const createPost = asyncHandler(async (req, res) => {
+    const filter = new Filter()
     const {title, content, isPublic, onlyFollowers} = req.body;
     //validate the input fields
     if(!title || !content){
         throw new ApiError(400, "Title and content are required");
+    }
+    if(filter.isProfane(title) || filter.isProfane(content)){
+        console.log("Profanity detected");
+        throw new ApiError(402, "Profanity is not allowed in title or content");
     }
     const contentWords = content.toLowerCase().split(/\W+/);
     const titleWords = title.toLowerCase().split(/\W+/);
