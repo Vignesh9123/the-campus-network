@@ -187,4 +187,16 @@ userSchema.methods.generatePasswordResetToken = function(){
         }
     )
 }
+userSchema.methods.generateEmailVerificationToken = function(){
+    return jwt.sign(
+        {
+            _id:this._id,
+
+        },
+        process.env.EMAIL_VERIFICATION_TOKEN_SECRET,
+        {
+            expiresIn:process.env.EMAIL_VERIFICATION_TOKEN_EXPIRY
+        }
+    )
+}
 export const User = mongoose.model("User", userSchema)

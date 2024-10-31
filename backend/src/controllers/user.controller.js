@@ -467,12 +467,32 @@ const resetPassword = asyncHandler(async(req, res)=>{
   .status(200)
   .json(new ApiResponse(200, {}, "Password reset successful"));
 })
+const signedInResetPassword = asyncHandler(async(req, res)=>{
+  const {resetToken} = req.params;
+  const {password} = req.body;
+  const user = await User.findOne({
+    passwordResetToken: resetToken,
+  });
+  if(!user){
+    throw new ApiError(400, "Token is invalid or expired");
+  }
+  if(req.user._id.toString() != user._id.toString()){
+    throw new ApiError(400, "You are not authorized to reset this password");
+  }
+  user.password = password;
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+  await user.save();
+  return res
+  .status(200)
+  .json(new ApiResponse(200, {}, "Password reset successful"));
+})
 
 
 const sendVerificationEmail = asyncHandler(async(req, res)=>{
   const user = await User.findById(req.user?._id);
   const token = user.generateEmailVerificationToken();
-  const verificationURL = `${req.protocol}://${req.get("host")}/api/v1/users/verify-email/${token}`;
+  const verificationURL = `${req.get("origin")}/mail-verification/${token}`;
   const message = `Please click on the link to verify your email: ${verificationURL}`;
   await sendEmail({
     email: user.email,
@@ -675,4 +695,4 @@ const checkToken = asyncHandler(async(req, res)=>{
   .json(new ApiResponse(200, {}, "Token is valid"));
 })
 
-export { registerUser, loginUser, logoutUser, refreshAccessToken, changeCurrentPassword,getAccountRecommendations, getCurrentUser, updateAccountDetails, updateProfilePicture, getUserProfile, addPersonalDetails , followOrUnfollowUser, forgotPassword, resetPassword, searchUsers, sendVerificationEmail, verifyEmail, resendVerificationEmail, getUserFeed, getUserFollowers, getUserFollowing, handleSocialLogin, isUsernameUnique, checkToken};
+export { registerUser,signedInResetPassword, loginUser, logoutUser, refreshAccessToken, changeCurrentPassword,getAccountRecommendations, getCurrentUser, updateAccountDetails, updateProfilePicture, getUserProfile, addPersonalDetails , followOrUnfollowUser, forgotPassword, resetPassword, searchUsers, sendVerificationEmail, verifyEmail, resendVerificationEmail, getUserFeed, getUserFollowers, getUserFollowing, handleSocialLogin, isUsernameUnique, checkToken};

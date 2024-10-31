@@ -257,13 +257,13 @@ const fetchProject = async () => {
                     <div className="text-sm md:text-md text-muted-foreground">
                       GitHub Link
                     </div>
-                    <Link target="_blank" to={project?.githubLink?project?.githubLink:""} className="md:text-lg break-words text-wrap text-blue-500 underline font-bold">{(project?.githubLink)?project?.githubLink:"-"}<SquareArrowOutUpRight size={15} className="ml-2 mb-2 inline"/></Link>
+                    <Link target={project?.githubLink?"_blank":""} to={project?.githubLink?project?.githubLink:"#"} className="md:text-lg break-words text-wrap text-blue-500 underline font-bold">{(project?.githubLink)?project?.githubLink:"-"}<SquareArrowOutUpRight size={15} className={`${project?.githubLink?"inline":"hidden"} ml-2 mb-2 inline`}/></Link>
                   </div>
                   <div >
                     <div className="text-sm  md:text-md text-muted-foreground">
                       Project Live Link
                     </div>
-                    <Link target="_blank" to={project?.projectLink?project?.projectLink:""} className="md:text-lg break-words text-blue-500 underline font-bold">{(project?.projectLink)?project?.projectLink:"-"}<SquareArrowOutUpRight size={15} className="ml-2 mb-2 inline"/></Link>
+                    <Link target={project?.projectLink?"_blank":""} to={project?.projectLink?project?.projectLink:"#"} className="md:text-lg break-words text-blue-500 underline font-bold">{(project?.projectLink)?project?.projectLink:"-"}<SquareArrowOutUpRight size={15} className={`${project?.projectLink?"inline":"hidden"} ml-2 mb-2 inline`}/></Link>
                   </div>
                 </div>
               <Separator className="mt-5" />
@@ -322,10 +322,10 @@ const fetchProject = async () => {
     </div>
           {/* Table */}
 
-               <div className="grid grid-cols-5 p-5 place-items-center">
+               <div className="grid grid-cols-4 md:grid-cols-5 p-5 place-items-center">
        <div>Title</div>
        <div>Status</div>
-       <div>Assigned to</div>
+       <div className="hidden md:block">Assigned to</div>
        <div>Priority</div>
        <div>Due Date</div>
     </div>
@@ -398,10 +398,10 @@ const fetchProject = async () => {
          />
     </div>
           
-        <div className="grid grid-cols-5 p-5 place-items-center">
+        <div className="grid grid-cols-4 md:grid-cols-5 p-5 place-items-center">
        <div>Title</div>
        <div>Status</div>
-       <div>Assigned to</div>
+       <div className="hidden md:block">Assigned to</div>
        <div>Priority</div>
        <div>Due Date</div>
     </div>

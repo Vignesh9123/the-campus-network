@@ -17,6 +17,7 @@ export interface UserInterface {
     college:string;
     engineeringDomain:string;
     yearOfGraduation:string;
+    isEmailVerified:boolean;
   }
   
 const AuthContext = createContext<{

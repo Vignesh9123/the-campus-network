@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { getCommentsbyPost, getPost, addComment ,deleteComment} from '@/api';
 import { Link, useParams } from "react-router-dom";
 import { PostInterface, CommentInterface } from "@/types";
@@ -15,6 +15,7 @@ import {
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
 import { EllipsisVertical } from "lucide-react";
+import MobileUserNavbar from "@/components/sections/MobileUserNavbar";
 function PostComments() {
     const [post, setPost] = useState<PostInterface | null>(null);
     const [comments, setComments] = useState<CommentInterface[]>([]);
@@ -22,6 +23,7 @@ function PostComments() {
     const [commentLoading, setCommentLoading] = useState(false);
     const [comment, setComment] = useState('');
     const [error, setError] = useState('');
+    const scrollableDivRef = useRef(null)
     
     const { postId } = useParams();
     const { user } = useAuth();
@@ -80,11 +82,12 @@ function PostComments() {
 
     return (
         <div className='flex'>
-            <div className="w-[15%] md:w-1/4 border-0 border-r-[1px] h-screen">
+            <div className="hidden md:block md:w-1/4 border-0 border-r-[1px] h-screen">
                 <ProfileSideBar />
             </div>
-            <div className="md:w-[50%] w-[85vw] overflow-y-auto scrollbar-hide border-0 border-r-[1px] h-screen pb-20">
-                <div className="p-4">
+            <div className="md:w-[50%] w-full overflow-y-auto scrollbar-hide border-0 border-r-[1px] h-screen pb-20">
+                <MobileUserNavbar scrollableDiv={scrollableDivRef} />
+                <div ref={scrollableDivRef} className="md:p-4">
                     {loading && <PostSkeletonLoader />}
                     {!loading && post && <PostCard post={post} otherUser={post.createdBy} />}
                     
@@ -128,7 +131,7 @@ function PostComments() {
                     ))}
                 </div>
                 
-                <div className="fixed bottom-0 w-[85vw] md:w-auto md:left-1/4 md:right-1/4 bg-muted px-4 py-3 border-t">
+                <div className="fixed bottom-0 w-full md:w-auto md:left-1/4 md:right-1/4 bg-muted px-4 py-3 border-t">
                     <div className="flex items-center gap-2">
                         <img src={user?.profilePicture} className="w-8 h-8 rounded-full" alt={user?.username} />
                         <div className="w-full">

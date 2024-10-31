@@ -34,9 +34,9 @@ export default function Settings() {
             className={`cursor-pointer ${selectedTab == "Appearance"?"font-semibold text-primary":""}`}>Appearance</div>
         </div>
           </nav>
-     {   selectedTab == "Accounts" &&  <AccountSettings scrollableDiv={scrollableDiv}/>}
-     {   selectedTab == "Help and Support" &&  <HelpAndSupport scrollableDiv={scrollableDiv}/>}
-     {   selectedTab == "Appearance" &&  <Appearance scrollableDiv={scrollableDiv}/>}
+     {   selectedTab == "Accounts" &&  <AccountSettings/>}
+     {   selectedTab == "Help and Support" &&  <HelpAndSupport/>}
+     {   selectedTab == "Appearance" &&  <Appearance/>}
         </div>
       </main>
     </div>

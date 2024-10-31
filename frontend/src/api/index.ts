@@ -59,6 +59,13 @@ const changePassword = (data:{oldPassword:string, newPassword:string})=>{
 const forgotPassword = (data:{email:string})=>{
   return apiClient.post('/users/forgot-password', data)
 }
+
+const sendVerificationEmail = ()=>{
+  return apiClient.post('/users/send-verification-email')
+}
+const verifyEmail = (data:{token:string})=>{
+  return apiClient.post(`/users/verify-email/${data.token}`)
+}
 const getAccountsToFollow = ()=>{
   return apiClient.get('/users/recommendations')
 }
@@ -83,6 +90,9 @@ const getUserProfile = (data:{username:string | undefined}) =>{
 }
 const resetPassword = (data:{token:string, password:string})=>{
   return apiClient.post(`/users/reset-password/${data.token}`, {password:data.password})
+}
+const signedInResetPassword = (data:{token:string, password:string}) =>{
+  return apiClient.post(`/users/signed-in-reset-password/${data.token}`, {password:data.password})
 }
 const refreshToken = () => {
     return apiClient.post("/users/refresh-token");
@@ -300,8 +310,8 @@ const deleteChat = (data:{chatId:string | undefined})=>{
   return apiClient.delete(`/chats/delete-chat/${data.chatId}`)
 }
 
-export {refreshToken, loginUser,checkToken, registerUser, logoutUser ,getAccountsToFollow,changePassword,forgotPassword, getCurrentUser, checkUsernameUnique, createPost,createRepost ,updateAccountDetails,addPersonalDetails, updateProfilePicture,getUserPosts,searchUser, getUserProfile,followOrUnfollow, searchPost,getFollowers, getFollowing, likePost, getUserFeed, addComment,deleteComment,getCommentsbyPost,getPost,
+export {refreshToken, loginUser,checkToken, registerUser, logoutUser ,sendVerificationEmail,verifyEmail,getAccountsToFollow,changePassword,forgotPassword, getCurrentUser, checkUsernameUnique, createPost,createRepost ,updateAccountDetails,addPersonalDetails, updateProfilePicture,getUserPosts,searchUser, getUserProfile,followOrUnfollow, searchPost,getFollowers, getFollowing, likePost, getUserFeed, addComment,deleteComment,getCommentsbyPost,getPost,
   createGroup, getGroup, acceptRequest, addToGroup, deleteGroup, exitFromGroup, isGroupNameUnique, rejectRequest, removeFromGroup, requestToJoinGroup,deletePost,
   addProject, getGroupProjects, getMyProjects, getProject, updateProject, updateProjectStatus, deleteProject,
-  createTask, getTask, updateTask, updateTaskStatus, deleteTask,getMyGroups,getMyTasks,getOthersTasks,sendNotification,storeDeviceToken,sendNotificationToUser,getGroupSuggestedPeople,getGroupForVisitors,getMyIndividualProjects, updateGroupDetails, changeGroupAdmin, getLikedUsers, getRepostedUsers,getAllChats, createOrGetOneToOneChat, sendMessage,getAllMessages, deleteMessage, deleteChat, resetPassword
+  createTask, getTask, updateTask, updateTaskStatus, deleteTask,getMyGroups,getMyTasks,getOthersTasks,sendNotification,storeDeviceToken,sendNotificationToUser,getGroupSuggestedPeople,getGroupForVisitors,getMyIndividualProjects, updateGroupDetails, changeGroupAdmin, getLikedUsers, getRepostedUsers,getAllChats, createOrGetOneToOneChat, sendMessage,getAllMessages, deleteMessage, deleteChat, resetPassword, signedInResetPassword
   }

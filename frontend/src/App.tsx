@@ -27,6 +27,7 @@ import AboutTheSite from './pages/AboutTheSite'
 import PrivacyPolicy from './pages/PrivacyPolicy'
 import Chat from './pages/Chat'
 import ResetPassword from './pages/ResetPassword'
+import VerifyEmail from './pages/VerifyEmail'
 function App() {
   // const {user, token} = useAuth()
   onMessage(messaging, (payload) => {
@@ -76,6 +77,7 @@ function App() {
         <Route path='/groupview/:groupId/' element={<GroupView/>}/>
         <Route path='/chat' element={<Chat/>}/>
         <Route path='/reset-password/:token' element={<ResetPassword/>}/>
+        <Route path='/mail-verification/:token' element={<VerifyEmail/>}/>
         
         </Route>
         </Route>

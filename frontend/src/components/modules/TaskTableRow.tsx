@@ -22,10 +22,10 @@ function TaskTableRow({ task, admin, refreshFunction }: { task: any, admin:boole
     <Dialog 
     open={(usernames.includes("You") || admin )?open:false} onOpenChange={setOpen}>
       <DialogTrigger className="w-full">   
-    <div className="grid grid-cols-5 p-5 items-center bg-muted my-2 place-items-center hover:bg-gray-900 duration-100 cursor-pointer" >
+    <div className="grid grid-cols-4 md:grid-cols-5 p-5 items-center bg-muted my-2 place-items-center hover:bg-gray-900 duration-100 cursor-pointer" >
       <div>{task.title}</div>
       <div>{task.status}</div>
-      <div>
+      <div className="hidden md:block">
         {usernames.length > 1
           ? `${usernames.slice(0, -1).join(", ")} and ${
               usernames[usernames.length - 1]

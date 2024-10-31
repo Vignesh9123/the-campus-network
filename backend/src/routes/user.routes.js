@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { registerUser,loginUser, logoutUser, refreshAccessToken, changeCurrentPassword, getCurrentUser, updateProfilePicture, getUserProfile, addPersonalDetails, followOrUnfollowUser, forgotPassword,resetPassword, searchUsers, getUserFeed, getUserFollowers, getUserFollowing,handleSocialLogin,isUsernameUnique,updateAccountDetails,checkToken ,getAccountRecommendations} from "../controllers/user.controller.js";
+import { registerUser,loginUser, logoutUser, refreshAccessToken,signedInResetPassword, changeCurrentPassword, getCurrentUser, updateProfilePicture, getUserProfile, addPersonalDetails, followOrUnfollowUser, forgotPassword,resetPassword, searchUsers, getUserFeed, getUserFollowers, getUserFollowing,handleSocialLogin,isUsernameUnique,updateAccountDetails,checkToken ,getAccountRecommendations,verifyEmail, sendVerificationEmail} from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { sendEmail } from "../utils/sendMail.js";
@@ -81,6 +81,7 @@ router.route('/add-personal-details').post(verifyJWT, addPersonalDetails)
 router.route('/follow/:userId').post(verifyJWT, followOrUnfollowUser)
 router.route('/forgot-password').post(forgotPassword)
 router.route('/reset-password/:resetToken').post(resetPassword)
+router.route('/signed-in-reset-password/:resetToken').post(verifyJWT,signedInResetPassword)
 router.route('/search').get(searchUsers)
 router.route('/feed').get(verifyJWT, getUserFeed)
 router.route('/check-username').get(isUsernameUnique)
@@ -88,6 +89,8 @@ router.route('/followers/:username').get(verifyJWT, getUserFollowers)
 router.route('/following/:username').get(verifyJWT, getUserFollowing)
 router.route('/check-token').get(verifyJWT,checkToken)
 router.route('/recommendations').get(verifyJWT, getAccountRecommendations)
+router.route('/send-verification-email').post(verifyJWT,sendVerificationEmail)
+router.route('/verify-email/:token').post(verifyJWT,verifyEmail)
 
 //SSO routes
 router.route('/login/google').get(passport.authenticate("google", { scope: ['profile', 'email'] }), (req,res)=>{

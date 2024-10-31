@@ -142,7 +142,7 @@ const PostCard = ({postedUser, post, refreshFunc}:{postedUser:UserInterface;post
                 </div>
                 <div className="w-3/4 h-[2px] mx-auto m-4 bg-muted"></div>
                 <div className='text-lg p-1 font-bold'>{post.title}</div>
-                <div className="text-sm p-2">
+                <div className="text-sm p-2 break-words">
                  {readMore?post.content:post.content.slice(0,300)}
                  {post.content.length>300? <span className="text-blue-500 cursor-pointer" onClick={()=>setReadMore(!readMore)}>
                     {readMore?"...Read Less":"...Read More"}

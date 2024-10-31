@@ -21,12 +21,7 @@ function Groups() {
           setLoading(true);
           const data = await getMyGroups();
           setGroups(data.data.data);
-          //setLoading(false) after a delay
-          //TODO: Check this in deployment
-          setTimeout(() => {
-            setLoading(false);
-          }, 1000);
-          // setLoading(false);
+          setLoading(false);
         };
         fetchGroups();
       }, []);

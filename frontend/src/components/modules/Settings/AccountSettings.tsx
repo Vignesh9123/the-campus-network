@@ -7,18 +7,18 @@ import {
     CardTitle,
   } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { RefObject, useState } from "react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
     Eye,
-    EyeOff,
-    
+    EyeOff,   
 } from 'lucide-react'
-import { changePassword,forgotPassword} from "@/api"
+import { changePassword,forgotPassword, sendVerificationEmail} from "@/api"
 import { toast } from "react-toastify"
 import LogoutButton from "../LogoutButton"
-function AccountSettings({scrollableDiv}:{scrollableDiv:RefObject<HTMLDivElement>}) {
-    
+import { useAuth } from "@/context/AuthContext"
+function AccountSettings() {
+    const {user} = useAuth()
     const [showPassword, setShowPassword] = useState(false)
     const handleShowPassword = () => {
         setShowPassword(!showPassword)
@@ -34,10 +34,11 @@ function AccountSettings({scrollableDiv}:{scrollableDiv:RefObject<HTMLDivElement
     const [oldPassword, setOldPassword] = useState("")
     const [newPassword, setNewPassword] = useState("")
     const [newConfirmPassword, setNewConfirmPassword] = useState("")
-    const [resetPasswordEmail, setResetPasswordEmail] = useState("")
-    const [verifyEmail, setVerifyEmail] = useState("")
+    const [resetPasswordEmail, setResetPasswordEmail] = useState(user?.email)
+    const [verifyEmail, setVerifyEmail] = useState(user?.email)
     const [cperror, setCperror] = useState<null| string>(null)
-
+    const [resetLoading, setResetLoading] = useState(false)
+    const [verifyLoading, setVerifyLoading] = useState(false)
     const handlePasswordChangeSubmit = ()=>{
         if(!oldPassword || !newPassword || !newConfirmPassword){
             setCperror("All fields are required")
@@ -73,8 +74,11 @@ function AccountSettings({scrollableDiv}:{scrollableDiv:RefObject<HTMLDivElement
             setCperror("Email is required")
             return
         }
+        setCperror(null)
+        setResetLoading(true)
         forgotPassword({email:resetPasswordEmail}).then(
             (res)=>{
+                setResetLoading(false)
                 if(res.status == 200){
                     toast.success("Check your email for reset password link")
                     setResetPasswordEmail("")
@@ -89,8 +93,26 @@ function AccountSettings({scrollableDiv}:{scrollableDiv:RefObject<HTMLDivElement
         })
     }
 
+    const handleVerifyEmailSubmit = () => {
+        if(!verifyEmail){
+            setCperror("Email is required")
+            return
+        }
+        setCperror(null)
+        setVerifyLoading(true)
+      sendVerificationEmail().then(()=>{
+        toast.success("Check your email for verification link")
+    })
+      .catch(()=>[
+        toast.error("Something went wrong")
+      ])
+      .finally(()=>{
+        setVerifyLoading(false)
+      })
+    }
+
   return (
-    <div ref={scrollableDiv} className="grid gap-6 h-[80vh] md:h-[90vh]  scrollbar-hide overflow-y-auto">
+    <div className="grid gap-6 h-[80vh] md:h-[90vh]  scrollbar-hide overflow-y-auto">
     <Card>
       <CardHeader>
         <CardTitle>Change Password</CardTitle>
@@ -139,11 +161,11 @@ function AccountSettings({scrollableDiv}:{scrollableDiv:RefObject<HTMLDivElement
       </CardHeader>
       <CardContent>
         <form className="flex flex-col gap-4">
-          <Input value={resetPasswordEmail} onChange={(e) => setResetPasswordEmail(e.target.value)} placeholder="Email" />
+          <Input type="email" disabled title="If email is different first change the email in edit profile section" value={user?.email} onChange={(e) => setResetPasswordEmail(e.target.value)} placeholder="Email" />
         </form>
       </CardContent>
       <CardFooter className="border-t px-6 py-4">
-        <Button onClick={handleForgotPasswordSubmit}>Reset</Button>
+        <Button onClick={handleForgotPasswordSubmit}>{resetLoading ? <div className="h-4 w-4 animate-spin rounded-full border-t-2 border-gray-300 dark:border-black"></div>: "Reset"}</Button>
       </CardFooter>
     </Card>
     <Card x-chunk="dashboard-04-chunk-2">
@@ -155,12 +177,12 @@ function AccountSettings({scrollableDiv}:{scrollableDiv:RefObject<HTMLDivElement
       </CardHeader>
       <CardContent>
         <form className="flex flex-col gap-4">
-          <Input value={verifyEmail} onChange={(e) => setVerifyEmail(e.target.value)} placeholder="Email" />
+          <Input type="email" disabled title="If email is different first change the email in edit profile section"  value={verifyEmail} onChange={(e) => setVerifyEmail(e.target.value)} placeholder="Email" />
           
         </form>
       </CardContent>
       <CardFooter className="border-t px-6 py-4">
-        <Button>Verify</Button>
+        <Button disabled={verifyLoading || user?.isEmailVerified} onClick={handleVerifyEmailSubmit}>{verifyLoading ? <div className="h-4 w-4 animate-spin rounded-full border-t-2 border-gray-300 dark:border-black"></div>: "Verify"}</Button>
       </CardFooter>
     </Card>
     <Card>

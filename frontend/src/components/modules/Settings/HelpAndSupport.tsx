@@ -7,10 +7,9 @@ import { Card,
  } from "@/components/ui/card"
  import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
-import { RefObject } from "react"
-function HelpAndSupport({scrollableDiv}:{scrollableDiv:RefObject<HTMLDivElement>}) {
+function HelpAndSupport() {
   return (
-    <div ref={scrollableDiv} className="grid gap-5">
+    <div className="grid gap-5">
 
       <Card>
         <CardHeader>

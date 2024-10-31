@@ -3,6 +3,7 @@ import { useAuth } from "@/context/AuthContext";
 import ProfileSideBar from "@/components/sections/ProfileSideBar";
 import PostCard from "@/components/modules/Posts/PostCard";
 import {
+  Check,
   ExternalLink,
   Mail,
 } from "lucide-react";
@@ -158,7 +159,9 @@ const Profile = () => {
               </div>
             </Dialog>
             <div className="text-center font-bold text-lg">{user.username}</div>
-            <div className="text-center text-muted-foreground flex justify-center gap-1 items-center"><Mail size={20}/>{user.email}</div>
+            <div className="text-center text-muted-foreground flex justify-center gap-1 items-center"><Mail size={20}/>{user.email}
+            {user?.isEmailVerified && <Check xlinkTitle="Email Verified" size={20} className="text-green-500"/>}
+            </div>
 
             <div className="flex justify-around">
               <Dialog onOpenChange={getOwnFollowers}>

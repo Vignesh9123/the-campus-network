@@ -6,7 +6,7 @@ import { FaUsers } from "react-icons/fa";
 
 import { Link } from "react-router-dom";
 
-function MobileUserNavbar({ scrollableDiv }: { scrollableDiv: React.RefObject<HTMLDivElement> }) {
+function MobileUserNavbar({ scrollableDiv }: { scrollableDiv: React.RefObject<HTMLDivElement> | null}) {
   const [isHidden, setIsHidden] = useState(false); // To manage hidden class
   const mobileNavbar = useRef<HTMLDivElement | null>(null);
   const pathname = window.location.pathname;
@@ -14,7 +14,7 @@ function MobileUserNavbar({ scrollableDiv }: { scrollableDiv: React.RefObject<HT
   const lastScrollTopRef = useRef(0);
 
   const handleScroll = useCallback(() => {
-    const currentScrollTop = scrollableDiv.current?.scrollTop || 0;
+    const currentScrollTop = scrollableDiv?.current?.scrollTop || 0;
 
     if (currentScrollTop > lastScrollTopRef.current && !isHidden) {
       // Scrolling down, and navbar is visible
@@ -28,7 +28,7 @@ function MobileUserNavbar({ scrollableDiv }: { scrollableDiv: React.RefObject<HT
   }, [isHidden, scrollableDiv]);
 
   useEffect(() => {
-    const currentScrollableDiv = scrollableDiv.current;
+    const currentScrollableDiv = scrollableDiv?.current;
     if (currentScrollableDiv) {
       currentScrollableDiv.addEventListener("scroll", handleScroll);
       return () => {
@@ -42,7 +42,7 @@ function MobileUserNavbar({ scrollableDiv }: { scrollableDiv: React.RefObject<HT
   return (
     <div
       ref={mobileNavbar}
-      className={`sticky top-0 md:hidden shadow-md shadow-background flex items-center justify-between px-3 z-[1000000] bg-muted w-full border-0 border-b-2 border-muted-foreground ${isHidden ? "opacity-0" : "opacity-100"} duration-300`}
+      className={`sticky top-0 md:hidden shadow-md shadow-background flex items-center justify-between px-3  bg-muted w-full border-0 border-b-2 border-muted-foreground ${isHidden ? "opacity-0 z-50" : "opacity-100 z-[1000000]"} duration-300`}
     >
       <div className="flex gap-1 items-center">
         <img src="/TCN%20Logo%20WO%20BG.png" className="w-14 h-14" alt="" />
