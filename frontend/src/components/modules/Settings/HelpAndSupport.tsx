@@ -7,9 +7,10 @@ import { Card,
  } from "@/components/ui/card"
  import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
+import FAQ from "@/components/sections/FAQ"
 function HelpAndSupport() {
   return (
-    <div className="grid gap-5">
+    <div className="grid h-[60vh] md:h-[90vh] overflow-auto scrollbar-hide gap-5">
 
       <Card>
         <CardHeader>
@@ -25,7 +26,7 @@ function HelpAndSupport() {
           </p>
         </CardContent>
         <CardFooter>
-           <Link to={"https://mail.google.com/mail/u/0/?view=cm&fs=1&tf=1&to=vignesh.d9123@gmail.com&su=Requesting%20Support"} target="_blank"> <Button >Mail us</Button></Link>
+           <Link to={"https://mail.google.com/mail/u/0/?view=cm&fs=1&tf=1&to=thecampusnetwork2024@gmail.com&su=Requesting%20Support"} target="_blank"> <Button >Mail us</Button></Link>
         </CardFooter>
       </Card>
       <Card>
@@ -43,10 +44,10 @@ function HelpAndSupport() {
         </CardContent>
         
         <CardFooter>
-           <Link to={"https://mail.google.com/mail/u/0/?view=cm&fs=1&tf=1&to=vignesh.d9123@gmail.com&su=Feedback%20For%20The%20Campus%20Network"} target="_blank"> <Button >Mail us</Button></Link>
+           <Link to={"https://mail.google.com/mail/u/0/?view=cm&fs=1&tf=1&to=thecampusnetwork2024@gmail.com&su=Feedback%20For%20The%20Campus%20Network"} target="_blank"> <Button >Mail us</Button></Link>
         </CardFooter>
       </Card>
-      {/*TODO:Add a FAQ section */}
+      <FAQ/>
     </div>
   )
 }

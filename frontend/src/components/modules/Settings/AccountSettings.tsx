@@ -114,7 +114,7 @@ function AccountSettings() {
     }
 
   return (
-    <div className="grid gap-6 h-[80vh] md:h-[90vh]  scrollbar-hide overflow-y-auto">
+    <div className="grid gap-6 h-[60vh] md:h-[90vh]  scrollbar-hide overflow-y-auto">
     <Card>
       <CardHeader>
         <CardTitle>Change Password</CardTitle>

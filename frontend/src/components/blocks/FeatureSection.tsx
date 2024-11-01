@@ -160,7 +160,6 @@ export const SkeletonTwo = () => {
   };
   return (
     <div className="relative flex flex-col items-start md:justify-center p-8 gap-10 h-full overflow-hidden">
-      {/* TODO */}
       <div className="flex flex-row md:flex-col -ml-20 md:mx-auto">
         {images.map((image, idx) => (
           <motion.div

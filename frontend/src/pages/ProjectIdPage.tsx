@@ -85,7 +85,6 @@ function ProjectIdPage() {
 
 
 
-//TODO:Project title size fix in table
   
   
 const fetchProject = async () => {

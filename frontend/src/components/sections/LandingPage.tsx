@@ -6,6 +6,7 @@ import Footer from './Footer';
 import { Info, User } from 'lucide-react';
 import { FlipWords } from '../ui/flip-words';
 import FeaturesSectionDemo from '../blocks/FeatureSection';
+import FAQ from './FAQ';
 const LandingPage = () => {
   document.title = "The Campus Network"
   const { scrollYProgress } = useScroll();
@@ -80,9 +81,10 @@ const LandingPage = () => {
       <NavBar className={navVisible ? "visible fixed z-50 top-0 m-0 w-screen p-3" : "hidden"}/>
       </motion.div>
       <FeaturesSectionDemo/>
-      
-     <Footer/>
 
+      <h3 className="text-xl font-bold text-center">FAQ</h3>
+        <FAQ/>
+     <Footer/>
       
     
     </div>

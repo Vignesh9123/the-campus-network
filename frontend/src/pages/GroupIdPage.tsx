@@ -6,7 +6,7 @@ import { Link, useParams, useNavigate, useSearchParams } from "react-router-dom"
 import { Button } from "@/components/ui/button";
 // import GroupAnnouncements from "../components/sections/GroupAnnouncements";
 import PostSkeletonLoader from "@/components/modules/Posts/PostSkeletonLoader";
-import { Check, X } from "lucide-react";
+import { Check, Copy, X } from "lucide-react";
 import AddProjectModule from "@/components/modules/AddProjectModule";
 import { 
     AlertDialog,
@@ -150,6 +150,9 @@ function GroupIdPage() {
         
         <h1 className="text-4xl mt-4 font-bold text-gray-900 dark:text-gray-200">{group.name}</h1>
         <p className="text-gray-600 mt-1 dark:text-gray-400">{group.description}</p>
+        <p className="text-gray-600 text-sm mt-1 dark:text-gray-400">Group id: {group._id} <Copy onClick={()=>{
+          navigator.clipboard.writeText(group._id).then(()=>toast.success("Group Id copied to clipboard"))
+        }} size={15} className="inline ml-1 cursor-pointer"/></p>
 
         <div className="group-stats flex justify-center gap-4 mt-4 text-gray-700 dark:text-gray-300">
           <span>Members: {group.members.length}</span>

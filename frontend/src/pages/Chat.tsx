@@ -81,8 +81,11 @@ function Chat() {
             setMessages(res.data.data)
             setMessagesLoading(false)
         })
-        .catch(()=>{
-            toast.error("Something went wrong, please try again later")
+        .catch((err)=>{
+            if(err.status == 402){
+              setMessages([])
+            }
+            else toast.error("Something went wrong, please try again later")
             setMessagesLoading(false)
         })
 
@@ -192,7 +195,6 @@ function Chat() {
             socket.on(ChatEventEnums.CONNECTED_EVENT,()=>{console.log('connected')})
             socket.on(ChatEventEnums.DISCONNECT_EVENT, ()=>{console.log('disconnected')})
             socket.on(ChatEventEnums.NEW_CHAT_EVENT, (data)=>{
-               //TODO
                 setChats([data, ...chats])
             })
             socket.on(ChatEventEnums.MESSAGE_RECEIVED_EVENT, handleReceiveMessage)

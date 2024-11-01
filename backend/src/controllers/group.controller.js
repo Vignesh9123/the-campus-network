@@ -49,7 +49,7 @@ const isGroupNameUnique = asyncHandler(async (req, res) => {
 const getGroup = asyncHandler(async (req, res) => {
     const {groupId} = req.params
     const group = await Group.findById(groupId)
-        .populate('admin', 'username email profilePicture college engineeringDomain') //TODO:Check if required
+        .populate('admin', 'username email profilePicture college engineeringDomain')
         .populate('members', 'username email profilePicture college engineeringDomain')
         .populate('projects', '')
     //populate joinRequests only req.user._id == group.admin._id
@@ -105,7 +105,8 @@ const exitFromGroup = asyncHandler(async (req, res) => {
     }
     group.members = group.members.filter(member => member.toString() !== req.user._id.toString())
     await group.save()
-    group.projects.forEach(async(project) => {
+    await Chat.findOneAndUpdate({group: groupId}, { $pull: { participants: new mongoose.Types.ObjectId(req.user._id) } }, {new: true}) 
+        group.projects.forEach(async(project) => {
         await Task.deleteMany({
             project: project._id,
             assignedTo: { $size: 1, $eq: [req.user._id] }
@@ -169,7 +170,7 @@ const acceptRequest = asyncHandler(async (req, res) => {
     const user = await User.findByIdAndUpdate(userId, {$push: {groups: group._id}, $pull: {pendingGroupRequests: group._id}}, {new: true})
     .select('-password -refreshToken')
     const chat = await Chat.findOneAndUpdate({group: groupId}, { $push: { participants: userId } }, {new: true})
-    emitSocketEvent(req, userId, ChatEventEnum.NEW_CHAT_EVENT, chat) //TODO
+    emitSocketEvent(req, userId, ChatEventEnum.NEW_CHAT_EVENT, chat)
     return res.status(200).json(new ApiResponse(200, group, "Request accepted"))
 })
 
@@ -236,7 +237,7 @@ const removeFromGroup = asyncHandler(async (req, res) => {
     if (group.members.includes(userId)) {
         group.members = group.members.filter(member => member.toString() !== userId.toString())
         await group.save()
-        await Chat.findOneAndUpdate({group: groupId}, { $pull: { participants: new mongoose.Types.ObjectId(userId) } }, {new: true}) //TODO
+        await Chat.findOneAndUpdate({group: groupId}, { $pull: { participants: new mongoose.Types.ObjectId(userId) } }, {new: true})
         group.projects.forEach(async(project) => {
             await Task.deleteMany({
                 project: project._id,

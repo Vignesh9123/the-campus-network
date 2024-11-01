@@ -61,7 +61,7 @@ const getChatMessages = asyncHandler(async (req, res) => {
       }
     ]);
     if (!chatMessages.length) {
-      throw new ApiError(404, "No chat messages found");
+      throw new ApiError(402, "No chat messages found");
     }
     return res
       .status(200)

@@ -167,8 +167,8 @@ export default function RegisterForm() {
           <p className="text-green-500 text-sm">{username.length>0?"Username is available":""}</p>}
         </LabelInputContainer>
         <LabelInputContainer className="mb-4">
-          <Label htmlFor="email">Email Address <p className="inline text-red-500 text-sm">*</p></Label>
-          <Input value={email} onChange={(e) => setEmail(e.target.value)} id="email" placeholder="projectmayhem@fc.com" required={true} type="email" />
+          <Label htmlFor="email">Email Address (Preferrably gmail) <p className="inline text-red-500 text-sm">*</p></Label>
+          <Input value={email} onChange={(e) => setEmail(e.target.value)} id="email" placeholder="user@gmail.com" required={true} type="email" />
         </LabelInputContainer>
         <LabelInputContainer className="mb-4">
           <Label htmlFor="profilePicture">Profile Picture</Label>

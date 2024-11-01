@@ -75,11 +75,7 @@ const chatCommonAggregation = () => {
                 ],
             }
         }, 
-        // {
-        //     $addFields: {
-        //         lastMessage: { $first: "$lastMessage" }, //TODO:Check
-        //     },
-        // },
+       
     ];
 };
 
