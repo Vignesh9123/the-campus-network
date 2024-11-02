@@ -1,23 +1,36 @@
 import { verifyEmail } from "@/api"
 import MobileUserNavbar from "@/components/sections/MobileUserNavbar"
 import { useEffect, useState } from "react"
-import { Link, useParams } from "react-router-dom"
+import { Link, useParams, useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
-
+import { useAuth } from "@/context/AuthContext"
 
 function VerifyEmail() {
+    const navigate = useNavigate()
     const {token} = useParams()
     const [error, setError] = useState("")
+    const {user} = useAuth()
     const [verifyLoading, setVerifyLoading] = useState(false)
     useEffect(() => {
         async function verifyEmailUsingToken() {
            setVerifyLoading(true)
+           if(user?.isEmailVerified){
+            return navigate('/profile')
+           }
         if(!token) {
             toast.error("Invalid token")
             return
         }
         verifyEmail({token}).then(() => {
             toast.success("Email verified successfully")
+            const userData = localStorage.getItem("user")
+            if (userData) {
+                const currUser = JSON.parse(userData)
+                currUser.isEmailVerified = true
+                localStorage.setItem("user", JSON.stringify(currUser))
+            }
+            window.location.reload()
+            // navigate('/profile')
         })
         .catch(() => {
             toast.error("Something went wrong, please verify your email again")

@@ -26,7 +26,7 @@ import "cropperjs/dist/cropper.css";
 
 
 export default function RegisterForm() {
-    const { register, authError } = useAuth();
+    const { register, authError} = useAuth();
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -125,10 +125,8 @@ export default function RegisterForm() {
     }
   };
   useEffect(() => {
-    
       checkUsername();
-    
-  
+
   }, [username]);
   useEffect(()=>{
     document.title = 'The Campus Network - Register'

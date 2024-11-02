@@ -10,7 +10,7 @@ import Footer from '@/components/sections/Footer';
 import { Separator } from '@/components/ui/separator';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 export default function LoginForm() {
-  const { login, authError  } = useAuth();
+  const { login, authError } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -21,7 +21,6 @@ export default function LoginForm() {
   useEffect(
     ()=>{
       document.title = "The Campus Network - Login"
-
     }
 
     

@@ -254,6 +254,10 @@ const updateAccountDetails = asyncHandler(async(req,res)=>{
   if(!username && !email && !bio){
     throw new ApiError(400, "All fields are required");
   }
+  if(req.user.username === username && req.user.email === email && req.user.bio === bio){
+    throw new ApiError(400, "No changes detected");
+  }
+  let prevEmail = req.user.email;
   const user = await User.findByIdAndUpdate(
     req.user?._id,
     {
@@ -264,10 +268,18 @@ const updateAccountDetails = asyncHandler(async(req,res)=>{
       }
     },
     {new: true}
-  ).select("-password -refreshToken -passwordResetToken -passwordResetTokenExpiry -emailVerificationToken -emailVerificationTokenExpiry -deviceTokens");
+  ).select("-password -refreshToken -passwordResetToken -passwordResetTokenExpiry -deviceTokens");
+  let isEmailChanged = false;
+  if(prevEmail !== email){
+    user.isEmailVerified = false;
+    await user.save({validateBeforeSave: false});
+    isEmailChanged = true;
+  }
+  user.emailVerificationToken = undefined;
+  user.emailVerificationTokenExpiry = undefined;
   return res
   .status(200)
-  .json(new ApiResponse(200, user, "Account details updated successfully"));
+  .json(new ApiResponse(200, {user, isEmailChanged}, "Account details updated successfully"));
 })
 
 const updateProfilePicture = asyncHandler(async(req, res)=>{

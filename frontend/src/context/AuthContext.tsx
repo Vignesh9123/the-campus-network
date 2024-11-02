@@ -36,7 +36,8 @@ const AuthContext = createContext<{
     setIsLoading:(isLoading:boolean)=>void;
     followOrUnfollowUser:(userId:string)=>Promise<void>;
     following:string[];
-    setUser:(user:UserInterface | null)=>void
+    setUser:(user:UserInterface | null)=>void;
+    setAuthError:(authError:string|null)=>void;
 }>({
     user:null,
     token:null,
@@ -52,7 +53,8 @@ const AuthContext = createContext<{
     setIsLoading:()=>{},
     followOrUnfollowUser:async()=>{},
     following:[],
-    setUser:()=>{}
+    setUser:()=>{},
+    setAuthError:()=>{},
 
 });
 
@@ -207,15 +209,15 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
             setIsLoading,
             (_res)=>{
             },
-            (err:any)=>{
+            async(err:any)=>{
                 if(err.status == 403){
                     refreshAccessToken()
                 }
                 if(err.status == 402){
-                    logout()
                     toast.error("You are blocked, if you think this is a mistake please contact")
-                    localStorage.clear()
-                    navigate('/login');
+                    await logout()
+                    // localStorage.clear()
+                    // navigate('/login');
                 }
             }
         )
@@ -241,8 +243,11 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
             async()=>await updateAccountDetails(data),
             setIsLoading,
             (res)=>{
-                setUser(res.data);
-                localStorage.setItem("user", JSON.stringify(res.data));
+                setUser(res.data.user);
+                if(res.data.isEmailChanged){
+                    navigate('/send-email-verification')
+                }
+                localStorage.setItem("user", JSON.stringify(res.data.user));
             },
             (err:any)=>{
                 if(err.status == 403){
@@ -320,7 +325,7 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
         checkTokenValidity();
     }, []);
   return (
-    <AuthContext.Provider value={{ user,following, login, register, logout, token, getGoogleSignedInUser,updateAccDetails,updatePersonalDetails,updatePFP, authError,isLoading,setIsLoading,followOrUnfollowUser,setUser}}>
+    <AuthContext.Provider value={{ user,following, login, register, logout, token, getGoogleSignedInUser,updateAccDetails,updatePersonalDetails,updatePFP, authError,isLoading,setIsLoading,followOrUnfollowUser,setUser, setAuthError}}>
       {isLoading ? <Loader /> : children} {/* Display a loader while loading */}
     </AuthContext.Provider>
   );

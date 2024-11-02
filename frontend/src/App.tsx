@@ -29,6 +29,7 @@ import Chat from './pages/Chat'
 import ResetPassword from './pages/ResetPassword'
 import VerifyEmail from './pages/VerifyEmail'
 import ForgotPassword from './pages/ForgotPassword'
+import SendVerificationEmail from './pages/SendVerificationEmail'
 function App() {
   // const {user, token} = useAuth()
   onMessage(messaging, (payload) => {
@@ -73,14 +74,15 @@ function App() {
         <Route path='/groups/:groupId' element={<GroupIdPage/>}/>
         <Route path='/projects/:projectId' element={<ProjectIdPage/>}/>
         <Route path='/projects/:projectId/edit' element={<ProjectEdit/>}/>
+        <Route path='/send-email-verification' element={<SendVerificationEmail/>}/>
         <Route element={<GeneralLayout/>}>
         <Route path='/settings' element={<Settings/>}/>
         <Route path='/groupview/:groupId/' element={<GroupView/>}/>
         <Route path='/chat' element={<Chat/>}/>
-        <Route path='/mail-verification/:token' element={<VerifyEmail/>}/>
         
         </Route>
         </Route>
+        <Route path='/mail-verification/:token' element={<VerifyEmail/>}/>
         <Route path='/reset-password/:token' element={<ResetPassword/>}/>
         <Route path='*' element={<div>Not Found</div>}/>
         

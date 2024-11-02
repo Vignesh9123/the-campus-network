@@ -16,6 +16,9 @@ function PrivateRoute() {
             if(user && (!user.college || !user.engineeringDomain)){
                 navigate('/add-personal-details');
             }
+            else if(user && !user.isEmailVerified){
+                navigate('/send-email-verification');
+            }
         }
     }, [isLoading]);
 
