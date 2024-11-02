@@ -128,7 +128,9 @@ const loginUser = asyncHandler(async (req, res) =>{
  if (!isPasswordValid) {
   throw new ApiError(401, "Invalid user credentials")
   }
-
+  if(user.isBlocked){
+    throw new ApiError(403, "User is blocked due to posting some illegal content or having a illegitimate account")
+  }
  const {accessToken, refreshToken} = await generateAccesAndRefreshToken(user._id)
 
   const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
@@ -415,8 +417,16 @@ const followOrUnfollowUser = asyncHandler(async (req, res) => {
 
   await currentUser.save({validateBeforeSave:false});
   await userToFollow.save({validateBeforeSave:false});
-
-  res.status(200).json(
+  currentUser.password = undefined
+  currentUser.refreshToken = undefined
+  currentUser.lastLogin = undefined
+  currentUser.passwordResetToken = undefined
+  currentUser.passwordResetTokenExpiry = undefined
+  currentUser.emailVerificationToken = undefined
+  currentUser.emailVerificationTokenExpiry = undefined
+  currentUser.deviceTokens = undefined
+  currentUser.loginType = undefined
+  return res.status(200).json(
     new ApiResponse(200, {
       following: currentUser.following,
       followers: userToFollow.followers,

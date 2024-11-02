@@ -95,6 +95,9 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
                 else if(err.status == 404){
                     setAuthError("Please make sure you have entered correct username/email")
                 }
+                else if(err.status == 403){
+                    setAuthError("You are blocked because you have a illegitimate account, or have posted some illegal content");
+                }
                 else{
                     setAuthError("Something went wrong, please try again later");
                 }
