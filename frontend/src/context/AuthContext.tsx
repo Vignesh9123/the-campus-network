@@ -211,6 +211,12 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
                 if(err.status == 403){
                     refreshAccessToken()
                 }
+                if(err.status == 402){
+                    logout()
+                    toast.error("You are blocked, if you think this is a mistake please contact")
+                    localStorage.clear()
+                    navigate('/login');
+                }
             }
         )
     }

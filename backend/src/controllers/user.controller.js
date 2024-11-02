@@ -240,6 +240,9 @@ const getCurrentUser = asyncHandler(async (req, res) => {
   user.emailVerificationToken = undefined;
   user.emailVerificationTokenExpiry = undefined;
   user.deviceTokens = undefined;
+  if(user.isBlocked){
+    throw new ApiError(403, "User is blocked due to posting some illegal content or having a illegitimate account")
+  }
   return res
   .status(200)
   .json(new ApiResponse(200, user, "User fetched successfully"));
@@ -261,7 +264,7 @@ const updateAccountDetails = asyncHandler(async(req,res)=>{
       }
     },
     {new: true}
-  ).select("-password");
+  ).select("-password -refreshToken -passwordResetToken -passwordResetTokenExpiry -emailVerificationToken -emailVerificationTokenExpiry -deviceTokens");
   return res
   .status(200)
   .json(new ApiResponse(200, user, "Account details updated successfully"));
@@ -271,7 +274,7 @@ const updateProfilePicture = asyncHandler(async(req, res)=>{
   const user = await User.findByIdAndUpdate(
     req.user?._id,
     
-  ).select("-password");
+  ).select("-password -refreshToken -passwordResetToken -passwordResetTokenExpiry -emailVerificationToken -emailVerificationTokenExpiry -deviceTokens");
   const oldProfilePicture = user?.profilePicture;
   const oldPublicId = oldProfilePicture?.split("/").pop().split(".")[0];
   const defaultProfilePicture = process.env.DEFAULT_USER_IMAGE_URL
@@ -314,7 +317,7 @@ const getUserProfile = asyncHandler(async(req, res)=>{
   });
   const followersCount = followers?.followers?.length || 0;
   const followingCount = following?.following?.length || 0;
-  const user = await User.findOne({username}).select("-password -refreshToken -lastLogin -preferences");
+  const user = await User.findOne({username}).select("-password -refreshToken -lastLogin -preferences -emailVerificationToken -emailVerificationTokenExpiry -deviceTokens -passwordResetToken -passwordResetTokenExpiry")
   return res
   .status(200)
   .json(new ApiResponse(200, {user, followersCount, followingCount}, "User profile fetched successfully"));
@@ -380,7 +383,7 @@ const addPersonalDetails = asyncHandler(async(req, res)=>{
             }
         },
         {new: true}
-    ).select("-password");
+    ).select("-password -refreshToken -lastLogin -preferences -emailVerificationToken -emailVerificationTokenExpiry -deviceTokens -passwordResetToken -passwordResetTokenExpiry");
     return res
     .status(200)
     .json(new ApiResponse(200, user, "Personal details updated successfully"));
@@ -838,6 +841,9 @@ const checkToken = asyncHandler(async(req, res)=>{
   const user = await User.findById(req.user?._id);
   if(!user){
     throw new ApiError(404, "User not found");
+  }
+  if(user.isBlocked){
+    throw new ApiError(402, "User is blocked");
   }
   return res
   .status(200)
