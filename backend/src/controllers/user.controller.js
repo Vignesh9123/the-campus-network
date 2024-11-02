@@ -134,7 +134,11 @@ const loginUser = asyncHandler(async (req, res) =>{
  const {accessToken, refreshToken} = await generateAccesAndRefreshToken(user._id)
 
   const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
-
+  loggedInUser.emailVerificationToken = undefined;
+  loggedInUser.emailVerificationTokenExpiry = undefined;
+  loggedInUser.passwordResetToken = undefined;
+  loggedInUser.passwordResetTokenExpiry = undefined;
+  loggedInUser.lastLogin = undefined
   const options = {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -242,6 +246,9 @@ const getCurrentUser = asyncHandler(async (req, res) => {
   user.deviceTokens = undefined;
   if(user.isBlocked){
     throw new ApiError(403, "User is blocked due to posting some illegal content or having a illegitimate account")
+  }
+  if(!user.isEmailVerified){
+    return res.status(420).redirect(`${process.env.CLIENT_URL}/send-email-verification`)
   }
   return res
   .status(200)
@@ -586,7 +593,16 @@ const signedInResetPassword = asyncHandler(async(req, res)=>{
 
 const sendVerificationEmail = asyncHandler(async(req, res)=>{
   const user = await User.findById(req.user?._id);
+  const currentTime = new Date();
+  if(user.emailVerificationTokenExpiry && 
+    user.emailVerificationTokenExpiry > currentTime){
+      throw new ApiError(400, "Email verification token is already sent and is valid");
+    }
+  
   const token = user.generateEmailVerificationToken();
+  user.emailVerificationToken = token;
+  user.emailVerificationTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // Set expiry 24 hours from now
+  await user.save({validateBeforeSave: false});
   const verificationURL = `${req.get("origin")}/mail-verification/${token}`;
 const message = `
 <!DOCTYPE html>
@@ -676,6 +692,8 @@ const verifyEmail = asyncHandler(async(req, res)=>{
     throw new ApiError(400, "Invalid token");
   }
   user.isEmailVerified = true;
+  user.emailVerificationToken = undefined;
+  user.emailVerificationTokenExpiry = undefined;
   await user.save({validateBeforeSave: true});
   return res
   .status(200)
@@ -856,6 +874,9 @@ const checkToken = asyncHandler(async(req, res)=>{
   }
   if(user.isBlocked){
     throw new ApiError(402, "User is blocked");
+  }
+  if(user.isEmailVerified == false){
+    throw new ApiError(420, "Email is not verified");
   }
   return res
   .status(200)

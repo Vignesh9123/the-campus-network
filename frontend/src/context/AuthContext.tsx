@@ -219,6 +219,16 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
                     // localStorage.clear()
                     // navigate('/login');
                 }
+                if(err.status == 420){
+                    toast.error("Looks like your email is not verified")
+                    const user = JSON.parse(localStorage.getItem('user') as string);
+                    if(user){
+                        user.isEmailVerified = false;
+                    }                    
+                    localStorage.setItem("user", JSON.stringify(user));
+                    setUser(user)
+                    navigate('/send-email-verification')
+                }
             }
         )
     }
@@ -320,7 +330,6 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
             }
             setIsLoading(false);
         };
-
         initializeAuth();
         checkTokenValidity();
     }, []);

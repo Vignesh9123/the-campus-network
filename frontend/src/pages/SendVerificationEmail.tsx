@@ -1,4 +1,5 @@
 import { sendVerificationEmail } from '@/api';
+import LogoutButton from '@/components/modules/LogoutButton';
 import { useAuth } from '@/context/AuthContext';
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
@@ -19,8 +20,12 @@ function SendVerificationEmail() {
             await sendVerificationEmail();
             setEmailSent(true);
             toast.success("Check your email for verification link");
-        } catch (error) {
-            toast.error("Something went wrong, please try again later");
+        } catch (error:any) {
+            if(error.status == 400) {
+                setEmailSent(true);
+                toast.error("An email is already sent to specified email address");
+            }
+            else toast.error("Something went wrong, please try again later");
         } finally {
             setLoading(false);
         }
@@ -33,7 +38,7 @@ function SendVerificationEmail() {
         {loading && <p>Sending verification email...</p>}
         {!loading && emailSent && <div className='text-center'>
             A verification link has been sent to {user?.email}. Please check your email and click on the link to verify your email.
-            {/* <button onClick={sendVerification} className='bg-blue-500 text-white p-2 rounded-md mt-4'>Resend Verification Email</button> */}
+            <LogoutButton className='block sm-show-text mx-auto'/>
         </div>}
     </div>
   )
