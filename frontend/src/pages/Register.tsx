@@ -168,7 +168,7 @@ export default function RegisterForm() {
           <Label htmlFor="email">Email Address (Preferrably gmail) <p className="inline text-red-500 text-sm">*</p></Label>
           <Input value={email} onChange={(e) => setEmail(e.target.value)} id="email" placeholder="user@gmail.com" required={true} type="email" />
         </LabelInputContainer>
-        <LabelInputContainer className="mb-4">
+        {/* <LabelInputContainer className="mb-4">
           <Label htmlFor="profilePicture">Profile Picture</Label>
           <Input id="profilePicture" onChange={handlePFPChange} type="file"/>
         </LabelInputContainer>
@@ -200,7 +200,7 @@ export default function RegisterForm() {
               <Button onClick={getCropData}>Set</Button>
           </DialogFooter>
           </DialogContent>
-        </Dialog>}
+        </Dialog>} */}
        
         <LabelInputContainer className="mb-4 relative">
           <Label htmlFor="password">Password <p className="inline text-red-500 text-sm">*</p></Label>

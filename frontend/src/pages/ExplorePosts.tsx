@@ -9,7 +9,7 @@ import { usePullToRefresh } from '@/components/modules/usePullRefreshHook';
 import { Link } from 'react-router-dom';
 import { Separator } from '@/components/ui/separator';
 import { formatDistanceToNow } from 'date-fns';
-import _ from 'lodash'; // Import lodash for throttling
+import {throttle} from 'lodash'; // Import lodash for throttling
 import MobileUserNavbar from '@/components/sections/MobileUserNavbar';
 
 function ExplorePosts() {
@@ -81,7 +81,7 @@ function ExplorePosts() {
 
     // Infinite scroll when contentDivRef is fully scrolled
     useEffect(() => {
-        const handleScroll = _.throttle(() => {
+        const handleScroll = throttle(() => {
             const contentDiv = contentDivRef.current;
             if (contentDiv) {
                 const { scrollTop, scrollHeight, clientHeight } = contentDiv;
