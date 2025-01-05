@@ -1,4 +1,4 @@
-import React,{useEffect, useState/*, useRef*/} from "react";
+import React,{useEffect, useState, useRef} from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -10,17 +10,17 @@ import {FaEye, FaEyeSlash} from "react-icons/fa";
 import { checkUsernameUnique } from "@/api";
 import { Separator } from "@/components/ui/separator";
 import Footer from "@/components/sections/Footer";
-// import Cropper,{ ReactCropperElement } from "react-cropper";
-// import { Button } from "@/components/ui/button";
-// import {
-//   Dialog,
-//   DialogContent,
-//   DialogDescription,
-//   DialogFooter,
-//   DialogHeader,
-//   DialogTitle,
-//   DialogTrigger,
-// } from "@/components/ui/dialog";
+import Cropper,{ ReactCropperElement } from "react-cropper";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import "cropperjs/dist/cropper.css";
 
 
@@ -30,16 +30,16 @@ export default function RegisterForm() {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [profilePicture/*, setProfilePicture*/] = useState<File | null | undefined>(null);
-    // const [profilePictureURL, setProfilePictureURL] = useState<string | undefined>(undefined);
-    const [croppedProfilePicture/*, setCroppedProfilePicture*/] = useState<File | null>(null);
+    const [profilePicture, setProfilePicture] = useState<File | null | undefined>(null);
+    const [profilePictureURL, setProfilePictureURL] = useState<string | undefined>(undefined);
+    const [croppedProfilePicture, setCroppedProfilePicture] = useState<File | null>(null);
     const [confirmPassword, setConfirmPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isUnique, setIsUnique] = useState(true);
     const [error, setError] = useState('')
-    // const cropperRef = useRef<ReactCropperElement>(null);
-    // const [pfpCropOpen, setPfpCropOpen] = useState(false);
+    const cropperRef = useRef<ReactCropperElement>(null);
+    const [pfpCropOpen, setPfpCropOpen] = useState(false);
 
     const togglePasswordVisibility = () => {
       setShowPassword(!showPassword);
@@ -74,20 +74,20 @@ export default function RegisterForm() {
       }
       }
     };
-    // const getCropData = ()=>{
-    //   if (cropperRef.current) {
-    //     const canvas = cropperRef.current?.cropper.getCroppedCanvas();
-    //     if (canvas) {
-    //       canvas.toBlob((blob) => {
-    //         if (blob) {
-    //           const file = new File([blob], 'profile_picture.png', { type: 'image/png' });
-    //           setCroppedProfilePicture(file);
-    //         }
-    //       }, 'image/png');
-    //       setPfpCropOpen(false);
-    //     }
-    //   }
-    // }     
+    const getCropData = ()=>{
+      if (cropperRef.current) {
+        const canvas = cropperRef.current?.cropper.getCroppedCanvas();
+        if (canvas) {
+          canvas.toBlob((blob) => {
+            if (blob) {
+              const file = new File([blob], 'profile_picture.png', { type: 'image/png' });
+              setCroppedProfilePicture(file);
+            }
+          }, 'image/png');
+          setPfpCropOpen(false);
+        }
+      }
+    }     
     
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -112,18 +112,18 @@ export default function RegisterForm() {
 
     
   };
-  // const handlePFPChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = e.target.files?.[0];
-  //   if (file) {
-  //     const reader = new FileReader();
-  //     reader.onloadend = () => {
-  //       setProfilePictureURL(reader.result as string);
-  //     };
-  //     reader.readAsDataURL(file);
-  //     setProfilePicture(file);
-  //     setPfpCropOpen(true);
-  //   }
-  // };
+  const handlePFPChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfilePictureURL(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+      setProfilePicture(file);
+      setPfpCropOpen(true);
+    }
+  };
   useEffect(() => {
       checkUsername();
 
