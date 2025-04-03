@@ -343,7 +343,7 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
     }, []);
   return (
     <AuthContext.Provider value={{ user,following, login, register, logout, token, getGoogleSignedInUser,updateAccDetails,updatePersonalDetails,updatePFP, authError,isLoading,setIsLoading,followOrUnfollowUser,setUser, setAuthError}}>
-      {isLoading ? <Loader /> : children} {/* Display a loader while loading */}
+      {isLoading && location.pathname !== "/" ? <Loader /> : children}
     </AuthContext.Provider>
   );
 }
