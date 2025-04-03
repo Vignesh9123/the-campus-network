@@ -310,11 +310,11 @@ const getAllChats = ()=>{
 }
 
 const createOrGetOneToOneChat = (data:{ receiverId:string|undefined})=>{
-  return socketClient.post('/chats/c1to1', data)
+  return socketClient.post('/api/v1/chats/c1to1', data)
 }
 
 const sendMessage = (data:{content: string|undefined, chatId:string|undefined})=>{
-  return socketClient.post(`/messages/send-message/${data.chatId}`, {content: data.content})
+  return socketClient.post(`/api/v1/messages/send-message/${data.chatId}`, {content: data.content})
 }
 
 const getAllMessages = (data:{chatId:string|undefined})=>{
@@ -322,15 +322,15 @@ const getAllMessages = (data:{chatId:string|undefined})=>{
 }
 
 const deleteMessage = (data:{messageId: string|undefined})=>{
-  return socketClient.delete(`/messages/delete-message/${data.messageId}`)
+  return socketClient.delete(`/api/v1/messages/delete-message/${data.messageId}`)
 }
 
 const deleteChat = (data:{chatId:string | undefined})=>{
-  return socketClient.delete(`/chats/delete-chat/${data.chatId}`)
+  return socketClient.delete(`/api/v1/chats/delete-chat/${data.chatId}`)
 }
 
 const dummyRequest = ()=>{
-  return socketClient.get('/users/search?query=vignesh')
+  return socketClient.get('/api/v1/users/search?query=vignesh')
 }
 
 export {refreshToken, loginUser,checkToken, registerUser, logoutUser ,sendVerificationEmail,verifyEmail,getAccountsToFollow,changePassword,forgotPassword, getCurrentUser, checkUsernameUnique, createPost,createRepost ,updateAccountDetails,addPersonalDetails, updateProfilePicture,getUserPosts,searchUser, getUserProfile,followOrUnfollow, searchPost,getFollowers, getFollowing, likePost, getUserFeed, addComment,deleteComment,getCommentsbyPost,getPost,
