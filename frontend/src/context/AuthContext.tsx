@@ -25,12 +25,17 @@ const AuthContext = createContext<{
     user:UserInterface | null;
     token: string | null;
     login:(data:{email:string|null,username:string|null;password:string })=>Promise<void>;
-    register:(data:FormData)=>Promise<void>;
+    register:(data:{
+        username:string|null,
+        email:string|null,
+        password:string,
+        profilePicture?:string
+    })=>Promise<void>;
     logout:()=>Promise<void>;
     getGoogleSignedInUser:({accessToken}:any)=>Promise<void>;
     updateAccDetails: (data:{username:string|null, email:string|null, bio:string|null})=>Promise<void>;
     updatePersonalDetails:(data:{ phone:string|null, engineeringDomain:string|null, college:string|null, yearOfGraduation:string|null })=>Promise<void>;
-    updatePFP:(data:FormData)=>Promise<void>;
+    updatePFP:(data:{profilePicture?:string})=>Promise<void>;
     authError:string|null;
     isLoading:boolean;
     setIsLoading:(isLoading:boolean)=>void;
@@ -106,7 +111,7 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
             }
         );
     }
-    const register = async (data:FormData) => {
+    const register = async (data:{username:string|null,email:string|null,password:string,profilePicture?:string}) => {
         await requestHandler(
             async () => await registerUser(data),
             setIsLoading,
@@ -295,7 +300,10 @@ const AuthProvider:React.FC<{children:React.ReactNode}> = ({children}) => {
             }
         )
     }
-    const updatePFP = async(data:FormData)=>{
+    const updatePFP = async(data:{profilePicture?:string})=>{
+        if(!data.profilePicture){
+            return
+        }
         await requestHandler(
             async()=>await updateProfilePicture(data),
             setIsLoading,

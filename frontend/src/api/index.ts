@@ -20,10 +20,10 @@ apiClient.interceptors.request.use(
 const loginUser = (data: {email:string|null, username: string|null; password: string }) => {
     return apiClient.post("/users/loginuser", data);
 };
-const registerUser = (data:FormData) => {
+const registerUser = (data:{username:string|null,email:string|null,password:string,profilePicture?:string}) => {
     return apiClient.post("/users/register", data,{
         headers: {
-            'Content-Type': 'multipart/form-data'
+            'Content-Type': 'application/json'
         }
     });
 };
@@ -45,10 +45,10 @@ const addPersonalDetails = (data:{ phone:string|null, engineeringDomain:string|n
   return apiClient.post('/users/add-personal-details',data)
 }
 
-const updateProfilePicture = (data:FormData)=>{
+const updateProfilePicture = (data:{profilePicture?: string})=>{
   return apiClient.patch('/users/update-profile-picture', data,{
     headers: {
-        'Content-Type': 'multipart/form-data'
+        'Content-Type': 'application/json'
     }
   })
 }

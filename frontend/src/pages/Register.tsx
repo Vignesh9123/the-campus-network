@@ -80,10 +80,10 @@ export default function RegisterForm() {
         if (canvas) {
           canvas.toBlob((blob) => {
             if (blob) {
-              const file = new File([blob], 'profile_picture.png', { type: 'image/png' });
+              const file = new File([blob], 'profile_picture.png');
               setCroppedProfilePicture(file);
             }
-          }, 'image/png');
+          }, 'image/jpeg');
           setPfpCropOpen(false);
         }
       }
@@ -99,15 +99,23 @@ export default function RegisterForm() {
       alert("Please crop your profile picture");
       return;
     }
-    const formData = new FormData()
-    formData.append('username', username)
-    formData.append('email', email)
-    formData.append('password', password)
-    if(profilePicture && croppedProfilePicture){
-      formData.append('profilePicture', croppedProfilePicture)
+    // const formData = new FormData()
+    // formData.append('username', username)
+    // formData.append('email', email)
+    // formData.append('password', password)
+    // if(profilePicture && croppedProfilePicture){
+    //   formData.append('profilePicture', croppedProfilePicture)
+    // }
+    if(profilePicture && profilePicture.size > 2 * 1024 * 1024){
+      alert('Profile picture size should be less than 2MB');
+      return
     }
     if(username && email && password && isUnique){
-        register(formData);
+      const file = new FileReader()
+      file.readAsDataURL(croppedProfilePicture as Blob)
+      file.onloadend = () => {
+        register({username, email, password, profilePicture: file.result ? file.result as string : undefined});
+      }
     }
 
     
@@ -115,6 +123,10 @@ export default function RegisterForm() {
   const handlePFPChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      if(file.size > 2 * 1024 * 1024){
+        alert('Profile picture size should be less than 2MB');
+        return
+      }
       const reader = new FileReader();
       reader.onloadend = () => {
         setProfilePictureURL(reader.result as string);

@@ -126,9 +126,16 @@ function EditProfile() {
           canvas.toBlob(async(blob) => {
             if(blob){
               const file = new File([blob], 'profile_picture.jpg', {type: 'image/jpeg'})
-              const data = new FormData()
-              data.append('profilePicture', file)
-              await updatePFP(data)
+              if(file.size > 2 * 1024 * 1024){
+                alert('Profile picture size should be less than 2MB');
+                return
+              }
+              const base64 = new FileReader()
+              base64.readAsDataURL(file)
+              base64.onload = async() => {
+                const data = {profilePicture: base64.result as string || undefined}
+                await updatePFP(data)
+              }
             }
           }, 'image/jpeg', 0.8)
         }
