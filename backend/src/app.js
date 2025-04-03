@@ -24,7 +24,7 @@ dotenv.config()
 // app.set('io', io);
 app.use(cookieParser())
 app.use(cors({
-    origin: 'https://tcn-preview.vercel.app',
+    origin: process.env.CORS_ORIGIN,
   credentials: true,
 }))
 // app.use(morganLogger)
@@ -49,7 +49,7 @@ import chatRouter from './routes/chat.routes.js'
 import messageRouter from './routes/message.routes.js'
 import { Server } from 'socket.io';
 app.get('/', (req, res) => {
-    res.send("CORS_ORIGIN "+process.env.CORS_ORIGIN)
+  res.send("Hello World")
 })
 app.use('/api/v1/users', userRouter)
 app.use('/api/v1/posts', postRouter)
