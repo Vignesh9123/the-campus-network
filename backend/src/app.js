@@ -5,7 +5,7 @@ import passport from 'passport'
 import session from 'express-session'
 import { initializeSocketIO } from './socket/index.js';
 import { createServer } from 'http';
-import morganLogger from './logger/morgan.logger.js';
+// import morganLogger from './logger/morgan.logger.js';
 const app = express()
 const httpServer = createServer(app);
 
