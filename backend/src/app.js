@@ -9,6 +9,7 @@ import dotenv from 'dotenv';
 // import morganLogger from './logger/morgan.logger.js';
 const app = express()
 const httpServer = createServer(app);
+dotenv.config()
 
 const io = new Server(httpServer,
     {
@@ -20,7 +21,6 @@ const io = new Server(httpServer,
     }
 
 )
-dotenv.config()
 app.set('io', io);
 app.use(cookieParser())
 app.use(cors({
