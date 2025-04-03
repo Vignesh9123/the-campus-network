@@ -11,17 +11,17 @@ const app = express()
 const httpServer = createServer(app);
 dotenv.config()
 
-// const io = new Server(httpServer,
-//     {
-//         cors: {
-//             origin: 'https://tcn-preview.vercel.app',
-//             methods: ["GET", "POST"],
-//             credentials: true,
-//         },
-//     }
+const io = new Server(httpServer,
+    {
+        cors: {
+            origin: process.env.CORS_ORIGIN,
+            methods: ["GET", "POST"],
+            credentials: true,
+        },
+    }
 
-// )
-// app.set('io', io);
+)
+app.set('io', io);
 app.use(cookieParser())
 app.use(cors({
     origin: process.env.CORS_ORIGIN,
@@ -60,5 +60,5 @@ app.use('/api/v1/tasks', taskRouter)
 app.use('/api/v1/notifications', notificationRouter)
 app.use('/api/v1/chats', chatRouter)
 app.use('/api/v1/messages', messageRouter)
-// initializeSocketIO(io)
+initializeSocketIO(io)
 export {httpServer}
