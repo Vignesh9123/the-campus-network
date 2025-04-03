@@ -14,7 +14,7 @@ dotenv.config()
 const io = new Server(httpServer,
     {
         cors: {
-            origin: process.env.CORS_ORIGIN,
+            origin: 'https://tcn-preview.vercel.app',
             methods: ["GET", "POST"],
             credentials: true,
         },
@@ -24,7 +24,7 @@ const io = new Server(httpServer,
 app.set('io', io);
 app.use(cookieParser())
 app.use(cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: 'https://tcn-preview.vercel.app',
   credentials: true,
 }))
 // app.use(morganLogger)
