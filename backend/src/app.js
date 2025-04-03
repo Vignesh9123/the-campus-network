@@ -21,7 +21,7 @@ const io = new Server(httpServer,
     }
 
 )
-app.set('io', io);
+// app.set('io', io);
 app.use(cookieParser())
 app.use(cors({
     origin: 'https://tcn-preview.vercel.app',
@@ -60,5 +60,5 @@ app.use('/api/v1/tasks', taskRouter)
 app.use('/api/v1/notifications', notificationRouter)
 app.use('/api/v1/chats', chatRouter)
 app.use('/api/v1/messages', messageRouter)
-initializeSocketIO(io)
+// initializeSocketIO(io)
 export {httpServer}
