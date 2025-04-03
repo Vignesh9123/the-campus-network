@@ -63,18 +63,19 @@ try {
 
 const router = Router()
 
-router.route('/register').post(upload.fields([{
-    name: "profilePicture",
-    maxCount: 1
-}])
-    ,registerUser)
-
+// router.route('/register').post(upload.fields([{
+//     name: "profilePicture",
+//     maxCount: 1
+// }])
+//     ,registerUser)
+router.route('/register').post(registerUser)
 router.route('/loginuser').post(loginUser)
 router.route('/logout').post(verifyJWT, logoutUser)
 router.route('/refresh-token').post(refreshAccessToken)
 router.route('/change-password').post(verifyJWT, changeCurrentPassword)
 router.route('/current-user').get(verifyJWT, getCurrentUser)
-router.route('/update-profile-picture').patch(verifyJWT, upload.single("profilePicture"), updateProfilePicture)
+// router.route('/update-profile-picture').patch(verifyJWT, upload.single("profilePicture"), updateProfilePicture)
+router.route('/update-profile-picture').patch(verifyJWT, updateProfilePicture)
 router.route('/update-account-details').patch(verifyJWT, updateAccountDetails)
 router.route('/u=:username').get(getUserProfile)
 router.route('/add-personal-details').post(verifyJWT, addPersonalDetails)

@@ -53,11 +53,13 @@ const registerUser = asyncHandler(async (req, res) => {
   
   // check for profile pic and upload to cloudinary
   // console.log("req.files: ",req.files?.profilePicture[0]?.path);
-  let pfpLocalPath;
+  // let pfpLocalPath;
   let profilePicture; 
-  if(req.files && Array.isArray(req.files.profilePicture) && req.files.profilePicture.length > 0){
-    pfpLocalPath = req.files.profilePicture[0].path;
-  }
+  // if(req.files && Array.isArray(req.files.profilePicture) && req.files.profilePicture.length > 0){
+  //   pfpLocalPath = req.files.profilePicture[0].path;
+  // }
+
+  const pfpLocalPath = req.body.profilePicture;
   // console.log("pfpfLocalPath: ", pfpfLocalPath);
   if(!pfpLocalPath){
     // // set default profile picture
@@ -304,7 +306,7 @@ const updateProfilePicture = asyncHandler(async(req, res)=>{
     }
   }
 
-  const profilePictureLocalPath = req.file?.path;
+  const profilePictureLocalPath = req.body.profilePicture;
   if(!profilePictureLocalPath){
     throw new ApiError(400, "Profile picture is required");
   }
