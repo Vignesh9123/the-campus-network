@@ -5,6 +5,7 @@ import passport from 'passport'
 import session from 'express-session'
 import { initializeSocketIO } from './socket/index.js';
 import { createServer } from 'http';
+import dotenv from 'dotenv';
 // import morganLogger from './logger/morgan.logger.js';
 const app = express()
 const httpServer = createServer(app);
@@ -19,7 +20,7 @@ const io = new Server(httpServer,
     }
 
 )
-
+dotenv.config()
 app.set('io', io);
 app.use(cookieParser())
 app.use(cors({
@@ -47,7 +48,9 @@ import notificationRouter  from './routes/notification.routes.js'
 import chatRouter from './routes/chat.routes.js'
 import messageRouter from './routes/message.routes.js'
 import { Server } from 'socket.io';
-
+app.get('/', (req, res) => {
+    res.send("CORS_ORIGIN "+process.env.CORS_ORIGIN)
+})
 app.use('/api/v1/users', userRouter)
 app.use('/api/v1/posts', postRouter)
 app.use('/api/v1/comments', commentRouter)
