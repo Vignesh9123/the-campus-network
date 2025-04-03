@@ -17,6 +17,25 @@ apiClient.interceptors.request.use(
       return Promise.reject(error);
     }
 );
+
+const socketClient = axios.create({
+  baseURL: import.meta.env.VITE_APP_SOCKET_URI,
+  withCredentials: true,
+  timeout: 120000
+})
+
+socketClient.interceptors.request.use(
+  function (config) {
+    // Retrieve user token from local storage
+    const token = localStorage.getItem("token");
+    // Set authorization header with bearer token
+    config.headers.Authorization = `Bearer ${token}`;
+    return config;
+  },
+  function (error) {
+    return Promise.reject(error);
+  }
+);
 const loginUser = (data: {email:string|null, username: string|null; password: string }) => {
     return apiClient.post("/users/loginuser", data);
 };
@@ -291,11 +310,11 @@ const getAllChats = ()=>{
 }
 
 const createOrGetOneToOneChat = (data:{ receiverId:string|undefined})=>{
-  return apiClient.post('/chats/c1to1', data)
+  return socketClient.post('/chats/c1to1', data)
 }
 
 const sendMessage = (data:{content: string|undefined, chatId:string|undefined})=>{
-  return apiClient.post(`/messages/send-message/${data.chatId}`, {content: data.content})
+  return socketClient.post(`/messages/send-message/${data.chatId}`, {content: data.content})
 }
 
 const getAllMessages = (data:{chatId:string|undefined})=>{
@@ -303,15 +322,19 @@ const getAllMessages = (data:{chatId:string|undefined})=>{
 }
 
 const deleteMessage = (data:{messageId: string|undefined})=>{
-  return apiClient.delete(`/messages/delete-message/${data.messageId}`)
+  return socketClient.delete(`/messages/delete-message/${data.messageId}`)
 }
 
 const deleteChat = (data:{chatId:string | undefined})=>{
-  return apiClient.delete(`/chats/delete-chat/${data.chatId}`)
+  return socketClient.delete(`/chats/delete-chat/${data.chatId}`)
+}
+
+const dummyRequest = ()=>{
+  return socketClient.get('/users/search?query=vignesh')
 }
 
 export {refreshToken, loginUser,checkToken, registerUser, logoutUser ,sendVerificationEmail,verifyEmail,getAccountsToFollow,changePassword,forgotPassword, getCurrentUser, checkUsernameUnique, createPost,createRepost ,updateAccountDetails,addPersonalDetails, updateProfilePicture,getUserPosts,searchUser, getUserProfile,followOrUnfollow, searchPost,getFollowers, getFollowing, likePost, getUserFeed, addComment,deleteComment,getCommentsbyPost,getPost,
   createGroup, getGroup, acceptRequest, addToGroup, deleteGroup, exitFromGroup, isGroupNameUnique, rejectRequest, removeFromGroup, requestToJoinGroup,deletePost,
   addProject, getGroupProjects, getMyProjects, getProject, updateProject, updateProjectStatus, deleteProject,
-  createTask, getTask, updateTask, updateTaskStatus, deleteTask,getMyGroups,getMyTasks,getOthersTasks,sendNotification,storeDeviceToken,sendNotificationToUser,getGroupSuggestedPeople,getGroupForVisitors,getMyIndividualProjects, updateGroupDetails, changeGroupAdmin, getLikedUsers, getRepostedUsers,getAllChats, createOrGetOneToOneChat, sendMessage,getAllMessages, deleteMessage, deleteChat, resetPassword, signedInResetPassword
+  createTask, getTask, updateTask, updateTaskStatus, deleteTask,getMyGroups,getMyTasks,getOthersTasks,sendNotification,storeDeviceToken,sendNotificationToUser,getGroupSuggestedPeople,getGroupForVisitors,getMyIndividualProjects, updateGroupDetails, changeGroupAdmin, getLikedUsers, getRepostedUsers,getAllChats, createOrGetOneToOneChat, sendMessage,getAllMessages, deleteMessage, deleteChat, resetPassword, signedInResetPassword, dummyRequest
   }

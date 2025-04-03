@@ -30,6 +30,8 @@ import ResetPassword from './pages/ResetPassword'
 import VerifyEmail from './pages/VerifyEmail'
 import ForgotPassword from './pages/ForgotPassword'
 import SendVerificationEmail from './pages/SendVerificationEmail'
+import { useEffect } from 'react'
+import { dummyRequest } from './api'
 function App() {
   // const {user, token} = useAuth()
   onMessage(messaging, (payload) => {
@@ -42,6 +44,10 @@ function App() {
       {toastId:payload.notification?.title} 
     )
   });
+
+  useEffect(() => {
+    dummyRequest()
+  }, []);
 
   
 
